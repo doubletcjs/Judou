@@ -1,0 +1,703 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AAFAF2B58E2403B4B0E3A6FB /* Pods_Judou.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1FA2F33A4B27921246A0A93 /* Pods_Judou.framework */; };
+		CC04650121C00715006435CD /* MyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650021C00715006435CD /* MyInfoViewController.swift */; };
+		CC04650321C0A533006435CD /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650221C0A533006435CD /* RegisterViewController.swift */; };
+		CC04650521C0A5F1006435CD /* ForgotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650421C0A5F1006435CD /* ForgotViewController.swift */; };
+		CC04650821C0B6CD006435CD /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650721C0B6CD006435CD /* Networking.swift */; };
+		CC04650A21C0BC43006435CD /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650921C0BC43006435CD /* AccountManager.swift */; };
+		CC04650E21C0EA97006435CD /* JSActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = CC04650D21C0EA97006435CD /* JSActionSheet.m */; };
+		CC04651021C0EE29006435CD /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650F21C0EE29006435CD /* BaseModel.swift */; };
+		CC04651221C10E2F006435CD /* PostBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651121C10E2F006435CD /* PostBaseCell.swift */; };
+		CC04651421C11024006435CD /* PostManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651321C11024006435CD /* PostManager.swift */; };
+		CC04651621C111E5006435CD /* LabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651521C111E5006435CD /* LabelManager.swift */; };
+		CC04651821C207AE006435CD /* UIButton+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651721C207AE006435CD /* UIButton+Unitl.swift */; };
+		CC04651A21C22B4B006435CD /* ChannelPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651921C22B4B006435CD /* ChannelPostViewController.swift */; };
+		CC04651C21C22D88006435CD /* PostCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651B21C22D88006435CD /* PostCreateViewController.swift */; };
+		CC04651E21C23150006435CD /* PostSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651D21C23150006435CD /* PostSearchViewController.swift */; };
+		CC13191E21BF4D8300143537 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13191D21BF4D8300143537 /* BaseViewController.swift */; };
+		CC13192021BF4E2900143537 /* DevKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13191F21BF4E2900143537 /* DevKit.swift */; };
+		CC13192621BF505E00143537 /* BaseTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13192521BF505E00143537 /* BaseTabBarController.swift */; };
+		CC13192921BF518200143537 /* UINavigationController+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13192821BF518200143537 /* UINavigationController+Unitl.swift */; };
+		CC13193221BF535900143537 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13193121BF535900143537 /* HomeViewController.swift */; };
+		CC13193421BF536600143537 /* SquareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13193321BF536600143537 /* SquareViewController.swift */; };
+		CC13193621BF537000143537 /* DailyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13193521BF537000143537 /* DailyViewController.swift */; };
+		CC13193821BF5A7400143537 /* BaseShowBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13193721BF5A7400143537 /* BaseShowBarViewController.swift */; };
+		CC13193A21BF5A8300143537 /* BaseHideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13193921BF5A8300143537 /* BaseHideBarViewController.swift */; };
+		CC13193E21BF5FCE00143537 /* NotoSansCJKsc-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = CC13193D21BF5FCE00143537 /* NotoSansCJKsc-Light.otf */; };
+		CC13194121BF69BF00143537 /* HomePersonalHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13194021BF69BF00143537 /* HomePersonalHeaderView.swift */; };
+		CC13194321BF940C00143537 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13194221BF940C00143537 /* SettingViewController.swift */; };
+		CC3ABEF321C25D6100324A99 /* JSVariableMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF221C25D6100324A99 /* JSVariableMenuCell.swift */; };
+		CC3ABEF521C2624F00324A99 /* JSVariableMenuHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */; };
+		CC3ABEF721C2646700324A99 /* JSVariableMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */; };
+		CC3ABEF921C269AD00324A99 /* JSVariableMenuControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */; };
+		CC670C7A21C8C3650074EB1C /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */; };
+		CCA0BA7E21C3B61900C1938C /* UITextView+JS.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */; };
+		CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */; };
+		CCA0BA8221C5737E00C1938C /* LabelCenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */; };
+		CCA0BA8421C5751700C1938C /* CreateLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */; };
+		CCA0BA8621C6055700C1938C /* AddFunctionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */; };
+		CCDF5C1221BF48E40075C580 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDF5C1121BF48E40075C580 /* AppDelegate.swift */; };
+		CCDF5C1921BF48E50075C580 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCDF5C1821BF48E50075C580 /* Assets.xcassets */; };
+		CCE3409421BF949B0092905C /* MyMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409321BF949B0092905C /* MyMessageViewController.swift */; };
+		CCE3409621BF94A60092905C /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409521BF94A60092905C /* MyCollectionViewController.swift */; };
+		CCE3409821BF94B50092905C /* MyCommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409721BF94B50092905C /* MyCommentViewController.swift */; };
+		CCE3409A21BF99F70092905C /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409921BF99F70092905C /* MyPostViewController.swift */; };
+		CCE3409E21BF9A1D0092905C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409D21BF9A1D0092905C /* LoginViewController.swift */; };
+		CCE340A021C006A20092905C /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409F21C006A20092905C /* MyPageViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2B7F31458CB7332EFB3D1D66 /* Pods-Judou.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Judou.release.xcconfig"; path = "Target Support Files/Pods-Judou/Pods-Judou.release.xcconfig"; sourceTree = "<group>"; };
+		B1FA2F33A4B27921246A0A93 /* Pods_Judou.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Judou.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC04650021C00715006435CD /* MyInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInfoViewController.swift; sourceTree = "<group>"; };
+		CC04650221C0A533006435CD /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		CC04650421C0A5F1006435CD /* ForgotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotViewController.swift; sourceTree = "<group>"; };
+		CC04650721C0B6CD006435CD /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		CC04650921C0BC43006435CD /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
+		CC04650C21C0EA97006435CD /* JSActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSActionSheet.h; sourceTree = "<group>"; };
+		CC04650D21C0EA97006435CD /* JSActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSActionSheet.m; sourceTree = "<group>"; };
+		CC04650F21C0EE29006435CD /* BaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
+		CC04651121C10E2F006435CD /* PostBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBaseCell.swift; sourceTree = "<group>"; };
+		CC04651321C11024006435CD /* PostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostManager.swift; sourceTree = "<group>"; };
+		CC04651521C111E5006435CD /* LabelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelManager.swift; sourceTree = "<group>"; };
+		CC04651721C207AE006435CD /* UIButton+Unitl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Unitl.swift"; sourceTree = "<group>"; };
+		CC04651921C22B4B006435CD /* ChannelPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPostViewController.swift; sourceTree = "<group>"; };
+		CC04651B21C22D88006435CD /* PostCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewController.swift; sourceTree = "<group>"; };
+		CC04651D21C23150006435CD /* PostSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSearchViewController.swift; sourceTree = "<group>"; };
+		CC13191D21BF4D8300143537 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		CC13191F21BF4E2900143537 /* DevKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevKit.swift; sourceTree = "<group>"; };
+		CC13192521BF505E00143537 /* BaseTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTabBarController.swift; sourceTree = "<group>"; };
+		CC13192821BF518200143537 /* UINavigationController+Unitl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Unitl.swift"; sourceTree = "<group>"; };
+		CC13192A21BF526200143537 /* Judou-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Judou-Bridging-Header.h"; sourceTree = "<group>"; };
+		CC13193121BF535900143537 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		CC13193321BF536600143537 /* SquareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareViewController.swift; sourceTree = "<group>"; };
+		CC13193521BF537000143537 /* DailyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyViewController.swift; sourceTree = "<group>"; };
+		CC13193721BF5A7400143537 /* BaseShowBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseShowBarViewController.swift; sourceTree = "<group>"; };
+		CC13193921BF5A8300143537 /* BaseHideBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseHideBarViewController.swift; sourceTree = "<group>"; };
+		CC13193D21BF5FCE00143537 /* NotoSansCJKsc-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKsc-Light.otf"; sourceTree = "<group>"; };
+		CC13194021BF69BF00143537 /* HomePersonalHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePersonalHeaderView.swift; sourceTree = "<group>"; };
+		CC13194221BF940C00143537 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		CC3ABEF221C25D6100324A99 /* JSVariableMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuCell.swift; sourceTree = "<group>"; };
+		CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuHeader.swift; sourceTree = "<group>"; };
+		CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuView.swift; sourceTree = "<group>"; };
+		CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuControl.swift; sourceTree = "<group>"; };
+		CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		CCA0BA7C21C3B61900C1938C /* UITextView+JS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextView+JS.h"; sourceTree = "<group>"; };
+		CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextView+JS.m"; sourceTree = "<group>"; };
+		CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
+		CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelCenterViewController.swift; sourceTree = "<group>"; };
+		CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLabelViewController.swift; sourceTree = "<group>"; };
+		CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFunctionViewController.swift; sourceTree = "<group>"; };
+		CCDF5C0E21BF48E40075C580 /* Judou.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Judou.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCDF5C1121BF48E40075C580 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CCDF5C1821BF48E50075C580 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CCDF5C1D21BF48E50075C580 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CCE3409321BF949B0092905C /* MyMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMessageViewController.swift; sourceTree = "<group>"; };
+		CCE3409521BF94A60092905C /* MyCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
+		CCE3409721BF94B50092905C /* MyCommentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCommentViewController.swift; sourceTree = "<group>"; };
+		CCE3409921BF99F70092905C /* MyPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
+		CCE3409D21BF9A1D0092905C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		CCE3409F21C006A20092905C /* MyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
+		E2A6363CD805DDEE6A96C6AB /* Pods-Judou.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Judou.debug.xcconfig"; path = "Target Support Files/Pods-Judou/Pods-Judou.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CCDF5C0B21BF48E40075C580 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAFAF2B58E2403B4B0E3A6FB /* Pods_Judou.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1BF50B606FC4EA74B89931D4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B1FA2F33A4B27921246A0A93 /* Pods_Judou.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		559AE351826A02615C9684B7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E2A6363CD805DDEE6A96C6AB /* Pods-Judou.debug.xcconfig */,
+				2B7F31458CB7332EFB3D1D66 /* Pods-Judou.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CC04650621C0B6A8006435CD /* Function */ = {
+			isa = PBXGroup;
+			children = (
+				CCA0BA7B21C3B5EC00C1938C /* JSTextView */,
+				CC3ABEF121C25D3F00324A99 /* JSVariableMenu */,
+				CC04650B21C0EA97006435CD /* JSActionSheet */,
+				CC04650721C0B6CD006435CD /* Networking.swift */,
+				CC04650F21C0EE29006435CD /* BaseModel.swift */,
+				CC04650921C0BC43006435CD /* AccountManager.swift */,
+				CC04651321C11024006435CD /* PostManager.swift */,
+				CC04651521C111E5006435CD /* LabelManager.swift */,
+				CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */,
+			);
+			path = Function;
+			sourceTree = "<group>";
+		};
+		CC04650B21C0EA97006435CD /* JSActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				CC04650C21C0EA97006435CD /* JSActionSheet.h */,
+				CC04650D21C0EA97006435CD /* JSActionSheet.m */,
+			);
+			path = JSActionSheet;
+			sourceTree = "<group>";
+		};
+		CC13191721BF4D6600143537 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				CC13191A21BF4D6600143537 /* Daily */,
+				CC13191921BF4D6600143537 /* Square */,
+				CC13191821BF4D6600143537 /* Home */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		CC13191821BF4D6600143537 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				CC13192F21BF533200143537 /* VC */,
+				CC13193F21BF68E800143537 /* View */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		CC13191921BF4D6600143537 /* Square */ = {
+			isa = PBXGroup;
+			children = (
+				CC13193021BF533800143537 /* VC */,
+			);
+			path = Square;
+			sourceTree = "<group>";
+		};
+		CC13191A21BF4D6600143537 /* Daily */ = {
+			isa = PBXGroup;
+			children = (
+				CC13192E21BF532C00143537 /* VC */,
+			);
+			path = Daily;
+			sourceTree = "<group>";
+		};
+		CC13191B21BF4D6600143537 /* AppEntrance */ = {
+			isa = PBXGroup;
+			children = (
+				CC13191F21BF4E2900143537 /* DevKit.swift */,
+				CC13192A21BF526200143537 /* Judou-Bridging-Header.h */,
+				CC04650621C0B6A8006435CD /* Function */,
+				CC13192721BF516700143537 /* Category */,
+				CC13191C21BF4D6600143537 /* Base */,
+			);
+			path = AppEntrance;
+			sourceTree = "<group>";
+		};
+		CC13191C21BF4D6600143537 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				CC13191D21BF4D8300143537 /* BaseViewController.swift */,
+				CC13192521BF505E00143537 /* BaseTabBarController.swift */,
+				CC13193721BF5A7400143537 /* BaseShowBarViewController.swift */,
+				CC13193921BF5A8300143537 /* BaseHideBarViewController.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		CC13192721BF516700143537 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				CC13192821BF518200143537 /* UINavigationController+Unitl.swift */,
+				CC04651721C207AE006435CD /* UIButton+Unitl.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		CC13192E21BF532C00143537 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC13193521BF537000143537 /* DailyViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC13192F21BF533200143537 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC13193121BF535900143537 /* HomeViewController.swift */,
+				CC13194221BF940C00143537 /* SettingViewController.swift */,
+				CCE3409321BF949B0092905C /* MyMessageViewController.swift */,
+				CCE3409521BF94A60092905C /* MyCollectionViewController.swift */,
+				CCE3409721BF94B50092905C /* MyCommentViewController.swift */,
+				CCE3409921BF99F70092905C /* MyPostViewController.swift */,
+				CCE3409F21C006A20092905C /* MyPageViewController.swift */,
+				CC04650021C00715006435CD /* MyInfoViewController.swift */,
+				CCE3409D21BF9A1D0092905C /* LoginViewController.swift */,
+				CC04650221C0A533006435CD /* RegisterViewController.swift */,
+				CC04650421C0A5F1006435CD /* ForgotViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC13193021BF533800143537 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC13193321BF536600143537 /* SquareViewController.swift */,
+				CC04651921C22B4B006435CD /* ChannelPostViewController.swift */,
+				CC04651B21C22D88006435CD /* PostCreateViewController.swift */,
+				CC04651D21C23150006435CD /* PostSearchViewController.swift */,
+				CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */,
+				CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */,
+				CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */,
+				CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC13193F21BF68E800143537 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CC13194021BF69BF00143537 /* HomePersonalHeaderView.swift */,
+				CC04651121C10E2F006435CD /* PostBaseCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CC3ABEF121C25D3F00324A99 /* JSVariableMenu */ = {
+			isa = PBXGroup;
+			children = (
+				CC3ABEF221C25D6100324A99 /* JSVariableMenuCell.swift */,
+				CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */,
+				CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */,
+				CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */,
+			);
+			path = JSVariableMenu;
+			sourceTree = "<group>";
+		};
+		CCA0BA7B21C3B5EC00C1938C /* JSTextView */ = {
+			isa = PBXGroup;
+			children = (
+				CCA0BA7C21C3B61900C1938C /* UITextView+JS.h */,
+				CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */,
+			);
+			path = JSTextView;
+			sourceTree = "<group>";
+		};
+		CCDF5C0521BF48E40075C580 = {
+			isa = PBXGroup;
+			children = (
+				CCDF5C1021BF48E40075C580 /* Judou */,
+				CCDF5C0F21BF48E40075C580 /* Products */,
+				559AE351826A02615C9684B7 /* Pods */,
+				1BF50B606FC4EA74B89931D4 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		CCDF5C0F21BF48E40075C580 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CCDF5C0E21BF48E40075C580 /* Judou.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CCDF5C1021BF48E40075C580 /* Judou */ = {
+			isa = PBXGroup;
+			children = (
+				CCDF5C1121BF48E40075C580 /* AppDelegate.swift */,
+				CCDF5C1821BF48E50075C580 /* Assets.xcassets */,
+				CCDF5C1D21BF48E50075C580 /* Info.plist */,
+				CC13193D21BF5FCE00143537 /* NotoSansCJKsc-Light.otf */,
+				CC13191B21BF4D6600143537 /* AppEntrance */,
+				CC13191721BF4D6600143537 /* Scenes */,
+			);
+			path = Judou;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CCDF5C0D21BF48E40075C580 /* Judou */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CCDF5C2021BF48E50075C580 /* Build configuration list for PBXNativeTarget "Judou" */;
+			buildPhases = (
+				D3405893EB9CD221F7122D60 /* [CP] Check Pods Manifest.lock */,
+				CCDF5C0A21BF48E40075C580 /* Sources */,
+				CCDF5C0B21BF48E40075C580 /* Frameworks */,
+				CCDF5C0C21BF48E40075C580 /* Resources */,
+				A55F212C43ABD8B5B1328AFB /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Judou;
+			productName = Judou;
+			productReference = CCDF5C0E21BF48E40075C580 /* Judou.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CCDF5C0621BF48E40075C580 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Sam Cooper Studio";
+				TargetAttributes = {
+					CCDF5C0D21BF48E40075C580 = {
+						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
+					};
+				};
+			};
+			buildConfigurationList = CCDF5C0921BF48E40075C580 /* Build configuration list for PBXProject "Judou" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CCDF5C0521BF48E40075C580;
+			productRefGroup = CCDF5C0F21BF48E40075C580 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CCDF5C0D21BF48E40075C580 /* Judou */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CCDF5C0C21BF48E40075C580 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC13193E21BF5FCE00143537 /* NotoSansCJKsc-Light.otf in Resources */,
+				CCDF5C1921BF48E50075C580 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A55F212C43ABD8B5B1328AFB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Judou/Pods-Judou-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/LKDBHelper/LKDBHelper.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/MJExtension/MJExtension.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/SGPagingView/SGPagingView.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyFitsize/SwiftyFitsize.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LKDBHelper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SGPagingView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyFitsize.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Judou/Pods-Judou-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D3405893EB9CD221F7122D60 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Judou-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CCDF5C0A21BF48E40075C580 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CCE340A021C006A20092905C /* MyPageViewController.swift in Sources */,
+				CC670C7A21C8C3650074EB1C /* PostDetailViewController.swift in Sources */,
+				CC04650E21C0EA97006435CD /* JSActionSheet.m in Sources */,
+				CCE3409E21BF9A1D0092905C /* LoginViewController.swift in Sources */,
+				CC04650121C00715006435CD /* MyInfoViewController.swift in Sources */,
+				CCE3409A21BF99F70092905C /* MyPostViewController.swift in Sources */,
+				CC13192921BF518200143537 /* UINavigationController+Unitl.swift in Sources */,
+				CC13192621BF505E00143537 /* BaseTabBarController.swift in Sources */,
+				CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */,
+				CCE3409621BF94A60092905C /* MyCollectionViewController.swift in Sources */,
+				CC04650821C0B6CD006435CD /* Networking.swift in Sources */,
+				CC13193821BF5A7400143537 /* BaseShowBarViewController.swift in Sources */,
+				CC13193A21BF5A8300143537 /* BaseHideBarViewController.swift in Sources */,
+				CC04650521C0A5F1006435CD /* ForgotViewController.swift in Sources */,
+				CC04650321C0A533006435CD /* RegisterViewController.swift in Sources */,
+				CCE3409421BF949B0092905C /* MyMessageViewController.swift in Sources */,
+				CC13194121BF69BF00143537 /* HomePersonalHeaderView.swift in Sources */,
+				CCDF5C1221BF48E40075C580 /* AppDelegate.swift in Sources */,
+				CC04651A21C22B4B006435CD /* ChannelPostViewController.swift in Sources */,
+				CC04651021C0EE29006435CD /* BaseModel.swift in Sources */,
+				CC13191E21BF4D8300143537 /* BaseViewController.swift in Sources */,
+				CC13193421BF536600143537 /* SquareViewController.swift in Sources */,
+				CCA0BA8621C6055700C1938C /* AddFunctionViewController.swift in Sources */,
+				CC04651E21C23150006435CD /* PostSearchViewController.swift in Sources */,
+				CCA0BA8221C5737E00C1938C /* LabelCenterViewController.swift in Sources */,
+				CC04651221C10E2F006435CD /* PostBaseCell.swift in Sources */,
+				CC13192021BF4E2900143537 /* DevKit.swift in Sources */,
+				CCE3409821BF94B50092905C /* MyCommentViewController.swift in Sources */,
+				CC3ABEF521C2624F00324A99 /* JSVariableMenuHeader.swift in Sources */,
+				CC13193621BF537000143537 /* DailyViewController.swift in Sources */,
+				CC3ABEF321C25D6100324A99 /* JSVariableMenuCell.swift in Sources */,
+				CC3ABEF921C269AD00324A99 /* JSVariableMenuControl.swift in Sources */,
+				CC04651821C207AE006435CD /* UIButton+Unitl.swift in Sources */,
+				CCA0BA8421C5751700C1938C /* CreateLabelViewController.swift in Sources */,
+				CC13193221BF535900143537 /* HomeViewController.swift in Sources */,
+				CC04651421C11024006435CD /* PostManager.swift in Sources */,
+				CC04651C21C22D88006435CD /* PostCreateViewController.swift in Sources */,
+				CCA0BA7E21C3B61900C1938C /* UITextView+JS.m in Sources */,
+				CC04651621C111E5006435CD /* LabelManager.swift in Sources */,
+				CC3ABEF721C2646700324A99 /* JSVariableMenuView.swift in Sources */,
+				CC13194321BF940C00143537 /* SettingViewController.swift in Sources */,
+				CC04650A21C0BC43006435CD /* AccountManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CCDF5C1E21BF48E50075C580 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CCDF5C1F21BF48E50075C580 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CCDF5C2121BF48E50075C580 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2A6363CD805DDEE6A96C6AB /* Pods-Judou.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R8H4Y95R59;
+				INFOPLIST_FILE = Judou/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.samcooperstudio.Judou;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Judou/AppEntrance/Judou-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CCDF5C2221BF48E50075C580 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2B7F31458CB7332EFB3D1D66 /* Pods-Judou.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R8H4Y95R59;
+				INFOPLIST_FILE = Judou/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.samcooperstudio.Judou;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Judou/AppEntrance/Judou-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CCDF5C0921BF48E40075C580 /* Build configuration list for PBXProject "Judou" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CCDF5C1E21BF48E50075C580 /* Debug */,
+				CCDF5C1F21BF48E50075C580 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CCDF5C2021BF48E50075C580 /* Build configuration list for PBXNativeTarget "Judou" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CCDF5C2121BF48E50075C580 /* Debug */,
+				CCDF5C2221BF48E50075C580 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CCDF5C0621BF48E40075C580 /* Project object */;
+}

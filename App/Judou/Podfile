@@ -1,0 +1,14 @@
+source 'https://github.com/CocoaPods/Specs.git' 
+platform :ios, '8.0'
+inhibit_all_warnings!
+use_frameworks!
+target 'Judou' do
+        pod 'Alamofire'
+        pod 'SwiftyFitsize'
+        pod 'SDWebImage'
+        pod 'mob_smssdk'
+        pod 'MJExtension'
+        pod 'LKDBHelper'
+        pod 'SGPagingView'
+        pod 'MBProgressHUD', '~> 0.9.2' 
+end

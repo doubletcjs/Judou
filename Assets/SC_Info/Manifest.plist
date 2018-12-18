@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SinfPaths</key>
+	<array>
+		<string>SC_Info/JudouRili.sinf</string>
+	</array>
+	<key>SinfReplicationPaths</key>
+	<array>
+		<string>Frameworks/AipBase.framework/SC_Info/AipBase.sinf</string>
+		<string>Frameworks/AipOcrSdk.framework/SC_Info/AipOcrSdk.sinf</string>
+		<string>Frameworks/IdcardQuality.framework/SC_Info/IdcardQuality.sinf</string>
+		<string>PlugIns/JudouRiliWidget.appex/SC_Info/JudouRiliWidget.sinf</string>
+		<string>SC_Info/JudouRili.sinf</string>
+	</array>
+</dict>
+</plist>

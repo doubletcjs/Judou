@@ -17,6 +17,10 @@ DerivedData/
 !default.perspectivev3
 xcuserdata/
 
+.DS_Store
+App/Judou/Pods/
+Server/JudouServer/.build
+
 ## Other
 *.moved-aside
 *.xccheckout
