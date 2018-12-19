@@ -3,6 +3,9 @@
 ```
 import PackageDescription
 
+// ServerName
+let kServerName: String = "Judou"
+
 let package = Package(
 	name: kServerName,
 	products: [
@@ -26,26 +29,10 @@ import PerfectHTTP
 import PerfectHTTPServer
 import PerfectLogger
 
-// 指定服务器名
-let kServerName: String! = "Judou"
+// ServerName
+let kServerName: String = "Judou"
 
-// An example request handler.
-// This 'handler' function can be referenced directly in the configuration below.
-func handler(request: HTTPRequest, response: HTTPResponse) {
-	// Respond with a simple message.
-	response.setHeader(.contentType, value: "text/html")
-	response.appendBody(string: "<html><meta charset=\"UTF-8\"><title>\(kServerName!)接口服务器</title><body>句读接口服务器<br>V0.0.1</body></html>")
-	// Ensure that response.completed() is called when your processing is done.
-	response.completed()
-}
-
-// Configure one server which:
-//	* Serves the hello world message at <host>:<port>/
-//	* Serves static files out of the "./webroot"
-//		directory (which must be located in the current working directory).
-//	* Performs content compression on outgoing data when appropriate.
-
-//MARK: - 创建日志文件夹、指定存储路径
+//MARK: - Log location
 let logPath = "./files/log"
 let logDir = Dir(logPath)
 if !logDir.exists {
@@ -54,13 +41,10 @@ if !logDir.exists {
 
 LogFile.location = "\(logPath)/Server.log"
 
-// MARK: - 配置路由
-var routes = Routes()
-routes.add(method: .get, uri: "/", handler: handler)
-routes.add(method: .get, uri: "/**",
-		   handler: StaticFileHandler(documentRoot: "./webroot", allowResponseFilters: true).handleRequest)
+// MARK: - Configure routes
+var routes = BasicRoutes().routes
 
-// MARK: - 服务器配置
+// MARK: - Configure server
 let server = HTTPServer()
 server.addRoutes(routes)
 server.serverPort = 8181
@@ -68,14 +52,62 @@ server.serverName = "localhost"
 server.setResponseFilters([
     (try PerfectHTTPServer.HTTPFilter.contentCompression(data: [:]), HTTPFilterPriority.high)])
 
-// MARK: - 启动服务器
+// MARK: - Start server
 do {
-    LogFile.info("服务器启动成功")
+    LogFile.info("Server Start Successful")
     try server.start()
 } catch let error {
-    LogFile.error("服务器启动失败：\(error)")
-    print("服务器启动失败：\(error)")
-} 
+    LogFile.error("Failure Start Server：\(error)")
+    print("Failure Start Server：\(error)")
+}
+```
+- ApiOperation.swift
+
+```
+import Foundation
+import PerfectLib
+import PerfectHTTP
+import PerfectHTTPServer
+
+class BasicRoutes {
+    var routes: Routes {
+        get {
+            var baseRoutes = Routes()
+            
+            // localhost
+            
+            // Configure one server which:
+            //    * Serves the hello world message at <host>:<port>/
+            //    * Serves static files out of the "./webroot"
+            //        directory (which must be located in the current working directory).
+            //    * Performs content compression on outgoing data when appropriate.
+            
+            baseRoutes.add(method: .get, uri: "/", handler: localhostHandler)
+            baseRoutes.add(method: .get, uri: "/**", handler: StaticFileHandler(documentRoot: "./webroot", allowResponseFilters: true).handleRequest)
+            
+            // Interface version
+            baseRoutes.add(method: .get, uri: "/api/v1", handler: apiVersionHandle)
+            
+            return baseRoutes
+        }
+    }
+    // MARK: - localhost
+    func localhostHandler(request: HTTPRequest, response: HTTPResponse) {
+        // Respond with a simple message.
+        response.setHeader(.contentType, value: "text/html")
+        response.appendBody(string: "<html><meta charset=\"UTF-8\"><title>\(kServerName)Api Server</title><body>句读接口服务器<br>V0.0.1</body></html>")
+        // Ensure that response.completed() is called when your processing is done.
+        response.completed()
+    }
+    // MARK: - Interface version
+    func apiVersionHandle(request: HTTPRequest, response: HTTPResponse) {
+        let successArray: [String: Any] = ["status": 1, "version": "0.0.1"]
+        let jsonStr = try! successArray.jsonEncodedString()
+        
+        response.appendBody(string: jsonStr)
+        response.completed()
+    }
+}
 ```
 
 - swift build
