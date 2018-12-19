@@ -112,3 +112,35 @@ class BasicRoutes {
 
 - swift build
 - swift package generate-xcodeproj
+- 用户表
+
+```
+CREATE TABLE `account_table` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(20) NOT NULL DEFAULT '',
+  `portrait` varchar(255) DEFAULT '',
+  `gender` int(1) NOT NULL DEFAULT '0',
+  `birthday` date NOT NULL,
+  `mobile` varchar(20) NOT NULL DEFAULT '',
+  `date` datetime NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '0',
+  `report` int(10) NOT NULL DEFAULT '0',
+  `password` varchar(128) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10002 DEFAULT CHARSET=utf8;
+```
+- 标签表
+
+```
+CREATE TABLE `label_table` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `objectId` varchar(50) NOT NULL DEFAULT '',
+  `title` varchar(20) NOT NULL DEFAULT '',
+  `cover` varchar(255) DEFAULT '',
+  `author` int(11) unsigned NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `LABELAUTHOR` (`author`),
+  CONSTRAINT `LABELAUTHOR` FOREIGN KEY (`author`) REFERENCES `account_table` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
