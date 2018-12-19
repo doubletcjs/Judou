@@ -2,6 +2,9 @@
 
 import PackageDescription
 
+// ServerName
+let kServerName: String = "Judou"
+
 let package = Package(
 	name: kServerName,
 	products: [
