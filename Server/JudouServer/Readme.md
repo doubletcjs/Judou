@@ -3,13 +3,13 @@
 ```
 import PackageDescription
 
-// ServerName
-let kServerName: String = "Judou"
+// ProjectName
+private let kProjectName: String = "Judou"
 
 let package = Package(
-	name: kServerName,
+	name: kProjectName,
 	products: [
-		.executable(name: kServerName, targets: [kServerName])
+		.executable(name: kProjectName, targets: [kProjectName])
 	],
 	dependencies: [
 		.package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", from: "3.0.0"),
@@ -17,7 +17,7 @@ let package = Package(
         .package(url: "https://github.com/PerfectlySoft/Perfect-Logger.git", from: "3.0.0"),
 	],
 	targets: [
-		.target(name: kServerName, dependencies: ["PerfectHTTPServer", "PerfectMySQL", "PerfectLogger"])
+		.target(name: kProjectName, dependencies: ["PerfectHTTPServer", "PerfectMySQL", "PerfectLogger"])
 	]
 )
 ```
@@ -27,10 +27,7 @@ let package = Package(
 import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
-import PerfectLogger
-
-// ServerName
-let kServerName: String = "Judou"
+import PerfectLogger 
 
 //MARK: - Log location
 let logPath = "./files/log"
@@ -69,6 +66,9 @@ import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
 
+// localhost html
+private let LocalhostHtml: String = "<html><meta charset=\"UTF-8\"><title>Api Server</title><body>接口服务器<br>V0.0.1</body></html>"
+
 class BasicRoutes {
     var routes: Routes {
         get {
@@ -92,15 +92,15 @@ class BasicRoutes {
         }
     }
     // MARK: - localhost
-    func localhostHandler(request: HTTPRequest, response: HTTPResponse) {
+    private func localhostHandler(request: HTTPRequest, response: HTTPResponse) {
         // Respond with a simple message.
         response.setHeader(.contentType, value: "text/html")
-        response.appendBody(string: "<html><meta charset=\"UTF-8\"><title>\(kServerName)Api Server</title><body>句读接口服务器<br>V0.0.1</body></html>")
+        response.appendBody(string: LocalhostHtml)
         // Ensure that response.completed() is called when your processing is done.
         response.completed()
     }
     // MARK: - Interface version
-    func apiVersionHandle(request: HTTPRequest, response: HTTPResponse) {
+    private func apiVersionHandle(request: HTTPRequest, response: HTTPResponse) {
         let successArray: [String: Any] = ["status": 1, "version": "0.0.1"]
         let jsonStr = try! successArray.jsonEncodedString()
         
