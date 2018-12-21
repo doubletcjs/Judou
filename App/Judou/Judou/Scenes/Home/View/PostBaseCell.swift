@@ -66,10 +66,10 @@ class PostBaseCell: UITableViewCell {
         portraitImageView.tag = cellTag
         cellTag += 1
         self.addSubview(portraitImageView)
-        portraitImageView.sd_setImage(with: URL.init(string: userModel.portrait),
-                                      placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                                      options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                                      completed: nil)
+        portraitImageView.yy_setImage(with: URL.init(string: userModel.portrait),
+                                      placeholder: UIImage.init(named: "topic_default_avatar"),
+                                      options: kWebImageOptions,
+                                      completion: nil)
         
         //更多
         let moreButton = UIButton.init(type: .custom)
@@ -147,10 +147,10 @@ class PostBaseCell: UITableViewCell {
             postImageView.tag = cellTag
             cellTag += 1
             self.addSubview(postImageView)
-            postImageView.sd_setImage(with: URL.init(string: postModel.image),
-                                      placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                                      options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                                      completed: nil)
+            postImageView.yy_setImage(with: URL.init(string: postModel.image),
+                                      placeholder: UIImage.init(named: "topic_default_avatar"),
+                                      options: kWebImageOptions,
+                                      completion: nil)
             baseY = (postImageView.frame.maxY+14)~
         }
         //功能按钮

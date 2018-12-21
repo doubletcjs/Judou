@@ -60,5 +60,7 @@
 	<string>需要访问本地图片库才能读取本地图片或保存截图到本地。是否允许访问本地图片库？拒绝将无法读取或保存！</string>
 	<key>NSCameraUsageDescription</key>
 	<string>需要访问相机才能拍摄照片。是否允许访问拍摄？拒绝将无法拍照，修改头像！</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

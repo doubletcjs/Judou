@@ -19,8 +19,7 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
         // Do any additional setup after loading the view.
         self.title = "创建标签"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.labelCloseAction))
-        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.labelCloseAction)) 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_done"), style: .plain, target: self, action: #selector(self.createLabelAction))
         
         tableView = UITableView.init(frame: self.view.bounds, style: .plain)

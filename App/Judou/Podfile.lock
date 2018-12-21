@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.8.0)
+  - DZNEmptyDataSet (1.8.1)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -12,47 +13,66 @@ PODS:
   - mob_smssdk (3.2.3):
     - MOBFoundation
   - MOBFoundation (3.2.0)
-  - SDWebImage (4.4.3):
-    - SDWebImage/Core (= 4.4.3)
-  - SDWebImage/Core (4.4.3)
+  - MXParallaxHeader (0.6.1)
   - SGPagingView (1.5.6)
+  - STPopup (1.8.3)
   - SwiftyFitsize (0.1.0)
+  - YYCache (1.0.4)
+  - YYImage (1.0.4):
+    - YYImage/Core (= 1.0.4)
+  - YYImage/Core (1.0.4)
+  - YYWebImage (1.0.5):
+    - YYCache
+    - YYImage
 
 DEPENDENCIES:
   - Alamofire
+  - DZNEmptyDataSet
   - LKDBHelper
   - MBProgressHUD (~> 0.9.2)
   - MJExtension
   - mob_smssdk
-  - SDWebImage
+  - MXParallaxHeader
   - SGPagingView
+  - STPopup
   - SwiftyFitsize
+  - YYWebImage
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
+    - DZNEmptyDataSet
     - FMDB
     - LKDBHelper
     - MBProgressHUD
     - MJExtension
     - mob_smssdk
     - MOBFoundation
-    - SDWebImage
+    - MXParallaxHeader
     - SGPagingView
+    - STPopup
     - SwiftyFitsize
+    - YYCache
+    - YYImage
+    - YYWebImage
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   LKDBHelper: 9a276ba51f2e16263d46a9517e16cc9b03472664
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MJExtension: 19bc33ce2eee2d319760f5622562cf581a6ff756
   mob_smssdk: cdb6a31d4fd4667ed928e2eca03f21ad89ebc05c
   MOBFoundation: ca11e6640e995875ff755faa56ea324eed260e70
-  SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
+  MXParallaxHeader: 858c403532ed933b381556a81ce333d7065ad182
   SGPagingView: 642091b0b1ea7d33d89301f6c4ad77f12793d311
+  STPopup: da1167250a01584af7bcccb898653185f223ec46
   SwiftyFitsize: 4727ad16946f5bb73219dd5f6453a17d85c530f0
+  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
+  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
+  YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
 
-PODFILE CHECKSUM: 117f2d9f8095d933c6b12143ea27ab161b6545e6
+PODFILE CHECKSUM: 264482fad9484ad95078d43acc8f558ea05204ca
 
 COCOAPODS: 1.6.0.beta.2

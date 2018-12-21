@@ -22,9 +22,6 @@ import PerfectHTTP
 import PerfectHTTPServer
 import PerfectLogger
 
-// ServerName
-let kServerName: String = "Judou"
-
 //MARK: - Log location
 let logPath = "./files/log"
 let logDir = Dir(logPath)
@@ -50,6 +47,5 @@ do {
     LogFile.info("Server Start Successful")
     try server.start()
 } catch let error {
-    LogFile.error("Failure Start Server：\(error)")
-    print("Failure Start Server：\(error)")
+    LogFile.error("Failure Start Server：\(error)") 
 }

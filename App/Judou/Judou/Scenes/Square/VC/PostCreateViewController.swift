@@ -355,12 +355,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         if isStringEmpty(textView.text) == true && textView.text.count < 6 {
             showTextHUD("至少6个字符～", inView: nil, hideAfterDelay: 1.5)
             return
-        }
-        
-        if imageButton.currentImage == nil || imageButton.currentImage == UIImage.init(named: "icon_pic_add") {
-            showTextHUD("图片不能为空～", inView: nil, hideAfterDelay: 1.5)
-            return
-        }
+        } 
         
         textView.resignFirstResponder()
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-//表名 t_judoulabel
+//表名 label_table
 
 class LabelManager: BaseModel {
 

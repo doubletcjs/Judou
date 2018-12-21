@@ -112,16 +112,26 @@ class LoginViewController: BaseShowBarViewController, UITextFieldDelegate {
             alertView.show()
             
             return
+        } 
+        
+        let hud = indicatorTextHUD("正在登录")
+        Networking.loginRequest(mobile: phoneTextField.text!, password: passwdTextField.text!) { (userModel, error) in
+            if error != nil {
+                hud.hide(false)
+                
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            } else {
+                AccountManager.login(userModel!)
+                
+                DispatchQueueMainAsyncAfter(deadline: .now()+0.5, target: self, execute: {
+                    hud.hide(false)
+                    DispatchQueue.main.async(execute: {
+                        showTextHUD("登录成功", inView: nil, hideAfterDelay: 1)
+                        self.loginCloseAction()
+                    })
+                })
+            }
         }
-        
-        if isStringEmpty(passwdTextField.text) == true || passwdTextField.text!.count < 6 || passwdTextField.text!.count > 20 {
-            let alertView = UIAlertView.init(title: nil, message: "请输入合法的密码(6-20位字母数字密码)", delegate: nil, cancelButtonTitle: "确定")
-            alertView.show()
-            
-            return
-        }
-        
-        
     }
     // MARK: - UITextFieldDelegate
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

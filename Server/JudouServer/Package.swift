@@ -2,13 +2,13 @@
 
 import PackageDescription
 
-// ServerName
-let kServerName: String = "Judou"
+// ProjectName
+private let kProjectName: String = "Judou"
 
 let package = Package(
-	name: kServerName,
+	name: kProjectName,
 	products: [
-		.executable(name: kServerName, targets: [kServerName])
+		.executable(name: kProjectName, targets: [kProjectName])
 	],
 	dependencies: [
 		.package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", from: "3.0.0"),
@@ -16,8 +16,6 @@ let package = Package(
         .package(url: "https://github.com/PerfectlySoft/Perfect-Logger.git", from: "3.0.0"),
 	],
 	targets: [
-		.target(name: kServerName, dependencies: ["PerfectHTTPServer", "PerfectMySQL", "PerfectLogger"])
+		.target(name: kProjectName, dependencies: ["PerfectHTTPServer", "PerfectMySQL", "PerfectLogger"])
 	]
 )
-
-

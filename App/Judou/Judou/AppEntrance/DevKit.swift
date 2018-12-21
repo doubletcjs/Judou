@@ -11,6 +11,7 @@ import UIKit
 let kLoginUserID = "kLoginUserID"
 let APP_ID = ""
 let APP_URL = "https://itunes.apple.com/cn/app/id\(APP_ID)?mt=8"
+let kWebImageOptions: YYWebImageOptions = YYWebImageOptions.init(rawValue: YYWebImageOptions.allowInvalidSSLCertificates.rawValue | YYWebImageOptions.allowBackgroundTask.rawValue | YYWebImageOptions.progressiveBlur.rawValue | YYWebImageOptions.setImageWithFadeAnimation.rawValue)
 
 private func JSScreenScale() -> CGFloat {
     return UIScreen.main.scale
@@ -131,13 +132,23 @@ func functionHUD(_ text: String!, inView: UIView?, hideAfterDelay: CGFloat) -> V
     
     let hud: MBProgressHUD = MBProgressHUD.showAdded(to: view, animated: true)
     hud.mode = .text
-    hud.labelText = text
+    hud.detailsLabelText = text
+    hud.detailsLabelFont = kBaseFont(16)
     
     hud.hide(true, afterDelay: TimeInterval(afterDelay))
 }
 
 func showTextHUD(_ text: String!, inView: UIView?, hideAfterDelay: CGFloat) -> Void {
     functionHUD(text, inView: inView, hideAfterDelay: hideAfterDelay)
+}
+
+func indicatorTextHUD(_ tip: String) -> MBProgressHUD {
+    let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+    if tip.count > 1 {
+        hud.labelText = tip
+    }
+    
+    return hud
 }
 // MARK: - 定制字符串
 func attributedString(_ string: String, with font: UIFont, withFontColor fontColor: UIColor, with textAlignment: NSTextAlignment, with lineBreakMode: NSLineBreakMode, withLineSpace lineSpace: CGFloat) -> NSMutableAttributedString? {

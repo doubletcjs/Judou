@@ -17,8 +17,7 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
         // Do any additional setup after loading the view.
         self.title = "选择标签"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.labelCloseAction))
-        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.labelCloseAction)) 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_add"), style: .plain, target: self, action: #selector(self.createLabelAction))
         
         let flowLayout = UICollectionViewFlowLayout.init()
@@ -57,10 +56,10 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
         let cellWidth: CGFloat = (self.view.bounds.size.width-CGFloat(2*18)-CGFloat(3*16))/CGFloat(4)
         
         let imageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: cellWidth, height: cellWidth)~)
-        imageView.sd_setImage(with: URL.init(string: ""),
-                              placeholderImage: nil,
-                              options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                              completed: nil)
+        imageView.yy_setImage(with: URL.init(string: ""),
+                              placeholder: nil,
+                              options: kWebImageOptions,
+                              completion: nil)
         imageView.tag = 10
         cell.addSubview(imageView)
         

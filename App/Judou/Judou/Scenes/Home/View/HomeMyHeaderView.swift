@@ -1,5 +1,5 @@
 //
-//  HomePersonalHeaderView.swift
+//  HomeMyHeaderView.swift
 //  Judou
 //
 //  Created by 4work on 2018/12/11.
@@ -11,7 +11,7 @@ import UIKit
 typealias homePageTapBlock = () -> Void
 typealias itemTapBlock = (_ index: Int) -> Void
 
-class HomePersonalHeaderView: UIView {
+class HomeMyHeaderView: UIView {
     var homePageTapHandle: homePageTapBlock?
     var itemTapHandle: itemTapBlock?
     private var imageView: UIImageView!
@@ -26,15 +26,16 @@ class HomePersonalHeaderView: UIView {
         self.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(self.homePageTapAction)))
         
         //头像
-        imageView = UIImageView.init(frame: CGRect.init(x: 20, y: 30, width: 64, height: 64)~)
+        imageView = UIImageView.init(frame: CGRect.init(x: 20, y: 30, width: 54, height: 54)~)
         imageView.layer.cornerRadius = imageView.frame.size.height/2
         imageView.layer.masksToBounds = true
         imageView.clipsToBounds = true
         self.addSubview(imageView)
-        imageView.sd_setImage(with: URL.init(string: ""),
-                              placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                              options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                              completed: nil)
+        
+        imageView.yy_setImage(with: URL.init(string: ""),
+                              placeholder: UIImage.init(named: "topic_default_avatar"),
+                              options: kWebImageOptions,
+                              completion: nil)
         
         let baseX = imageView.frame.maxX+20
         let maxW = frame.size.width-(baseX+20)
@@ -72,8 +73,7 @@ class HomePersonalHeaderView: UIView {
         let itemY: CGFloat = tipLabel.frame.maxY+44
         
         for idx in 0...items.count-1 {
-            let button = UIButton.init(frame: CGRect.init(x: (itemW+lineW)*CGFloat(idx), y: itemY, width: itemW, height: itemH)~)
-            button.backgroundColor = .white
+            let button = UIButton.init(frame: CGRect.init(x: (itemW+lineW)*CGFloat(idx), y: itemY, width: itemW, height: itemH)~) 
             button.tag = 10+idx
             self.addSubview(button)
             button.addTarget(self, action: #selector(self.itemTapAction(_:)), for: .touchUpInside)
@@ -115,6 +115,9 @@ class HomePersonalHeaderView: UIView {
         rect.size.height = tipLabel.frame.maxY+44+54+12
         self.frame = rect
         
+        let coverButton = UIButton.init(frame: CGRect.init(x: 0, y: imageView.frame.maxY+16, width: self.bounds.size.width, height: self.bounds.size.height-(imageView.frame.maxY+16))~)
+        self.insertSubview(coverButton, belowSubview: imageView)
+        
         self.refreshUserInfo()
     }
     
@@ -124,19 +127,19 @@ class HomePersonalHeaderView: UIView {
     // MARK: - 刷新用户信息
     func refreshUserInfo() -> Void {
         if AccountManager.accountLogin() == true {
-            UserModel.fetchUser { [weak self] (userModel) in
-                self?.imageView.sd_setImage(with: URL.init(string: userModel.portrait),
-                                            placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                                            options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                                            completed: nil)
-                self?.nameLabel.text = userModel.nickname
-                self?.tipLabel.text = "点击查看个人主页"
-            } 
+            let userModel = UserModel.fetchUser()
+            
+            imageView.yy_setImage(with: URL.init(string: userModel.portrait),
+                                  placeholder: UIImage.init(named: "topic_default_avatar"),
+                                  options: kWebImageOptions,
+                                  completion: nil)
+            nameLabel.text = userModel.nickname
+            tipLabel.text = "点击查看个人主页"
         } else {
-            imageView.sd_setImage(with: URL.init(string: ""),
-                                  placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                                  options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                                  completed: nil)
+            imageView.yy_setImage(with: URL.init(string: ""),
+                                  placeholder: UIImage.init(named: "topic_default_avatar"),
+                                  options: kWebImageOptions,
+                                  completion: nil)
             nameLabel.text = "点击头像登录"
             tipLabel.text = "登录句读收藏喜欢的句子"
             

@@ -10,7 +10,7 @@ import UIKit
 
 class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITableViewDataSource {
     private var tableView: UITableView!
-    private var personalHeader: HomePersonalHeaderView!
+    private var personalHeader: HomeMyHeaderView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +34,11 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
             self.view.addSubview(statusBarView)
         }
         
-        personalHeader = HomePersonalHeaderView.init(frame: CGRect.init(x: 0, y: 0, width: self.view.bounds.size.width, height: 0)~)
+        personalHeader = HomeMyHeaderView.init(frame: CGRect.init(x: 0, y: 0, width: self.view.bounds.size.width, height: 0)~)
         tableView.tableHeaderView = personalHeader
         personalHeader.homePageTapHandle = { [weak self] () -> Void in
             if AccountManager.accountLogin() == true {
-                let postVC = MyPageViewController()
+                let postVC = MyPageViewController() 
                 postVC.hidesBottomBarWhenPushed = true
                 postVC.title = "我的主页"
                 self?.navigationController?.pushViewController(postVC, animated: true)
@@ -66,6 +66,16 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
                 self?.publicLoginAction()
             }
         }
+        
+        let tempView = UIView.init(frame: CGRect.init(x: 0, y: -kScreenHeight(), width: tableView.bounds.size.width, height: kScreenHeight())~)
+        tempView.backgroundColor = .white
+        tableView.insertSubview(tempView, at: 0)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        personalHeader.refreshUserInfo()
     }
     // MARK: - UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

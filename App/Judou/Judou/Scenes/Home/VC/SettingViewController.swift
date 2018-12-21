@@ -42,8 +42,8 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
     // MARK: - 缓存
     private func getCacheSize() -> Void {
         DispatchQueue.global().async {
-            let totalCost = SDImageCache.shared().getSize()
-            self.cacheSize = Double(totalCost)/1000.0/1000.0
+            let totalCost = YYImageCache.shared().diskCache.totalCost()
+            self.cacheSize = round(Double(totalCost)/(1024.0*1024.0)*100.0)/100.0
             DispatchQueue.main.async {
                 self.cacheLabel.text = "\(String(format: "%.2f", self.cacheSize)) M"
                 self.tableView.reloadData()
@@ -200,10 +200,10 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
                     })
                     
                     let clean: UIAlertAction = UIAlertAction.init(title: "确定", style: .default, handler: { [weak self] (action: UIAlertAction?) in
-                        let hud: MBProgressHUD = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)
+                        let hud = indicatorTextHUD("正在退出...")
                         
-                        SDImageCache.shared().clearMemory()
-                        SDImageCache.shared().clearDisk(onCompletion: nil)
+                        YYImageCache.shared().memoryCache.removeAllObjects()
+                        YYImageCache.shared().diskCache.removeAllObjects()
                         
                         DispatchQueueMainAsyncAfter(deadline: .now()+0.6, target: self, execute: {
                             self?.getCacheSize()
@@ -245,8 +245,8 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
                 })
                 
                 let clean: UIAlertAction = UIAlertAction.init(title: "确定", style: .default, handler: { [weak self] (action: UIAlertAction?) in
-                    let hud: MBProgressHUD = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)
-                    hud.labelText = "正在退出..."
+                    let hud = indicatorTextHUD("正在退出...")
+                    AccountManager.logout()
                     
                     DispatchQueueMainAsyncAfter(deadline: .now()+0.6, target: self, execute: {
                         hud.hide(false)

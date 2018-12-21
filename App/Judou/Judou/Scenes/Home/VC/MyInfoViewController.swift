@@ -29,10 +29,10 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         tableView.isHidden = true
         
-        let hud: MBProgressHUD = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)
-        UserModel.fetchUser { [weak self] (userModel) in
+        let hud = indicatorTextHUD("")
+        UserModel.fetchNewestUser { [weak self] () -> Void in
             self?.tableView.isHidden = false
-            self?.userInfoModel = userModel
+            self?.userInfoModel = UserModel.fetchUser()
             self?.tableView.reloadData()
             
             hud.hide(true)
@@ -42,7 +42,36 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     }
     // MARK: - 保存
     @objc private func saveInfoAction() -> Void {
+        let originalUserModel = UserModel.fetchUser()
+        var params: [String: String] = [:]
+        params["userId"] = userInfoModel.userId
         
+        if originalUserModel.portrait != userInfoModel.portrait {
+            params["portrait"] = userInfoModel.portrait
+        }
+        
+        if originalUserModel.nickname != userInfoModel.nickname {
+            params["nickname"] = userInfoModel.nickname
+        }
+        
+        if originalUserModel.gender != userInfoModel.gender {
+            params["gender"] = "\(userInfoModel.gender)"
+        }
+        
+        if originalUserModel.birthday != userInfoModel.birthday {
+            params["birthday"] = userInfoModel.birthday
+        }
+   
+        if params.keys.count > 1 {
+            Networking.editUserInfo(params) { [weak self] (isSuccessful, error) in
+                if isSuccessful == true {
+                    showTextHUD("修改成功", inView: nil, hideAfterDelay: 1.5)
+                    self!.navigationController?.popViewController(animated: true)
+                } else {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
     }
     // MARK: - UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -86,7 +115,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         
         let cellHeight: CGFloat = 50
         let cellSpace: CGFloat = 34
-        let cellTextColor = kRGBColor(red: 211, green: 212, blue: 212, alpha: 1)
+        let cellTextColor = UIColor.lightGray
         let cellTextFont = kBaseFont(15)
         var cellTag = 10
         
@@ -102,10 +131,10 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             imageView.tag = cellTag
             cellTag += 1
             cell?.addSubview(imageView)
-            imageView.sd_setImage(with: URL.init(string: userInfoModel.portrait),
-                                  placeholderImage: UIImage.init(named: "topic_default_avatar"),
-                                  options: SDWebImageOptions.init(rawValue: SDWebImageOptions.allowInvalidSSLCertificates.rawValue),
-                                  completed: nil)
+            imageView.yy_setImage(with: URL.init(string: userInfoModel.portrait),
+                                  placeholder: UIImage.init(named: "topic_default_avatar"),
+                                  options: kWebImageOptions,
+                                  completion: nil)
             
             break
         case 1:
@@ -191,6 +220,16 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             
             break
         case 1:
+            let nameEditVC = NameEditViewController()
+            nameEditVC.currentNickName = userInfoModel.nickname
+            nameEditVC.changeNameHandle = { [weak self] (name) -> Void in
+                if name != self?.userInfoModel.nickname {
+                    self?.userInfoModel.nickname = name
+                    self?.tableView.reloadRows(at: [IndexPath.init(row: 1, section: 0)], with: .none)
+                }
+            }
+            self.navigationController?.pushViewController(nameEditVC, animated: true)
+    
             break
         case 2:
             let actionSheet: JSActionSheet = JSActionSheet.init(title: nil, cancelTitle: "取消", otherTitles: ["男", "女"])
@@ -202,25 +241,23 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             actionSheet.dismiss(forCompletionHandle: { [weak self] (index, isCancel) in
                 if isCancel == false && self?.userInfoModel!.gender != index+1 {
                     DispatchQueueMainAsyncAfter(deadline: .now(), target: self, execute: {
-                        let hud: MBProgressHUD = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)
-                        
-                        Networking.editUserInfo(["gender": index+1], completionHandler: { [weak self] (isSuccessful, aError) in
-                            if self != nil {
-                                if isSuccessful == true {
-                                    hud.hide(true)
-                                    self?.userInfoModel?.gender = index+1
-                                    self?.tableView.reloadRows(at: [indexPath], with: .none)
-                                } else {
-                                    hud.hide(false)
-                                    showTextHUD(aError!.localizedDescription, inView: nil, hideAfterDelay: 1.8)
-                                }
-                            }
-                        })
+                        self?.userInfoModel?.gender = index+1
+                        self?.tableView.reloadRows(at: [indexPath], with: .none)
                     })
                 }
             })
             break
-        case 3: 
+        case 3:
+            let datePickerVC = DatePickerViewController()
+            datePickerVC.currentDate = NSDate.stringToDate(dateString: userInfoModel.birthday, format: "yyyy-MM-dd")
+            datePickerVC.dateSelectHandle = { [weak self] (date) -> Void in
+                self?.userInfoModel.birthday = NSDate.dateToString(date: date, format: "yyyy-MM-dd")!
+                self?.tableView.reloadRows(at: [IndexPath.init(row: 3, section: 0)], with: .none)
+            }
+            
+            let popupController = STPopupController.init(rootViewController: datePickerVC)
+            popupController.style = .bottomSheet
+            popupController.present(in: self)
             break
         default:
             break

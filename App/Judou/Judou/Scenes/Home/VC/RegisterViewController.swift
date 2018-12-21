@@ -131,6 +131,8 @@ class RegisterViewController: BaseShowBarViewController {
             
             return
         }
+        
+        
     }
     // MARK: - 限制密码长度
     @objc private func textFieldValueChanged(_ textField: UITextField) -> Void {

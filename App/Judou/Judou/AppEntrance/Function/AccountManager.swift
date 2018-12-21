@@ -8,7 +8,7 @@
 
 import UIKit
 
-//表名 t_judouaccount
+//表名 account_table
 
 class AccountManager: NSObject {
     class func accountLogin() -> Bool {
@@ -17,6 +17,18 @@ class AccountManager: NSObject {
         } else {
             return false
         }
+    }
+    
+    class func login(_ userModel: UserModel) -> Void {
+        UserDefaults.standard.set(userModel.userId, forKey: kLoginUserID)
+        UserDefaults.standard.synchronize()
+        
+        UserModel.recordUserInfo(userModel)
+    }
+    
+    class func logout() -> Void {
+        UserDefaults.standard.set(nil, forKey: kLoginUserID)
+        UserDefaults.standard.synchronize()
     }
 }
 
@@ -44,7 +56,7 @@ class UserModel: BaseModel {
     /**
      *    手机号码
      */
-    @objc var phone: String = ""
+    @objc var mobile: String = ""
     /**
      *    创建日期 yyyy-MM-dd
      */
@@ -63,52 +75,45 @@ class UserModel: BaseModel {
         return "userId"
     }
     // MARK: - 获取当前登录用户
-    class func fetchUser(_ completionHandler: @escaping (_ userModel: UserModel) -> Void) -> Void {
-        if UserDefaults.standard.object(forKey: kLoginUserID) != nil {
+    class func fetchUser() -> UserModel {
+        if AccountManager.accountLogin() == true {
             let userId = UserDefaults.standard.object(forKey: kLoginUserID) as! String
-            if kAppdelegate.networkReachable == true {
-                Networking.requestUserInfo(userId) { (aUserModel, aError) in
-                    if aUserModel == nil {
-                        let helper = UserModel.getUsingLKDBHelper()
-                        let userModel: UserModel = helper.searchSingle(UserModel.self, where: ["userId": userId], orderBy: nil) as! UserModel
-                        
-                        DispatchQueue.main.async {
-                            completionHandler(userModel)
-                        }
-                    } else {
-                        UserModel.recordUserInfo(aUserModel!)
-                        
-                        DispatchQueue.main.async {
-                            completionHandler(aUserModel!)
-                        }
-                    }
-                }
+            
+            let helper = UserModel.getUsingLKDBHelper()
+            let userModel: UserModel? = helper.searchSingle(UserModel.self, where: ["userId": userId], orderBy: nil) as? UserModel
+            
+            if userModel == nil {
+                return UserModel()
             } else {
-                let helper = UserModel.getUsingLKDBHelper()
-                let userModel: UserModel? = helper.searchSingle(UserModel.self, where: ["userId": userId], orderBy: nil) as? UserModel
-                
-                DispatchQueue.main.async {
-                    if userModel == nil {
-                        completionHandler(UserModel())
-                    } else {
-                        completionHandler(userModel!)
-                    }
-                }
+                return userModel!
             }
         } else {
-            DispatchQueue.main.async {
-                completionHandler(UserModel())
+            return UserModel()
+        }
+    }
+    
+    class func fetchNewestUser(_ completionHandler: @escaping () -> Void) -> Void {
+        let userId = UserDefaults.standard.object(forKey: kLoginUserID) as! String
+        Networking.requestUserInfo(userId) { (aUserModel, aError) in
+            if aUserModel == nil {
+                DispatchQueue.main.async {
+                    completionHandler()
+                }
+            } else {
+                UserModel.recordUserInfo(aUserModel!)
+                
+                DispatchQueue.main.async {
+                    completionHandler()
+                }
             }
         }
     }
     // MARK: - 缓存用户信息
     class func recordUserInfo(_ newUserModel: UserModel) -> Void {
         let helper = UserModel.getUsingLKDBHelper()
-        let userModel: UserModel? = helper.searchSingle(UserModel.self, where: ["userId": UserDefaults.standard.object(forKey: kLoginUserID)], orderBy: nil) as? UserModel
+        let userModel: UserModel? = helper.searchSingle(UserModel.self, where: ["userId": newUserModel.userId], orderBy: nil) as? UserModel
         
         if userModel == nil {
-            
-        } else {
             helper.insert(toDB: newUserModel) { (isSuccessful) in
                 if isSuccessful == true {
                     Log("缓存用户信息成功")
@@ -116,6 +121,9 @@ class UserModel: BaseModel {
                     Log("缓存用户信息失败")
                 }
             }
+        } else {
+            helper.update(toDB: newUserModel, where: ["userId": newUserModel.userId])
+            Log("更新缓存用户信息成功")
         }
     }
 }
