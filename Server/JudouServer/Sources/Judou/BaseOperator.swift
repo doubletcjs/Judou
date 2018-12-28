@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PerfectLogger
 import PerfectMySQL
 
 private let dataBaseName = "JUDOU"
@@ -43,11 +42,11 @@ class SQLConnent {
         let connected = connect.connect(host: "\(host)", user: user, password: password)
         guard connected else {
             // 验证一下连接是否成功
-            LogFile.error(connect.errorMessage())
+            Utils.logError("连接数据库", "失败：\(connect.errorMessage())")
             return
         }
         
-        LogFile.info("数据库连接成功")
+        Utils.logError("连接数据库", "成功")
     }
     
     // MARK: - 选择数据库Scheme
@@ -56,11 +55,11 @@ class SQLConnent {
     private func selectDataBase(name: String) {
         // 选择具体的数据Schema
         guard connect.selectDatabase(named: name) else {
-            LogFile.error("数据库选择失败。错误代码：\(connect.errorCode()) 错误解释：\(connect.errorMessage())")
+            Utils.logError("连接Schema", "错误代码：\(connect.errorCode()) 错误解释：\(connect.errorMessage())") 
             return
         }
-         
-        LogFile.info("连接Schema：\(name)成功")
+        
+        Utils.logError("连接Schema：", "\(name)成功")
     }
 }
 // MARK: - 操作数据库的基类
@@ -71,11 +70,5 @@ class BaseOperator {
         }
     }
     
-    var responseJson: String! = ""
-    
-    func logError(_ functionName: String, _ msg: Any) -> Void {
-        let dict: [String: Any] = ["日期": Utils.dateToString(date: Date(), format: "yyyy.MM.dd HH:mm:ss:SSS"), "方法名": "\(functionName)", "错误信息": "\(msg)"]
-        
-        LogFile.info("\(Utils.objectToJson(dict))")
-    }
+    var responseJson: String! = "" 
 }

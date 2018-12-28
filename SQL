@@ -1,0 +1,161 @@
+#用户表
+
+CREATE TABLE `account_table` (
+`userId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`nickname` varchar(50) NOT NULL DEFAULT '',
+`portrait` varchar(255) DEFAULT '',
+`gender` int(5) NOT NULL DEFAULT '0',
+`birthday` date NOT NULL,
+`mobile` varchar(30) NOT NULL DEFAULT '',
+`date` datetime NOT NULL,
+`status` int(5) NOT NULL DEFAULT '0',
+`level` int(5) NOT NULL DEFAULT '1',
+`password` varchar(256) CHARACTER SET latin1 NOT NULL DEFAULT '',
+PRIMARY KEY (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#帖子表
+
+CREATE TABLE `post_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`isPrivate` blob NOT NULL,
+`postDate` datetime NOT NULL,
+`image` varchar(255) DEFAULT '',
+`content` mediumtext NOT NULL,
+`labelId` int(20) unsigned NOT NULL,
+`famousId` int(20) unsigned NOT NULL,
+`bookId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#评论表
+
+CREATE TABLE `comment_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`content` mediumtext NOT NULL,
+`authorId` int(20) unsigned NOT NULL,
+`replyId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#收藏夹表
+
+CREATE TABLE `collect_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`name` varchar(20) NOT NULL DEFAULT '',
+`cover` varchar(255) DEFAULT '',
+`authorId` int(20) unsigned NOT NULL,
+`isPrivate` blob NOT NULL,
+`introduction` varchar(512) NOT NULL DEFAULT '',
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#标签表
+
+CREATE TABLE `label_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`title` varchar(20) NOT NULL DEFAULT '',
+`cover` varchar(255) DEFAULT '',
+`authorId` int(20) unsigned NOT NULL,
+`status` int(5) NOT NULL DEFAULT '0',
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#名人表
+
+CREATE TABLE `famous_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`introduction` varchar(512) NOT NULL DEFAULT '',
+`name` varchar(20) NOT NULL DEFAULT '',
+`cover` varchar(255) DEFAULT '',
+`status` int(5) NOT NULL DEFAULT '0',
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#书籍表
+
+CREATE TABLE `book_table` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`introduction` varchar(512) NOT NULL DEFAULT '',
+`name` varchar(20) NOT NULL DEFAULT '',
+`cover` varchar(255) DEFAULT '',
+`status` int(5) NOT NULL DEFAULT '0',
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#举报用户表
+
+CREATE TABLE `report_user` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`userId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#举报帖子表
+
+CREATE TABLE `report_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`postId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#举报评论表
+
+CREATE TABLE `report_comment` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`commentId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#收藏帖子表
+
+CREATE TABLE `collect_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`collectId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#点赞帖子表
+
+CREATE TABLE `praise_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`authorId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#帖子标签表
+
+CREATE TABLE `label_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`labelId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#帖子名人表
+
+CREATE TABLE `famous_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`famousId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#帖子出处(书籍)表
+
+CREATE TABLE `book_post` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`postId` int(20) unsigned NOT NULL,
+`bookId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+

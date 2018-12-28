@@ -41,7 +41,7 @@ class ChannelModel: BaseModel {
     // MARK: - 默认分类列表
     class func defaultChannels() -> Array<ChannelModel> {
         var array: [ChannelModel] = []
-        let channels: [String] = ["广场", "原创", "随笔", "话题", "情感", "励志", "毒汤", "英文"]
+        let channels: [String] = ["推荐", "订阅", "广场", "原创", "随笔", "话题", "情感", "励志", "毒汤", "英文"]
         channels.forEach { (channel) in
             let model = ChannelModel()
             model.name = channel

@@ -18,8 +18,12 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
     private var textViewHeight: CGFloat!
     private var baseBottomHeight: CGFloat!
     
-    private var labelModel: LabelModel!
+    private var labelModel: LabelModel! = nil
     private var isPrivate: Bool! = false
+    private var postImageDatas: [Data]! = []
+    
+    private var famousModel: FamousModel! = nil
+    private var bookModel: BookModel! = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +53,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.separatorColor = tableView.separatorColor?.withAlphaComponent(0.4)
+        tableView.separatorColor = kRGBColor(red: 237, green: 238, blue: 238, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         
@@ -317,7 +321,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         if indexPath.section == 0 {
             return textViewHeight+baseBottomHeight
         } else {
-            return 50~
+            return 50
         }
     }
     
@@ -328,7 +332,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
             let addFunctionVC = AddFunctionViewController()
             addFunctionVC.title = tableView.cellForRow(at: indexPath)?.textLabel?.text
             if indexPath.row == 0 {
-                addFunctionVC.selectAuthor = true
+                addFunctionVC.isFamous = true
             }
             
             let nav = UINavigationController.init(rootViewController: addFunctionVC)
@@ -340,13 +344,21 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
     }
     // MARK: - 选择标签
     @objc private func selectLabelAction() -> Void {
+        textView.resignFirstResponder()
+        
         let labelCenterVC = LabelCenterViewController()
+        labelCenterVC.labelSelectHandle = { [weak self] (model) -> Void in
+            self?.labelModel = model
+            self?.tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .none)
+        }
         let nav = UINavigationController.init(rootViewController: labelCenterVC)
         
         self.present(nav, animated: true, completion: nil)
     }
     // MARK: - 是否私密
     @objc private func privateSwitch() -> Void {
+        textView.resignFirstResponder()
+        
         isPrivate = !isPrivate
         tableView.reloadRows(at: [IndexPath.init(row: 0, section: 1)], with: .none)
     }
@@ -355,9 +367,84 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         if isStringEmpty(textView.text) == true && textView.text.count < 6 {
             showTextHUD("至少6个字符～", inView: nil, hideAfterDelay: 1.5)
             return
-        } 
+        }
+        
+        if labelModel == nil {
+            showTextHUD("标签不能为空～", inView: nil, hideAfterDelay: 1.5)
+            return
+        }
+        
+        if currentPage == 0 {
+            if famousModel == nil {
+                showTextHUD("作者不能为空～", inView: nil, hideAfterDelay: 1.5)
+                return
+            }
+        }
         
         textView.resignFirstResponder()
+        
+        func postCreate(_ fileUrl: String, _ hud: MBProgressHUD) -> Void {
+            var params: [String: Any] = ["postDate": NSDate.dateToString(date: Date(), format: "yyyy-MM-dd HH:mm:ss")!,
+                                         "authorId": UserModel.fetchUser().userId,
+                                         "content": textView.text!]
+            
+            if labelModel != nil {
+                params["labelId"] = labelModel.objectId
+            }
+            
+            if isStringEmpty(fileUrl) == false {
+                params["image"] = fileUrl
+            }
+            
+            if currentPage == 0 {
+                if famousModel != nil {
+                    params["famousId"] = famousModel.objectId
+                }
+                
+                if bookModel != nil {
+                    params["bookId"] = bookModel.objectId
+                }
+            } else {
+                params["isPrivate"] = isPrivate
+            }
+            
+            Networking.postCreationRequest(params: params) { [weak self] (isSuccessful, error) in
+                hud.hide(false)
+                
+                if isSuccessful == true {
+                    showTextHUD("发帖成功", inView: nil, hideAfterDelay: 1.5)
+                    self?.postCloseAction()
+                } else {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
+        
+        if postImageDatas.count > 0 {
+            let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+            hud.mode = .determinate
+            
+            Networking.fileUploadFunction(fileDataList: postImageDatas, function: "post", progressHandler: { (progress) in
+                hud.progress = Float(progress!)
+            }) { (fileUrls, error) in
+                if error != nil {
+                    hud.hide(false)
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    let fileUrl: String = fileUrls!.first! as String
+                    if isStringEmpty(fileUrl) == false {
+                        hud.mode = .indeterminate
+                        postCreate(fileUrl, hud)
+                    } else {
+                        hud.hide(false)
+                        showTextHUD("图片地址返回为空～", inView: nil, hideAfterDelay: 1.5)
+                    }
+                }
+            }
+        } else {
+            let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+            postCreate("", hud)
+        }
     }
     // MARK: - 拍摄、拍照
     private func showImageCameraPicker(_ sourceType: UIImagePickerController.SourceType) -> Void {
@@ -423,8 +510,9 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        let image = info[UIImagePickerController.InfoKey.editedImage]
-        imageButton.setImage(image as? UIImage, for: .normal)
+        let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
+        imageButton.setImage(image, for: .normal)
+        postImageDatas.append(image.jpegData(compressionQuality: 0.8)!)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

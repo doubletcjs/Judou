@@ -3,7 +3,7 @@
 //
 
 @import SwiftyFitsize;
-@import Alamofire;
+@import Alamofire; 
 
 #import <Photos/Photos.h>
 
@@ -19,3 +19,4 @@
 #import <MXParallaxHeader/MXParallaxHeader-umbrella.h>
 #import <DZNEmptyDataSet/DZNEmptyDataSet-umbrella.h>
 #import <STPopup/STPopup-umbrella.h>
+#import <MJRefresh/MJRefresh-umbrella.h>

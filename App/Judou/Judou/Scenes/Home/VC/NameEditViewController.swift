@@ -75,6 +75,24 @@ class NameEditViewController: BaseShowBarViewController {
                 showTextHUD("昵称不能带回车或者换行符", inView: nil, hideAfterDelay: 1.5)
                 return
             }
+            
+            range = textField.text!.range(of: "User_")
+            if range != nil && range!.isEmpty == false {
+                if textField.text!.hasPrefix("User_") == true {
+                    let number = textField.text!.replacingOccurrences(of: "User_", with: "")
+                    
+                    func isPurnInt(string: String) -> Bool {
+                        let scan: Scanner = Scanner(string: string)
+                        var val: Int = 0
+                        return scan.scanInt(&val) && scan.isAtEnd
+                    }
+                    
+                    if isPurnInt(string: number) == true {
+                        showTextHUD("昵称不能为默认样式占位符", inView: nil, hideAfterDelay: 1.5)
+                        return
+                    }
+                }
+            }
         }
         
         if changeNameHandle != nil {

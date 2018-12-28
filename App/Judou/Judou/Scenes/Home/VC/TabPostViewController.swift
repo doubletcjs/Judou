@@ -1,33 +1,26 @@
 //
-//  MyPostViewController.swift
+//  TabPostViewController.swift
 //  Judou
 //
-//  Created by 4work on 2018/12/11.
+//  Created by 4work on 2018/12/24.
 //  Copyright © 2018 Sam Cooper Studio. All rights reserved.
 //
 
 import UIKit
 
-class MyPostViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     private var tableView: UITableView!
-    var isMyPost: Bool! = false // false 喜欢的帖子 true 我的帖子
+    private var dataSources: [Any] = []
+    private var currentPage: Int = 0
+    
+    var isHomePage: Bool! = false
     var superFrame: CGRect! = CGRect.zero
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        if superFrame != CGRect.zero { 
-            self.view.frame = superFrame
-        } else {
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
-            if isMyPost == true {
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_add"), style: .plain, target: self, action: #selector(self.goCreatePost))
-            } else { 
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_search"), style: .plain, target: self, action: #selector(self.goSearchPost))
-            }
-        }
+        self.view.frame = superFrame
         
         tableView = UITableView.init(frame: self.view.bounds, style: .grouped)
         tableView.delegate = self
@@ -43,48 +36,33 @@ class MyPostViewController: BaseViewController, UITableViewDelegate, UITableView
         tableView.emptyDataSetDelegate = self
         
         self.view.addSubview(tableView)
-        
-        if superFrame != CGRect.zero {
-            if #available(iOS 11.0, *) {
-                if UIApplication.shared.keyWindow!.safeAreaInsets.bottom > 0 && UIApplication.shared.keyWindow!.safeAreaInsets.bottom != tableView.contentInset.bottom {
-                    var contentInset: UIEdgeInsets = tableView.contentInset
-                    contentInset.bottom = tableView.contentInset.bottom+UIApplication.shared.keyWindow!.safeAreaInsets.bottom
-                    tableView.contentInset = contentInset
-                }
-            }
-        }
-        
+        tableView.fixAreaInsets()
     }
-    // MARK: - 搜索
-    @objc private func goSearchPost() -> Void {
-        let searchPostVC = PostSearchViewController()
-        searchPostVC.hidesBottomBarWhenPushed = true
-        
-        self.navigationController?.pushViewController(searchPostVC, animated: true)
+    // MARK: - 加载数据
+    @objc private func refreshPostData() -> Void {
+        currentPage = 0
+        self.requestPostData()
     }
-    // MARK: - 发布
-    @objc private func goCreatePost() -> Void {
-        let createPostVC = PostCreateViewController()
-        let nav = UINavigationController.init(rootViewController: createPostVC)
+    
+    @objc private func loadMorePostData() -> Void {
+        currentPage += 1
+        self.requestPostData()
+    }
+    
+    @objc private func requestPostData() -> Void {
         
-        self.present(nav, animated: true, completion: nil)
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
-        if isMyPost == true {
+        if isHomePage == true {
             return UIImage.init(named: "icon_placeholder_sentence")
         }
         
-        return UIImage.init(named: "icon_placeholder_favourite")
+        return UIImage.init(named: "icon_placeholder_default")
     }
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        var tip = "你还没有发布过句子"
-        if isMyPost == false {
-            tip = "你还没有喜欢的句子"
-        }
-        
-        let attributedString = NSMutableAttributedString.init(string: tip)
+        let attributedString = NSMutableAttributedString.init(string: "这里什么都没有哦")
         let range = NSRange.init(location: 0, length: attributedString.string.count)
         attributedString.addAttributes([.font : kBaseFont(14)], range: range)
         attributedString.addAttributes([.foregroundColor : kRGBColor(red: 187, green: 188, blue: 189, alpha: 1)], range: range)
@@ -93,7 +71,10 @@ class MyPostViewController: BaseViewController, UITableViewDelegate, UITableView
     }
     
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
-        return -(tableView.bounds.size.height/4)
+        if isHomePage == true {
+            return -(tableView.bounds.size.height/4)
+        }
+        return -(tableView.bounds.size.height/6)
     }
     
     func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
@@ -121,7 +102,7 @@ class MyPostViewController: BaseViewController, UITableViewDelegate, UITableView
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
+        return dataSources.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -141,16 +122,51 @@ class MyPostViewController: BaseViewController, UITableViewDelegate, UITableView
         }
         
         cell?.selectionStyle = .none
-        cell?.createPostBaseCell(PostModel())
+        
+        let model = dataSources[indexPath.section] as! PostModel
+        cell?.createPostBaseCell(model)
+        
+        cell?.postAuthorHandle = { [weak self] () -> Void in
+            Log("author")
+        }
+        
+        cell?.postFamousHandle = { [weak self] () -> Void in
+            Log("famous")
+        }
+        
+        cell?.postPraiseHandle = { [weak self] () -> Void in
+            Log("praise")
+        }
+        
+        cell?.postCommentHandle = { [weak self] () -> Void in
+            let postDetailVC = PostDetailViewController()
+            postDetailVC.postModel = model
+            self?.navigationController?.pushViewController(postDetailVC, animated: true)
+        }
+        
+        cell?.postCollectionHandle = { [weak self] () -> Void in
+            Log("collection")
+        }
+        
+        cell?.postShareHandle = { [weak self] () -> Void in
+            Log("share")
+        }
         
         return cell!
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return PostBaseCell.getPostBaseCellHeight(PostModel(), false)
+        let model = dataSources[indexPath.section] as! PostModel
+        
+        return PostBaseCell.getPostBaseCellHeight(model, false)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let model = dataSources[indexPath.section] as! PostModel
+        
+        let postDetailVC = PostDetailViewController()
+        postDetailVC.postModel = model
+        self.navigationController?.pushViewController(postDetailVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }

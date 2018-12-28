@@ -12,6 +12,7 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
     private var tableView: UITableView!
     private var textField: UITextField!
     private var coverButton: UIButton!
+    private var coverImage: UIImage!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +32,37 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         
         self.view.addSubview(tableView)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleKeyboardDidHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    // MARK: - 键盘显示
+    @objc private func handleKeyboardWillShow(_ notification: Notification) -> Void {
+        let userInfo: NSDictionary = notification.userInfo! as NSDictionary
+        let value = userInfo.object(forKey: UIResponder.keyboardFrameEndUserInfoKey)
+        let keyboardRec = (value as AnyObject).cgRectValue
+        
+        tableView.isScrollEnabled = false
+        let height: CGFloat = keyboardRec!.size.height
+        
+        UITextView.animate(withDuration: UIApplication.shared.statusBarOrientationAnimationDuration, animations: {
+            var frame = self.tableView.frame
+            frame.size.height = self.view.bounds.size.height-height
+            self.tableView.frame = frame
+        })
+    }
+    
+    @objc private func handleKeyboardDidShow() -> Void {
+        tableView.isScrollEnabled = true
+    }
+    // MARK: - 键盘隐藏
+    @objc private func handleKeyboardDidHide(_ noti: Notification) -> Void {
+        UITextView.animate(withDuration: UIApplication.shared.statusBarOrientationAnimationDuration, animations: {
+            var frame = self.tableView.frame
+            frame.size.height = self.view.bounds.size.height
+            self.tableView.frame = frame
+        })
     }
     // MARK: - UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -156,14 +188,62 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
             return
         }
         
-        if coverButton.currentImage == UIImage.init(named: "icon_post_tip") {
+        if coverImage == nil {
             showTextHUD("尚未添加封面", inView: nil, hideAfterDelay: 1.8)
             
             return
         }
+        
+        textField.resignFirstResponder()
+        let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+        hud.mode = .determinate
+        
+        Networking.fileUploadFunction(fileDataList: [coverImage.jpegData(compressionQuality: 0.8)!], function: "label", progressHandler: { (progress) in
+            hud.progress = Float(progress!)
+        }) { [weak self] (fileUrls, error) in
+            if error != nil {
+                hud.hide(false)
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            } else {
+                let fileUrl: String = fileUrls!.first! as String
+                if isStringEmpty(fileUrl) == false {
+                    hud.mode = .indeterminate
+                    createLabelRequest(hud, fileUrl)
+                } else {
+                    hud.hide(false)
+                    showTextHUD("文件地址返回为空～", inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
+        
+        func createLabelRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
+            var status: Int = 0
+            if UserModel.fetchUser().level == 0 {
+                status = 3
+            }
+            
+            Networking.functionCreationRequest(params: ["authorId": UserModel.fetchUser().userId,
+                                                        "title": textField.text!,
+                                                        "cover": coverUrl,
+                                                        "status": status],
+                                               function: "label") { [weak self] (isSuccessful, error) in
+                hud.hide(false)
+                
+                if isSuccessful == true {
+                    if status == 0 {
+                        showTextHUD("创建成功,待管理员审核通过后方可显示", inView: nil, hideAfterDelay: 1.5)
+                    }
+                    self?.labelCloseAction()
+                } else {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
     }
     // MARK: - 关闭
     @objc private func labelCloseAction() -> Void {
+        textField.resignFirstResponder()
+        
         self.dismiss(animated: true, completion: nil)
     }
     // MARK: - 拍摄、拍照
@@ -230,9 +310,10 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        let image = info[UIImagePickerController.InfoKey.editedImage]
-        coverButton.setImage(image as? UIImage, for: .normal)
+        let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
+        coverButton.setImage(image, for: .normal)
         coverButton.viewWithTag(100)?.removeFromSuperview()
+        coverImage = image
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

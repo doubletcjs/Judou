@@ -23,8 +23,8 @@ import PerfectHTTPServer
 import PerfectLogger
 
 //MARK: - Log location
-let logPath = "./files/log"
-let logDir = Dir(logPath)
+private let logPath = "./files/log"
+private let logDir = Dir(logPath)
 if !logDir.exists {
     try Dir(logPath).create()
 }
@@ -32,13 +32,14 @@ if !logDir.exists {
 LogFile.location = "\(logPath)/Server.log"
 
 // MARK: - Configure routes
-var routes = BasicRoutes().routes
+private var routes = BasicRoutes().routes
 
 // MARK: - Configure server
 let server = HTTPServer()
 server.addRoutes(routes)
-server.serverPort = 8181
-server.serverName = "localhost"
+server.serverPort = kServerPort
+server.serverName = kServerName
+server.documentRoot = kServerDocumentRoot
 server.setResponseFilters([
     (try PerfectHTTPServer.HTTPFilter.contentCompression(data: [:]), HTTPFilterPriority.high)])
 

@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("网络不可用")
             }
         }
-        net.startListening()
+        net.startListening() 
         
         return true
     }

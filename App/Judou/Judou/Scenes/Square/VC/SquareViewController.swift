@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SquareViewController: BaseShowBarViewController, SGPageTitleViewDelegate, SGPageContentScrollViewDelegate {
+class SquareViewController: BaseHideBarViewController, SGPageTitleViewDelegate, SGPageContentScrollViewDelegate {
     private var createButton: UIButton!
     private var pageTitleView: SGPageTitleView!
     private var pageContentScrollView: SGPageContentScrollView!
@@ -53,16 +53,16 @@ class SquareViewController: BaseShowBarViewController, SGPageTitleViewDelegate, 
         createButton.center = CGPoint.init(x: kScreenWidth()-createButton.frame.size.width/2-14, y: kScreenHeight()-createButton.frame.size.height/2-kTabBarHeight()-16)~
         createButton.addTarget(self, action: #selector(self.goCreatePost), for: .touchUpInside)
         
-        let searchButton = UIButton.init(type: .system)
-        searchButton.frame = CGRect.init(x: 0, y: 0, width: kScreenWidth()-20*2, height: 32)~
+        let searchButton = UIButton.init(type: .custom)
+        searchButton.frame = CGRect.init(x: 20, y: kStatusBarHeight()+6, width: kScreenWidth()-20*2, height: 32)~
         searchButton.layer.cornerRadius = searchButton.frame.size.height/2
         searchButton.layer.masksToBounds = true
         searchButton.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         searchButton.setTitle(" 搜索喜欢的内容", for: .normal)
         searchButton.titleLabel?.font = kBaseFont(15)
-        searchButton.setTitleColor(kRGBColor(red: 209, green: 210, blue: 211, alpha: 1), for: .normal)
+        searchButton.setTitleColor(kRGBColor(red: 209, green: 210, blue: 211, alpha: 1), for: .normal) 
         searchButton.setImage(UIImage.init(named: "icon_search"), for: .normal)
-        self.navigationItem.titleView = searchButton
+        self.view.addSubview(searchButton)
         searchButton.addTarget(self, action: #selector(self.goSearchPost), for: .touchUpInside)
         
         self.loadPageTitleView()
@@ -131,7 +131,7 @@ class SquareViewController: BaseShowBarViewController, SGPageTitleViewDelegate, 
         titleViewConfigure.indicatorStyle = SGIndicatorStyleDynamic
         
         titleViewConfigure.indicatorColor = kRGBColor(red: 206, green: 210, blue: 219, alpha: 1)
-        titleViewConfigure.indicatorHeight = 4~
+        titleViewConfigure.indicatorHeight = 4
         titleViewConfigure.indicatorCornerRadius = titleViewConfigure.indicatorHeight/2
         
         titleViewConfigure.titleFont = kBaseFont(17)
@@ -255,17 +255,23 @@ class SquareViewController: BaseShowBarViewController, SGPageTitleViewDelegate, 
     }
     // MARK: - 搜索
     @objc private func goSearchPost() -> Void {
-        let searchPostVC = PostSearchViewController()
-        searchPostVC.hidesBottomBarWhenPushed = true
+        let searchCenterVC = SearchCenterViewController()
+        searchCenterVC.hidesBottomBarWhenPushed = true
         
-        self.navigationController?.pushViewController(searchPostVC, animated: true)
+        self.navigationController?.pushViewController(searchCenterVC, animated: true)
     }
     // MARK: - 发布
     @objc private func goCreatePost() -> Void {
-        let createPostVC = PostCreateViewController()
-        let nav = UINavigationController.init(rootViewController: createPostVC)
-        
-        self.present(nav, animated: true, completion: nil)
+        if AccountManager.accountLogin() == true {
+            let createPostVC = PostCreateViewController()
+            let nav = UINavigationController.init(rootViewController: createPostVC)
+            
+            self.present(nav, animated: true, completion: nil)
+        } else {
+            let loginVC = LoginViewController()
+            let nav = UINavigationController.init(rootViewController: loginVC)
+            self.present(nav, animated: true, completion: nil)
+        }
     }
 
     /*

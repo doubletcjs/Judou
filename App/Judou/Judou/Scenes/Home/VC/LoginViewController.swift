@@ -83,7 +83,7 @@ class LoginViewController: BaseShowBarViewController, UITextFieldDelegate {
         loginButton.titleLabel?.font = kBaseFont(16)
         loginButton.showsTouchWhenHighlighted = true
         scrollView.addSubview(loginButton)
-        loginButton.addTarget(self, action: #selector(self.requestLogin), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(self.loginLogin), for: .touchUpInside)
         
         //注册
         let registerButton = UIButton.init(type: .system)
@@ -106,7 +106,7 @@ class LoginViewController: BaseShowBarViewController, UITextFieldDelegate {
         forgotButton.addTarget(self, action: #selector(self.forgotAction), for: .touchUpInside)
     }
     // MARK: - 登录
-    @objc private func requestLogin() -> Void {
+    @objc private func loginLogin() -> Void {
         if isStringEmpty(phoneTextField.text) == true || phoneTextField.text?.count != 11 {
             let alertView = UIAlertView.init(title: nil, message: "请输入合法的手机号", delegate: nil, cancelButtonTitle: "确定")
             alertView.show()
@@ -115,10 +115,10 @@ class LoginViewController: BaseShowBarViewController, UITextFieldDelegate {
         } 
         
         let hud = indicatorTextHUD("正在登录")
+        
         Networking.loginRequest(mobile: phoneTextField.text!, password: passwdTextField.text!) { (userModel, error) in
             if error != nil {
-                hud.hide(false)
-                
+                hud.hide(false) 
                 showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
             } else {
                 AccountManager.login(userModel!)
@@ -141,7 +141,7 @@ class LoginViewController: BaseShowBarViewController, UITextFieldDelegate {
             if isStringEmpty(phoneTextField.text) == true {
                 phoneTextField.becomeFirstResponder()
             } else {
-                
+                self.loginLogin()
             }
         }
         

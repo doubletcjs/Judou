@@ -26,7 +26,7 @@ class HomeMyHeaderView: UIView {
         self.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(self.homePageTapAction)))
         
         //头像
-        imageView = UIImageView.init(frame: CGRect.init(x: 20, y: 30, width: 54, height: 54)~)
+        imageView = UIImageView.init(frame: CGRect.init(x: 20, y: 30, width: 58, height: 58)~)
         imageView.layer.cornerRadius = imageView.frame.size.height/2
         imageView.layer.masksToBounds = true
         imageView.clipsToBounds = true
@@ -70,10 +70,10 @@ class HomeMyHeaderView: UIView {
         let lineW: CGFloat = 1
         let itemW: CGFloat = (frame.size.width-lineW*CGFloat(items.count-1))/CGFloat(items.count)
         let itemH: CGFloat = 54
-        let itemY: CGFloat = tipLabel.frame.maxY+44
+        let itemY: CGFloat = tipLabel.frame.maxY+40
         
         for idx in 0...items.count-1 {
-            let button = UIButton.init(frame: CGRect.init(x: (itemW+lineW)*CGFloat(idx), y: itemY, width: itemW, height: itemH)~) 
+            let button = UIButton.init(frame: CGRect.init(x: (itemW+lineW)*CGFloat(idx), y: itemY, width: itemW, height: itemH)~)
             button.tag = 10+idx
             self.addSubview(button)
             button.addTarget(self, action: #selector(self.itemTapAction(_:)), for: .touchUpInside)

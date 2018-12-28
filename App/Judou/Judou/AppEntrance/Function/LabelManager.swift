@@ -35,7 +35,4 @@ class LabelModel: BaseModel {
      *     审核状态 0 待审核 1 通过 2 禁用 3 系统创建
      */
     @objc var status: Int = 0
-    /**
-     *     不公开 authorId id用于表关联查询
-     */
 }

@@ -12,7 +12,7 @@ class HomePageHeaderView: UIView {
     var account: UserModel! {
         didSet {
             if account != nil {
-                let loginUserID: String = UserDefaults.standard.object(forKey: kLoginUserID) as! String
+                let loginUserID: String = UserModel.fetchUser().userId
                 if AccountManager.accountLogin() == true && account.userId == loginUserID {
                     button.setTitle("编辑", for: .normal)
                     button.removeTarget(self, action: #selector(self.attentionAccount), for: .touchUpInside)
@@ -155,6 +155,7 @@ class HomePageHeaderView: UIView {
             gender = "她"
         }
         fanVC.title = "\(gender)"+"的粉丝"
+        fanVC.isFan = true
         currentVC.navigationController?.pushViewController(fanVC, animated: true)
     }
     // MARK: - 查看头像

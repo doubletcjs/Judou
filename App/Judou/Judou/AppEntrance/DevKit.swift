@@ -194,3 +194,16 @@ func kBaseFont(_ fontSize: CGFloat) -> UIFont {
     let font = UIFont.init(name: "NotoSansCJKsc-Light", size: fontSize)!
     return font~
 }
+// MAKR: - base64
+func base64Encoding(text: String) -> String {
+    let strData = text.data(using: String.Encoding.utf8)
+    let base64String = strData?.base64EncodedString(options: NSData.Base64EncodingOptions.init(rawValue: 0))
+    
+    return base64String!
+}
+
+func base64Decoding(text: String) -> String {
+    let strData = Data.init(base64Encoded: text, options: Data.Base64DecodingOptions.init(rawValue: 0))!
+    
+    return String.init(data: strData, encoding: String.Encoding.utf8) ?? ""
+}

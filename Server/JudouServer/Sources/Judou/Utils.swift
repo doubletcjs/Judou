@@ -7,6 +7,21 @@
 
 import Foundation
 import PerfectCrypto
+import PerfectLogger
+
+let accounttable = "account_table"
+
+let posttable = "post_table"
+let commenttable = "comment_table"
+
+let labelposttable = "label_post"
+let famousposttable = "famous_post"
+let bookposttable = "book_post"
+
+let labeltable = "label_table"
+let collecttable = "collect_table"
+let famoustable = "famous_table"
+let booktable = "book_table"
 
 private let RequestSuccessCode: String = "1000"
 private let RequestFailureCode: String = "1001"
@@ -14,6 +29,10 @@ private let ResultDataKey = "data"
 private let ResultCodeKey = "code"
 private let ResultMessageKey = "msg"
 private var BaseResponseJson: [String : Any] = [ResultDataKey: [], ResultCodeKey: RequestSuccessCode, ResultMessageKey: ""]
+
+let kServerPort: UInt16 = 8089
+let kServerName = "localhost"
+let kServerDocumentRoot = "/Users/4work/Documents/Judou/Server/JudouServer/WebRoot"
 
 class Utils {
     // MAKR: - 日期格式转换
@@ -71,5 +90,11 @@ class Utils {
         }
         
         return json
+    }
+    // MARK: - 记录错误日记
+    class func logError(_ functionName: String, _ msg: Any) -> Void {
+        let dict: [String: Any] = ["日期": Utils.dateToString(date: Date(), format: "yyyy.MM.dd HH:mm:ss:SSS"), "方法名": "\(functionName)", "信息内容": "\(msg)"]
+        
+        LogFile.info("\(Utils.objectToJson(dict))")
     }
 }

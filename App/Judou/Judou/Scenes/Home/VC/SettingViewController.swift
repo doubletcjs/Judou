@@ -26,7 +26,7 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.separatorColor = tableView.separatorColor?.withAlphaComponent(0.4)
+        tableView.separatorColor = kRGBColor(red: 237, green: 238, blue: 238, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         
@@ -200,7 +200,7 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
                     })
                     
                     let clean: UIAlertAction = UIAlertAction.init(title: "确定", style: .default, handler: { [weak self] (action: UIAlertAction?) in
-                        let hud = indicatorTextHUD("正在退出...")
+                        let hud = indicatorTextHUD("清理缓存...")
                         
                         YYImageCache.shared().memoryCache.removeAllObjects()
                         YYImageCache.shared().diskCache.removeAllObjects()

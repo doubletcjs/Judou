@@ -56,10 +56,31 @@ class PostModel: BaseModel {
      */
     @objc var isCollect: Bool = false
     /**
+     *     是否私密
+     */
+    @objc var isPrivate: Bool = false
+    /**
+     *     标签名称
+     */
+    @objc var labelName: String = ""
+    /**
+     *     标签id
+     */
+    @objc var labelId: String = ""
+    /**
+     *     类型 0 收录 (名人、书籍) 1 原创
+     */
+    @objc var postType: Int = 0
+    /**
      *     作者
      */
     @objc var author: UserModel = UserModel()
     /**
-     *     不公开 labelId authorId id用于表关联查询
-    */
+     *     收录于名人
+     */
+    @objc var famous: FamousModel = FamousModel()
+    /**
+     *     出自书籍
+     */
+    @objc var book: BookModel = BookModel()
 }

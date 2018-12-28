@@ -20,7 +20,7 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.separatorColor = tableView.separatorColor?.withAlphaComponent(0.4)
+        tableView.separatorColor = kRGBColor(red: 237, green: 238, blue: 238, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         tableView.showsVerticalScrollIndicator = false
@@ -49,18 +49,20 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         personalHeader.itemTapHandle = { [weak self] (index) -> Void in
             if AccountManager.accountLogin() == true {
                 if index == 0 {
-                    
+                    let mySubscribe = MySubscribeViewController()
+                    mySubscribe.hidesBottomBarWhenPushed = true
+                    mySubscribe.title = "我的订阅"
+                    self?.navigationController?.pushViewController(mySubscribe, animated: true)
                 } else if index == 1 {
-                    let postVC = MyPostViewController()
-                    postVC.isMyPost = true
+                    let postVC = MyPostViewController() 
                     postVC.hidesBottomBarWhenPushed = true
                     postVC.title = "我的句子"
                     self?.navigationController?.pushViewController(postVC, animated: true)
                 } else if index == 2 {
-                    let praiseVC = MyPostViewController()
-                    praiseVC.hidesBottomBarWhenPushed = true
-                    praiseVC.title = "我的喜欢"
-                    self?.navigationController?.pushViewController(praiseVC, animated: true)
+                    let favoriteVC = MyFavoriteViewController()
+                    favoriteVC.hidesBottomBarWhenPushed = true
+                    favoriteVC.title = "喜欢过的"
+                    self?.navigationController?.pushViewController(favoriteVC, animated: true)
                 }
             } else {
                 self?.publicLoginAction()

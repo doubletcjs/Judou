@@ -12,6 +12,7 @@ target 'Judou' do
         pod 'SGPagingView'
         pod 'MXParallaxHeader'
         pod 'DZNEmptyDataSet'
-        pod 'STPopup'
+        pod 'STPopup' 
+        pod 'MJRefresh'
         pod 'MBProgressHUD', '~> 0.9.2' 
 end

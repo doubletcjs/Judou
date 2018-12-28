@@ -9,7 +9,7 @@
 import UIKit
 
 class AddFunctionViewController: BaseShowBarViewController {
-    var selectAuthor: Bool! = false
+    var isFamous: Bool! = false // 名人、书籍
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +17,22 @@ class AddFunctionViewController: BaseShowBarViewController {
         // Do any additional setup after loading the view.
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.addCloseAction))
-    } 
+        
+        if UserModel.fetchUser().level == 0 {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_add"), style: .plain, target: self, action: #selector(self.createCollectioAction))
+        }
+    }
+    // MARK: - 添加收藏夹
+    @objc private func createCollectioAction() -> Void {
+        let creationVC = CreationViewController()
+        creationVC.createType = 2
+        if isFamous == true {
+            creationVC.createType = 1
+        }
+        let nav = UINavigationController.init(rootViewController: creationVC)
+        
+        self.present(nav, animated: true, completion: nil)
+    }
     // MARK: - 关闭
     @objc private func addCloseAction() -> Void {
         self.dismiss(animated: true, completion: nil)

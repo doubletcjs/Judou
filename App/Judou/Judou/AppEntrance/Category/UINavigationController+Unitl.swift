@@ -22,7 +22,7 @@ extension UINavigationController {
         UIBarButtonItem.appearance().setTitleTextAttributes([.font : kBaseFont(16)], for: .selected)
         UIBarButtonItem.appearance().setTitleTextAttributes([.font : kBaseFont(16)], for: .highlighted)
         
-        self.navigationBar.shadowImage = UIImage()
+        self.navigationBar.shadowImage = UIImage() 
     }
     
 

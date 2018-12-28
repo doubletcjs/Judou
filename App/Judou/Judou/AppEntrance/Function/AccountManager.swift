@@ -69,6 +69,14 @@ class UserModel: BaseModel {
      *     被举报次数
      */
     @objc var report: Int = 0
+    /**
+     *     用户等级 0 管理员 1 普通用户
+     */
+    @objc var level: Int = 0
+    /**
+     *     是否关注
+     */
+    @objc var isAttention: Bool = false
     
     // MARK: - 主键
     @objc override class func getPrimaryKey() -> String {

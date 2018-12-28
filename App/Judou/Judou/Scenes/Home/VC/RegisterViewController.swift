@@ -21,6 +21,8 @@ class RegisterViewController: BaseShowBarViewController {
     
     private var timer: Timer?
     private var seconds: Int?
+    
+    private var adminRegister: Bool! = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +110,21 @@ class RegisterViewController: BaseShowBarViewController {
         registerButton.showsTouchWhenHighlighted = true
         scrollView.addSubview(registerButton)
         registerButton.addTarget(self, action: #selector(self.requestRegister), for: .touchUpInside)
+        
+        //是否开放注册管理员
+        Networking.adminAvailable { [weak self] (isAdminAvailable, error) in
+            if isAdminAvailable == true {
+                let availableSwitch = UISwitch.init()
+                availableSwitch.addTarget(self, action: #selector(self?.availableSwitchAction(_:)), for: .valueChanged)
+                self?.navigationItem.rightBarButtonItem = UIBarButtonItem.init(customView: availableSwitch)
+            }
+        }
+    }
+    // MARK: - 开启、关闭注册管理员
+    @objc private func availableSwitchAction(_ availableSwitch: UISwitch) -> Void {
+        availableSwitch.isOn = !availableSwitch.isOn
+        
+        adminRegister = availableSwitch.isOn
     }
     // MARK: - 注册
     @objc private func requestRegister() -> Void {
@@ -132,7 +149,45 @@ class RegisterViewController: BaseShowBarViewController {
             return
         }
         
+        let hud = indicatorTextHUD("正在注册")
         
+        if adminRegister == true {
+            Networking.adminRegisterRequest(mobile: phoneTextField.text!, password: passwdTextField.text!) { (userModel, error) in
+                if error != nil {
+                    hud.hide(false)
+                    
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    AccountManager.login(userModel!)
+                    
+                    DispatchQueueMainAsyncAfter(deadline: .now()+0.5, target: self, execute: {
+                        hud.hide(false)
+                        DispatchQueue.main.async(execute: {
+                            showTextHUD("注册成功", inView: nil, hideAfterDelay: 1)
+                            self.dismiss(animated: true, completion: nil)
+                        })
+                    })
+                }
+            }
+        } else {
+            Networking.mobileRegisterRequest(mobile: phoneTextField.text!, password: passwdTextField.text!) { (userModel, error) in
+                if error != nil {
+                    hud.hide(false)
+                    
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    AccountManager.login(userModel!)
+                    
+                    DispatchQueueMainAsyncAfter(deadline: .now()+0.5, target: self, execute: {
+                        hud.hide(false)
+                        DispatchQueue.main.async(execute: {
+                            showTextHUD("注册成功", inView: nil, hideAfterDelay: 1)
+                            self.dismiss(animated: true, completion: nil)
+                        })
+                    })
+                }
+            }
+        }
     }
     // MARK: - 限制密码长度
     @objc private func textFieldValueChanged(_ textField: UITextField) -> Void {

@@ -32,7 +32,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         }
 
         // Do any additional setup after loading the view.
-        scrollView = MXScrollView.init(frame: CGRect.init(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+        scrollView = MXScrollView.init(frame: CGRect.init(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height)~)
         self.view.addSubview(scrollView)
         scrollView.contentSize = CGSize.init(width: 0, height: kScreenHeight()-currentSafeAreaInsets().bottom)~
         scrollView.showsVerticalScrollIndicator = false
@@ -41,7 +41,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         
         // 5/4 = w/h
         let height = (kScreenWidth()*3.0)/5.0+kStatusBarHeight()
-        headerImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height))
+        headerImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
         headerImageView.yy_setImage(with: URL.init(string: account.portrait),
                                     placeholder: UIImage.init(named: "default_music_big")?.byBlurLight(),
                                     options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
@@ -94,10 +94,10 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         let titleViewConfigure: SGPageTitleViewConfigure = SGPageTitleViewConfigure()
         titleViewConfigure.bottomSeparatorColor = kRGBColor(red: 249, green: 249, blue: 249, alpha: 1)
         titleViewConfigure.indicatorStyle = SGIndicatorStyleFixed
-        titleViewConfigure.indicatorFixedWidth = 64~
+        titleViewConfigure.indicatorFixedWidth = 64
         
         titleViewConfigure.indicatorColor = kRGBColor(red: 166, green: 146, blue: 91, alpha: 1)
-        titleViewConfigure.indicatorHeight = 2~
+        titleViewConfigure.indicatorHeight = 2
         
         titleViewConfigure.titleFont = kBaseFont(16)
         titleViewConfigure.titleSelectedFont = kBaseFont(16)
@@ -107,10 +107,11 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         pageTitleView = SGPageTitleView.init(frame: CGRect.init(x: 0, y: 0, width: scrollView.bounds.size.width, height: 40)~, delegate: self, titleNames: ["句子 0", "收藏夹 0"], configure: titleViewConfigure)
         scrollView.addSubview(pageTitleView)
         
-        let controllerRect = CGRect.init(x: 0, y: pageTitleView.frame.maxY, width: scrollView.bounds.size.width, height: scrollView.bounds.size.height-pageTitleView.frame.maxY-bottomHeight-kStatusBarHeight())
+        let controllerRect = CGRect.init(x: 0, y: pageTitleView.frame.maxY, width: scrollView.bounds.size.width, height: scrollView.bounds.size.height-pageTitleView.frame.maxY-bottomHeight-kStatusBarHeight())~
         
-        let postVC = MyPostViewController()
+        let postVC = TabPostViewController()
         postVC.superFrame = controllerRect
+        postVC.isHomePage = true
         
         let collectionVC = UIViewController()
         collectionVC.view.backgroundColor = .white
@@ -128,9 +129,9 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
             UIApplication.shared.setStatusBarStyle(.lightContent, animated: true)
         }
         
-        if account.userId == UserDefaults.standard.object(forKey: kLoginUserID) as! String {
+        if account.userId == UserModel.fetchUser().userId {
             account = UserModel.fetchUser()
-            pageHeaderView.account = account 
+            pageHeaderView.account = account
         }
     }
     

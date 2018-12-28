@@ -7,7 +7,6 @@
 
 import Foundation
 
-private let tableName = "account_table"
 private let AES_ENCRYPT_KEY = "~!@#$%^&*()_+com.samcooperstudio.judou_1234567890-=,./"
 
 class AccountOperator: BaseOperator {
@@ -21,15 +20,15 @@ class AccountOperator: BaseOperator {
     private func checkAccount(mobile: String, nickname: String, userId: String) -> Int! {
         var statement = ""
         if mobile.count > 0 {
-            statement = "select id from \(tableName) where mobile = '\(mobile)'"
+            statement = "select userId from \(accounttable) where mobile = '\(mobile)'"
         }
         
         if nickname.count > 0 {
-            statement = "select id from \(tableName) where nickname = '\(nickname)'"
+            statement = "select userId from \(accounttable) where nickname = '\(nickname)'"
         }
         
         if userId.count > 0 {
-            statement = "select id from \(tableName) where id = '\(userId)'"
+            statement = "select userId from \(accounttable) where userId = '\(userId)'"
         }
         
         if statement.count == 0 {
@@ -37,7 +36,7 @@ class AccountOperator: BaseOperator {
         }
         
         if mysql.query(statement: statement) == false {
-            logError("用户是否存在", mysql.errorMessage())
+            Utils.logError("用户是否存在", mysql.errorMessage())
             return 2
         } else {
             var isExist = 0
@@ -62,15 +61,15 @@ class AccountOperator: BaseOperator {
         let accountStatus = checkAccount(mobile: mobile, nickname: "", userId: userId)
         if accountStatus == 1 {
             var statement = ""
-            let baseStatement = "id, nickname, portrait, gender, birthday, mobile, date, status, report"
+            let baseStatement = "userId, nickname, portrait, gender, birthday, mobile, date, status, level"
             // AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)'),
             
             if mobile.count > 0 {
-                statement = "select \(baseStatement) from \(tableName) where mobile = '\(mobile)'"
+                statement = "select \(baseStatement) from \(accounttable) where mobile = '\(mobile)'"
             }
             
             if userId.count > 0 {
-                statement = "select \(baseStatement) from \(tableName) where id = '\(userId)'"
+                statement = "select \(baseStatement) from \(accounttable) where userId = '\(userId)'"
             }
             
             if statement.count == 0 {
@@ -78,20 +77,22 @@ class AccountOperator: BaseOperator {
             }
             
             if mysql.query(statement: statement) == false {
-                logError("获取用户信息", mysql.errorMessage())
+                Utils.logError("获取用户信息", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("获取用户信息失败")
             } else {
                 var dict: [String: Any] = [:]
                 let results = mysql.storeResults()!
                 var keys: [String] = baseStatement.components(separatedBy: ", ")
-                //keys[0] = "password"
-                keys[0] = "userId"
                 
                 results.forEachRow { (row) in
                     for idx in 0...row.count-1 {
                         let key = keys[idx]
                         dict["\(key)"] = row[idx] as Any
                     }
+                }
+                
+                if dict["nickname"] as! String == "" {
+                    dict["nickname"] = "User_\(dict["userId"] as! String)"
                 }
                 
                 responseJson = Utils.successResponseJson(dict)
@@ -109,8 +110,8 @@ class AccountOperator: BaseOperator {
     /// - Parameters:
     ///   - params: 需要修改参数内容 userId（用户id）必填
     /// - Returns: 返回JSON数据
-    func updateAccount(params: [String: String]) -> String {
-        let userId: String = params["userId"]!
+    func updateAccount(params: [String: Any]) -> String {
+        let userId: String = params["userId"] as! String
         
         let accountStatus = checkAccount(mobile: "", nickname: "", userId: userId)
         if accountStatus == 1 {
@@ -122,9 +123,9 @@ class AccountOperator: BaseOperator {
                 }
             }
             
-            let statement = "update \(tableName) set \(contentValue.joined(separator: ", ")) where id = '\(userId)'"
+            let statement = "update \(accounttable) set \(contentValue.joined(separator: ", ")) where userId = '\(userId)'"
             if mysql.query(statement: statement) == false {
-                logError("更新用户信息", mysql.errorMessage())
+                Utils.logError("更新用户信息", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("更新用户信息失败")
             } else {
                 responseJson = self.getAccount(mobile: "", userId: userId)
@@ -148,9 +149,9 @@ class AccountOperator: BaseOperator {
         if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
         } else if accountStatus == 1 {
-            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(tableName) where mobile = '\(mobile)'"
+            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(accounttable) where mobile = '\(mobile)'"
             if mysql.query(statement: statement) == false {
-                logError("密码检验", mysql.errorMessage())
+                Utils.logError("密码检验", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("密码检验失败")
             } else {
                 let results = mysql.storeResults()!
@@ -165,10 +166,10 @@ class AccountOperator: BaseOperator {
                 if passwd == password {
                     responseJson = Utils.failureResponseJson("新密码与原密码相同")
                 } else {
-                    let statement = "update \(tableName) set password = AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)') where mobile = '\(mobile)'"
+                    let statement = "update \(accounttable) set password = AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)') where mobile = '\(mobile)'"
                     
                     if mysql.query(statement: statement) == false {
-                        logError("重置密码", mysql.errorMessage())
+                        Utils.logError("重置密码", mysql.errorMessage())
                         responseJson = Utils.failureResponseJson("用户密码修改失败")
                     } else {
                         responseJson = Utils.successResponseJson("用户密码修改成功")
@@ -192,9 +193,9 @@ class AccountOperator: BaseOperator {
         if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
         } else if accountStatus == 1 {
-            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(tableName) where mobile = '\(mobile)'"
+            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(accounttable) where mobile = '\(mobile)'"
             if mysql.query(statement: statement) == false {
-                logError("账号密码登录", mysql.errorMessage())
+                Utils.logError("账号密码登录", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("登录失败")
             } else {
                 let results = mysql.storeResults()!
@@ -234,11 +235,40 @@ class AccountOperator: BaseOperator {
             let birthday = Utils.dateToString(date: current, format: "yyyy-MM-dd")
             let date = Utils.dateToString(date: current, format: "yyyy-MM-dd HH:mm:ss")
             
-            let values = "('\(mobile)', AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)'), ('\(nickname)'), ('\(portrait)'), ('\(birthday)'), ('\(date)'))"
-            let statement = "insert into \(tableName) (mobile, password, nickname, portrait, birthday, date) values \(values)"
+            let values = "('\(mobile)', AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)'), ('\(nickname)'), ('\(portrait)'), ('\(birthday)'), ('\(date)'), ('1'))"
+            let statement = "insert into \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) values \(values)"
             
             if mysql.query(statement: statement) == false {
-                logError("创建用户", mysql.errorMessage())
+                Utils.logError("创建用户", mysql.errorMessage())
+                responseJson = Utils.failureResponseJson("用户注册失败")
+            } else {
+                //返回登录信息
+                responseJson = self.getAccount(mobile: mobile, userId: "")
+            }
+        } else if accountStatus == 1 {
+            responseJson = Utils.failureResponseJson("该手机号码已被注册")
+        } else if accountStatus == 2 {
+            responseJson = Utils.failureResponseJson("用户注册失败")
+        }
+        
+        return responseJson
+    }
+    
+    func registerAdminAccount(mobile: String, password: String) -> String {
+        let accountStatus = checkAccount(mobile: mobile, nickname: "", userId: "")
+        if accountStatus == 0 {
+            let nickname = ""
+            let portrait = ""
+            
+            let current = Date()
+            let birthday = Utils.dateToString(date: current, format: "yyyy-MM-dd")
+            let date = Utils.dateToString(date: current, format: "yyyy-MM-dd HH:mm:ss")
+            
+            let values = "('\(mobile)', AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)'), ('\(nickname)'), ('\(portrait)'), ('\(birthday)'), ('\(date)'), ('0'))"
+            let statement = "insert into \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) values \(values)"
+            
+            if mysql.query(statement: statement) == false {
+                Utils.logError("创建用户", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("用户注册失败")
             } else {
                 //返回登录信息

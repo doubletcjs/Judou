@@ -10,6 +10,7 @@ import UIKit
 
 class PostDetailViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource {
     private var tableView: UITableView!
+    var postModel: PostModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +67,7 @@ class PostDetailViewController: BaseShowBarViewController, UITableViewDelegate, 
         cell?.selectionStyle = .none
         if indexPath.section == 0 {
             cell?.isDetail = true
-            cell?.createPostBaseCell(PostModel())
+            cell?.createPostBaseCell(postModel)
         }
         
         return cell!
@@ -74,7 +75,7 @@ class PostDetailViewController: BaseShowBarViewController, UITableViewDelegate, 
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return PostBaseCell.getPostBaseCellHeight(PostModel(), true)
+            return PostBaseCell.getPostBaseCellHeight(postModel, true)
         } else {
             return 0
         }

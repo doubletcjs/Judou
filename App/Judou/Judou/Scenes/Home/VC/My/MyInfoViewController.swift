@@ -11,6 +11,7 @@ import UIKit
 class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var tableView: UITableView!
     private var userInfoModel: UserModel! = UserModel()
+    private var portraitImage: UIImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +25,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        tableView.separatorColor = tableView.separatorColor?.withAlphaComponent(0.4)
+        tableView.separatorColor = kRGBColor(red: 237, green: 238, blue: 238, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
         tableView.isHidden = true
@@ -43,34 +44,70 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     // MARK: - 保存
     @objc private func saveInfoAction() -> Void {
         let originalUserModel = UserModel.fetchUser()
-        var params: [String: String] = [:]
+        var params: [String: Any] = [:]
         params["userId"] = userInfoModel.userId
-        
-        if originalUserModel.portrait != userInfoModel.portrait {
-            params["portrait"] = userInfoModel.portrait
-        }
         
         if originalUserModel.nickname != userInfoModel.nickname {
             params["nickname"] = userInfoModel.nickname
         }
         
         if originalUserModel.gender != userInfoModel.gender {
-            params["gender"] = "\(userInfoModel.gender)"
+            params["gender"] = userInfoModel.gender
         }
         
         if originalUserModel.birthday != userInfoModel.birthday {
             params["birthday"] = userInfoModel.birthday
         }
-   
-        if params.keys.count > 1 {
-            Networking.editUserInfo(params) { [weak self] (isSuccessful, error) in
-                if isSuccessful == true {
-                    showTextHUD("修改成功", inView: nil, hideAfterDelay: 1.5)
-                    self!.navigationController?.popViewController(animated: true)
+        
+        func uploadPortrait(_ userParams: [String: Any], _ showHUD: Bool) -> Void {
+            if userParams.keys.count > 1 {
+                var hud = MBProgressHUD()
+                if showHUD == true {
+                    hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
                 } else {
-                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    hud.hide(false)
+                }
+                
+                Networking.editUserInfo(userParams) { [weak self] (isSuccessful, error) in
+                    hud.hide(false)
+                    
+                    if isSuccessful == true {
+                        showTextHUD("修改成功", inView: nil, hideAfterDelay: 1.5)
+                        self!.navigationController?.popViewController(animated: true)
+                    } else {
+                        showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    }
                 }
             }
+        }
+   
+        if portraitImage != nil {
+            let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+            hud.mode = .determinate
+            
+            Networking.fileUploadFunction(fileDataList: [portraitImage.jpegData(compressionQuality: 0.8)!], function: "portrait", progressHandler: { (progress) in
+                hud.progress = Float(progress!)
+            }) { [weak self] (fileUrls, error) in
+                if error != nil {
+                    hud.hide(false)
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    let fileUrl: String = fileUrls!.first! as String
+                    if isStringEmpty(fileUrl) == false {
+                        if originalUserModel.portrait != fileUrl {
+                            params["portrait"] = fileUrl
+                            self?.portraitImage = nil
+                        }
+                    } else {
+                        hud.hide(false)
+                        showTextHUD("头像地址返回为空～", inView: nil, hideAfterDelay: 1.5)
+                    }
+                }
+                
+                uploadPortrait(params, false)
+            }
+        } else {
+            uploadPortrait(params, true)
         }
     }
     // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -131,10 +168,14 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             imageView.tag = cellTag
             cellTag += 1
             cell?.addSubview(imageView)
-            imageView.yy_setImage(with: URL.init(string: userInfoModel.portrait),
-                                  placeholder: UIImage.init(named: "topic_default_avatar"),
-                                  options: kWebImageOptions,
-                                  completion: nil)
+            if portraitImage == nil {
+                imageView.yy_setImage(with: URL.init(string: userInfoModel.portrait),
+                                      placeholder: UIImage.init(named: "topic_default_avatar"),
+                                      options: kWebImageOptions,
+                                      completion: nil)
+            } else {
+                imageView.image = portraitImage
+            }
             
             break
         case 1:
@@ -198,7 +239,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50~
+        return 50
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -329,8 +370,10 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        let image = info[UIImagePickerController.InfoKey.editedImage]
+        let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
+        portraitImage = image
         
+        tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .none)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

@@ -168,6 +168,23 @@ class ForgotViewController: BaseShowBarViewController {
             
             return
         }
+        
+        let hud = indicatorTextHUD("")
+        Networking.mobileResetPasswdRequest(mobile: passwdTextField.text!, password: verifycodeTextField.text!) { (isSuccessful, error) in
+            if error != nil {
+                hud.hide(false)
+                
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            } else {
+                DispatchQueueMainAsyncAfter(deadline: .now()+0.5, target: self, execute: {
+                    hud.hide(false)
+                    DispatchQueue.main.async(execute: {
+                        showTextHUD("密码修改成功", inView: nil, hideAfterDelay: 1)
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                })
+            }
+        }
     }
     // MARK: - 限制密码长度
     @objc private func textFieldValueChanged(_ textField: UITextField) -> Void {
