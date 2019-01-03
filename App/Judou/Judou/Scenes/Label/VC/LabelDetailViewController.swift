@@ -1,22 +1,21 @@
 //
-//  DailyViewController.swift
+//  LabelDetailViewController.swift
 //  Judou
 //
-//  Created by 4work on 2018/12/11.
-//  Copyright © 2018 Sam Cooper Studio. All rights reserved.
+//  Created by 4work on 2019/1/3.
+//  Copyright © 2019 Sam Cooper Studio. All rights reserved.
 //
 
 import UIKit
 
-class DailyViewController: BaseHideBarViewController {
+class LabelDetailViewController: BaseHideBarViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        
-    } 
+    }
+    
 
     /*
     // MARK: - Navigation

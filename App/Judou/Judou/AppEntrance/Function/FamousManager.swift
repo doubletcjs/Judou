@@ -37,4 +37,8 @@ class FamousModel: BaseModel {
      *     订阅数
      */
     @objc var subscribeCount: Int = 0
+    /**
+     *     创建人
+     */
+    @objc var author: UserModel = UserModel()
 }

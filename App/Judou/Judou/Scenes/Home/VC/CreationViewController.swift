@@ -6,7 +6,7 @@
 //  Copyright © 2018 Sam Cooper Studio. All rights reserved.
 //
 
-import UIKit
+import UIKit 
 
 class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var tableView: UITableView!
@@ -15,7 +15,10 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
     private var coverButton: UIButton!
 
     private var isPrivate: Bool! = false
-    private var coverImage: UIImage!
+    private var coverImageData: Data! = Data()
+    private var coverImageUrl: String! = ""
+    
+    var creationCompletionHandle: CreationCompletionBlock?
     
     //0 收藏夹 1 名人 2 书籍
     var createType: Int = 0
@@ -140,6 +143,9 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
                 coverButton.imageView?.contentMode = .scaleAspectFit
                 coverButton.tag = 11
                 coverButton.handleControlEvent(controlEvent: .touchUpInside) { [weak self] (sender) in
+                    self?.textView.resignFirstResponder()
+                    self?.textField.resignFirstResponder()
+                    
                     let actionSheet: JSActionSheet = JSActionSheet.init(title: nil, cancelTitle: "取消", otherTitles: ["拍摄", "从手机相册选择"])
                     actionSheet.showView()
                     actionSheet.dismiss(forCompletionHandle: { [weak self] (index, isCancel) in
@@ -159,6 +165,7 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
                 coverTipLabel.font = kBaseFont(14)
                 coverTipLabel.text = "添加封面"
                 coverTipLabel.textColor = kRGBColor(red: 209, green: 210, blue: 211, alpha: 1)
+                coverTipLabel.tag = 1010
                 coverButton.addSubview(coverTipLabel)
                 coverTipLabel.sizeToFit()
                 coverTipLabel.frame = CGRect.init(x: (coverButton.frame.size.width-coverTipLabel.frame.size.width)/2, y: coverButton.frame.size.height-coverTipLabel.frame.size.height-14, width: coverTipLabel.frame.size.width, height: coverTipLabel.frame.size.height)~
@@ -219,7 +226,7 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             return
         }
         
-        if coverImage == nil {
+        if coverImageData.count == 0 && coverImageUrl.count == 0 {
             showTextHUD("尚未添加封面", inView: nil, hideAfterDelay: 1.8)
             
             return
@@ -232,26 +239,11 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             function = "book"
         }
         
+        textView.resignFirstResponder()
+        textField.resignFirstResponder()
+        
         let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
         hud.mode = .determinate
-        
-        Networking.fileUploadFunction(fileDataList: [coverImage.jpegData(compressionQuality: 0.8)!], function: function, progressHandler: { (progress) in
-            hud.progress = Float(progress!)
-        }) { [weak self] (fileUrls, error) in
-            if error != nil {
-                hud.hide(false)
-                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
-            } else {
-                let fileUrl: String = fileUrls!.first! as String
-                if isStringEmpty(fileUrl) == false {
-                    hud.mode = .indeterminate
-                    createCollectRequest(hud, fileUrl)
-                } else {
-                    hud.hide(false)
-                    showTextHUD("文件地址返回为空～", inView: nil, hideAfterDelay: 1.5)
-                }
-            }
-        }
         
         func createCollectRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
             var dict: [String: Any] = ["authorId": UserModel.fetchUser().userId,
@@ -284,12 +276,42 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
                 hud.hide(false)
                 
                 if isSuccessful == true {
+                    if self?.creationCompletionHandle != nil {
+                        self?.creationCompletionHandle!()
+                    }
+                    
                     showTextHUD("创建成功", inView: nil, hideAfterDelay: 1.5)
                     self?.collectionCloseAction()
                 } else {
                     showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
                 }
             }
+        }
+        
+        if coverImageData.count > 0 {
+            Networking.fileUploadFunction(fileDataList: [coverImageData], function: function, progressHandler: { (progress) in
+                hud.progress = Float(progress!)
+            }) { [weak self] (fileUrls, error) in
+                if error != nil {
+                    hud.hide(false)
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    let fileUrl: String = fileUrls!.first! as String
+                    if isStringEmpty(fileUrl) == false {
+                        self?.coverImageData = Data()
+                        self?.coverImageUrl = fileUrl
+                        
+                        hud.mode = .indeterminate
+                        createCollectRequest(hud, fileUrl)
+                    } else {
+                        hud.hide(false)
+                        showTextHUD("文件地址返回为空～", inView: nil, hideAfterDelay: 1.5)
+                    }
+                }
+            }
+        } else if coverImageUrl.count > 0 {
+            hud.mode = .indeterminate
+            createCollectRequest(hud, coverImageUrl)
         }
     }
     // MARK: - 关闭
@@ -301,6 +323,9 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
     }
     // MARK: - 是否私密
     @objc private func privateSwitch() -> Void {
+        textView.resignFirstResponder()
+        textField.resignFirstResponder()
+        
         isPrivate = !isPrivate
         tableView.reloadRows(at: [IndexPath.init(row: 3, section: 0)], with: .none)
     }
@@ -370,8 +395,14 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
         
         let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
         coverButton.setImage(image, for: .normal)
+        
+        let coverTipLabel = coverButton.viewWithTag(1010) as! UILabel
+        coverTipLabel.text = ""
+        
         coverButton.viewWithTag(100)?.removeFromSuperview()
-        coverImage = image
+        
+        coverImageUrl = ""
+        coverImageData = image.jpegData(compressionQuality: 0.8)!
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

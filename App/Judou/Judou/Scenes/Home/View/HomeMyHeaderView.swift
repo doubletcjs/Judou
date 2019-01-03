@@ -29,6 +29,7 @@ class HomeMyHeaderView: UIView {
         imageView = UIImageView.init(frame: CGRect.init(x: 20, y: 30, width: 58, height: 58)~)
         imageView.layer.cornerRadius = imageView.frame.size.height/2
         imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         self.addSubview(imageView)
         
@@ -135,6 +136,15 @@ class HomeMyHeaderView: UIView {
                                   completion: nil)
             nameLabel.text = userModel.nickname
             tipLabel.text = "点击查看个人主页"
+            
+            let values: [String] = ["0", "\(userModel.postCount)", "\(userModel.praiseCount)"];
+            self.subviews.forEach { (view) in
+                if view.tag >= 10 {
+                    let btn = view as! UIButton
+                    let label = btn.viewWithTag(99999) as! UILabel
+                    label.text = values[btn.tag-10]
+                }
+            }
         } else {
             imageView.yy_setImage(with: URL.init(string: ""),
                                   placeholder: UIImage.init(named: "topic_default_avatar"),
@@ -142,14 +152,6 @@ class HomeMyHeaderView: UIView {
                                   completion: nil)
             nameLabel.text = "点击头像登录"
             tipLabel.text = "登录句读收藏喜欢的句子"
-            
-            self.subviews.forEach { (view) in
-                if view.tag >= 10 {
-                    let btn = view as! UIButton
-                    let label = btn.viewWithTag(99999) as! UILabel
-                    label.text = "0"
-                }
-            }
         }
     }
     // MARK: - 查看个人主页

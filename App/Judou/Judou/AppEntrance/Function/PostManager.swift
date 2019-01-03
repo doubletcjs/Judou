@@ -34,19 +34,19 @@ class PostModel: BaseModel {
     /**
      *     被举报次数
      */
-    @objc var report: Int = 0
+    @objc var reportCount: Int = 0
     /**
      *     点赞次数
      */
-    @objc var praise: Int = 0
+    @objc var praiseCount: Int = 0
     /**
      *     评论数
      */
-    @objc var comment: Int = 0
+    @objc var commentCount: Int = 0
     /**
      *     被收藏次数
      */
-    @objc var collect: Int = 0
+    @objc var collectCount: Int = 0
     /**
      *     是否点赞
      */

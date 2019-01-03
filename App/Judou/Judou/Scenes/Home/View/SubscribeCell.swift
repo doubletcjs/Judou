@@ -53,6 +53,7 @@ class SubscribeCell: UITableViewCell {
         coverImageView.layer.cornerRadius = 2
         coverImageView.layer.masksToBounds = true
         coverImageView.clipsToBounds = true
+        coverImageView.contentMode = .scaleAspectFill
         coverImageView.tag = cellTag
         cellTag += 1
         self.addSubview(coverImageView)

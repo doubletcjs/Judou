@@ -55,7 +55,7 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
     }
     
     @objc private func requestCollectionList() -> Void {
-        Networking.collectionListRequest(params: ["loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+        Networking.collectionListRequest(params: ["userId": UserModel.fetchUser().userId, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
             if error != nil {
                 showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
                 
@@ -65,15 +65,16 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
                 }
             } else {
                 let array: [CollectionModel] = list as! [CollectionModel]
-                self?.dataSources = array
+                if self!.currentPage == 0 {
+                    self?.dataSources = array
+                } else {
+                    self?.dataSources = self!.dataSources+array
+                }
+                
                 self?.collectionView.reloadData()
                 
                 if array.count < self!.pageSize {
-                    if self?.dataSources.count == 0 {
-                        self?.collectionView.mj_footer.endRefreshing()
-                    } else {
-                        self?.collectionView.mj_footer.endRefreshingWithNoMoreData()
-                    }
+                    self?.collectionView.mj_footer.endRefreshingWithNoMoreData()
                 } else {
                     self?.collectionView.mj_footer.endRefreshing()
                 }
@@ -106,6 +107,9 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
     // MARK: - 添加收藏夹
     @objc private func createCollectioAction() -> Void {
         let creationVC = CreationViewController()
+        creationVC.creationCompletionHandle = { [weak self] () -> Void in
+            self?.refreshCollection()
+        }
         let nav = UINavigationController.init(rootViewController: creationVC)
         
         self.present(nav, animated: true, completion: nil)
@@ -141,6 +145,7 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
         coverImageView.contentMode = .scaleAspectFill
         coverImageView.clipsToBounds = true
         coverImageView.tag = cellTag
+        coverImageView.contentMode = .scaleAspectFill 
         cellTag += 1
         cell.addSubview(coverImageView)
         
@@ -199,7 +204,15 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets.init(top: 0, left: 20, bottom: 0, right: 20)~
+        return UIEdgeInsets.init(top: 20, left: 20, bottom: 0, right: 20)~
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let model = dataSources[indexPath.row]
+        
+        let detailVC = CollectionDetailViewController()
+        detailVC.collectionModel = model
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
     /*
     // MARK: - Navigation

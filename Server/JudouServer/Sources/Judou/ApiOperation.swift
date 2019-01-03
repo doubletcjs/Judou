@@ -33,7 +33,7 @@ class BasicRoutes {
             baseRoutes.add(method: .get, uri: "/api/v1", handler: apiVersionHandle)
             
             // 开放注册管理员
-            baseRoutes.add(method: .get, uri: "/adminAvailable", handler: adminAvailableHandle)
+            baseRoutes.add(method: .post, uri: "/adminAvailable", handler: adminAvailableHandle)
             
             // 注册
             baseRoutes.add(method: .post, uri: "/register", handler: registerHandle)
@@ -42,7 +42,7 @@ class BasicRoutes {
             baseRoutes.add(method: .post, uri: "/registerAdmin", handler: registerAdminHandle)
             
             // 用户信息
-            baseRoutes.add(method: .get, uri: "/accountInfo", handler: accountInfoHandle)
+            baseRoutes.add(method: .post, uri: "/accountInfo", handler: accountInfoHandle)
             
             // 修改密码
             baseRoutes.add(method: .post, uri: "/resetPasswd", handler: resetPasswordHandle)
@@ -63,10 +63,21 @@ class BasicRoutes {
             baseRoutes.add(method: .post, uri: "/postCreation", handler: postCreationHandle)
             
             // 标签列表
-            baseRoutes.add(method: .get, uri: "/labelList", handler: labelListHandle)
+            baseRoutes.add(method: .post, uri: "/labelList", handler: labelListHandle)
             
             // 收藏夹列表
-            baseRoutes.add(method: .get, uri: "/collectionList", handler: collectionListHandle)
+            baseRoutes.add(method: .post, uri: "/collectionList", handler: collectionListHandle)
+            
+            // 收藏夹帖子列表
+            baseRoutes.add(method: .post, uri: "/collectionPostList", handler: collectionPostListHandle)
+            
+            // 用户帖子列表
+            baseRoutes.add(method: .post, uri: "/postList", handler: postListHandle)
+            
+            // 主页用户信息
+            baseRoutes.add(method: .post, uri: "/myHomePage", handler: myHomePageHandle)
+            
+            print("接口版本: v0.0.1")
             
             return baseRoutes
         }
@@ -171,7 +182,33 @@ class BasicRoutes {
         response.appendBody(string: requestJson)
         response.completed()
     }
-    // MARK: - 用户信息
+    // MARK: - 主页用户信息
+    private func myHomePageHandle(request: HTTPRequest, response: HTTPResponse) {
+        var userId: String = ""
+        
+        if request.param(name: "userId") != nil {
+            userId = request.param(name: "userId")!
+        }
+        
+        var loginId: String = ""
+        
+        if request.param(name: "loginId") != nil {
+            loginId = request.param(name: "loginId")!
+        }
+        
+        guard userId.count > 0 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = AccountOperator().getAccountHomePage(userId: userId, loginId: loginId)
+        
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 获取我的账号(登录)信息
     private func accountInfoHandle(request: HTTPRequest, response: HTTPResponse) {
         var userId: String = ""
         
@@ -186,7 +223,7 @@ class BasicRoutes {
             return
         }
         
-        let requestJson = AccountOperator().getAccount(mobile: "", userId: userId)
+        let requestJson = AccountOperator().getMyAccount(mobile: "", userId: userId)
         
         response.appendBody(string: requestJson)
         response.completed()
@@ -258,7 +295,7 @@ class BasicRoutes {
             return
         }
         
-        let requestJson = QueryOperator().labelListQuery(params: dict)
+        let requestJson = LabelOperator().labelListQuery(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }
@@ -272,14 +309,56 @@ class BasicRoutes {
             dict[param.0] = param.1
         }
         
-        guard dict.keys.count == 3 else {
+        guard dict.keys.count == 4 else {
             response.setBody(string: Utils.failureResponseJson("请求参数错误"))
             response.completed()
             
             return
         }
         
-        let requestJson = QueryOperator().collectionListQuery(params: dict)
+        let requestJson = CollectionOperator().collectionListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 收藏夹帖子列表
+    private func collectionPostListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CollectionOperator().collectionPostListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 用户帖子列表
+    private func postListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().myPostListQuery(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }

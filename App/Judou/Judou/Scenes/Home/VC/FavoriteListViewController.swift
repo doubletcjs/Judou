@@ -12,6 +12,9 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
     var favoriteType: String!
     var superFrame: CGRect!
     
+    private var currentPage: Int! = 0
+    private var pageSize: Int! = 20
+    
     private var tableView: UITableView!
     private var dataSources: [Any] = []
 
@@ -43,6 +46,39 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
         tableView.emptyDataSetDelegate = self
         
         self.view.addSubview(tableView)
+        
+        tableView.setupRefresh(self, #selector(self.refreshFavoriteData), #selector(self.loadMoreFavoriteData))
+        tableView.mj_header.isHidden = false
+        
+        self.refreshFavoriteData()
+    }
+    // MARK: - 加载数据
+    func pageRefreshData() -> Void {
+        if dataSources.count == 0 {
+            if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+                tableView.mj_header.beginRefreshing()
+            }
+        }
+    }
+    
+    @objc private func refreshFavoriteData() -> Void {
+        currentPage = 0
+        self.requestFavoriteData()
+    }
+    
+    @objc private func loadMoreFavoriteData() -> Void {
+        currentPage += 1
+        self.requestFavoriteData()
+    }
+    
+    @objc private func requestFavoriteData() -> Void {
+        if favoriteType == "视频" {
+            
+        } else if favoriteType == "随笔" {
+            
+        } else {
+            
+        }
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+ 
 let kLoginUserID = "kLoginUserID"
 let APP_ID = ""
 let APP_URL = "https://itunes.apple.com/cn/app/id\(APP_ID)?mt=8"

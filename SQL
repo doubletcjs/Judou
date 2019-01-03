@@ -7,8 +7,7 @@ CREATE TABLE `account_table` (
 `gender` int(5) NOT NULL DEFAULT '0',
 `birthday` date NOT NULL,
 `mobile` varchar(30) NOT NULL DEFAULT '',
-`date` datetime NOT NULL,
-`status` int(5) NOT NULL DEFAULT '0',
+`date` datetime NOT NULL, 
 `level` int(5) NOT NULL DEFAULT '1',
 `password` varchar(256) CHARACTER SET latin1 NOT NULL DEFAULT '',
 PRIMARY KEY (`userId`)
@@ -19,15 +18,16 @@ PRIMARY KEY (`userId`)
 CREATE TABLE `post_table` (
 `objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
 `authorId` int(20) unsigned NOT NULL,
-`isPrivate` blob NOT NULL,
+`isPrivate` tinyint(1) NOT NULL,
 `postDate` datetime NOT NULL,
 `image` varchar(255) DEFAULT '',
 `content` mediumtext NOT NULL,
-`labelId` int(20) unsigned NOT NULL,
-`famousId` int(20) unsigned NOT NULL,
-`bookId` int(20) unsigned NOT NULL,
+`labelId` int(20) unsigned DEFAULT '0',
+`famousId` int(20) unsigned DEFAULT '0',
+`bookId` int(20) unsigned DEFAULT '0',
+`postType` int(5) NOT NULL DEFAULT '0',
 PRIMARY KEY (`objectId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8;
 
 #评论表
 
@@ -47,7 +47,7 @@ CREATE TABLE `collect_table` (
 `name` varchar(20) NOT NULL DEFAULT '',
 `cover` varchar(255) DEFAULT '',
 `authorId` int(20) unsigned NOT NULL,
-`isPrivate` blob NOT NULL,
+`isPrivate` tinyint(1) NOT NULL,
 `introduction` varchar(512) NOT NULL DEFAULT '',
 PRIMARY KEY (`objectId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
@@ -120,6 +120,7 @@ CREATE TABLE `collect_post` (
 `objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
 `postId` int(20) unsigned NOT NULL,
 `collectId` int(20) unsigned NOT NULL,
+`authorId` int(20) unsigned NOT NULL,
 PRIMARY KEY (`objectId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
@@ -156,6 +157,18 @@ CREATE TABLE `book_post` (
 `objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
 `postId` int(20) unsigned NOT NULL,
 `bookId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+#关注、粉丝表
+# A 关注 B --- authorId==A && userId==B >> count!=0
+# A 的粉丝列表 where userId==A
+# A 的关注列表 where authorId==A
+
+CREATE TABLE `attention_fan` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`authorId` int(20) unsigned NOT NULL,
+`userId` int(20) unsigned NOT NULL,
 PRIMARY KEY (`objectId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 

@@ -20,15 +20,15 @@ class AccountOperator: BaseOperator {
     private func checkAccount(mobile: String, nickname: String, userId: String) -> Int! {
         var statement = ""
         if mobile.count > 0 {
-            statement = "select userId from \(accounttable) where mobile = '\(mobile)'"
+            statement = "SELECT userId FROM \(accounttable) WHERE mobile = '\(mobile)'"
         }
         
         if nickname.count > 0 {
-            statement = "select userId from \(accounttable) where nickname = '\(nickname)'"
+            statement = "SELECT userId FROM \(accounttable) WHERE nickname = '\(nickname)'"
         }
         
         if userId.count > 0 {
-            statement = "select userId from \(accounttable) where userId = '\(userId)'"
+            statement = "SELECT userId FROM \(accounttable) WHERE userId = '\(userId)'"
         }
         
         if statement.count == 0 {
@@ -51,51 +51,195 @@ class AccountOperator: BaseOperator {
             return isExist
         }
     }
-    // MARK: - 根据手机号或用户id(二选一)获取用户信息
+    // MARK: - 获取我的账号(登录)信息
     ///
     /// - Parameters:
     ///   - mobile: 手机号
     ///   - userId: 用户id
     /// - Returns: 返回JSON数据
-    func getAccount(mobile: String, userId: String) -> String {
-        let accountStatus = checkAccount(mobile: mobile, nickname: "", userId: userId)
+    func getAccountHomePage(userId: String, loginId: String) -> String {
+        let accountStatus = checkAccount(mobile: "", nickname: "", userId: userId)
         if accountStatus == 1 {
             var statement = ""
-            let baseStatement = "userId, nickname, portrait, gender, birthday, mobile, date, status, level"
-            // AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)'),
+            var keys: [String] = [
+                "\(accounttable).userId",
+                "\(accounttable).nickname",
+                "\(accounttable).portrait",
+                "\(accounttable).gender",
+                "\(accounttable).status",
+                "COUNT(DISTINCT \(collecttable).objectId) collectionCount",
+                "COUNT(DISTINCT \(posttable).objectId) postCount",
+                "COUNT(DISTINCT attention.authorId) attentionCount",
+                "COUNT(DISTINCT fan.userId) fanCount",
+                "COUNT(DISTINCT \(reportuser).objectId) reportCount"]
             
-            if mobile.count > 0 {
-                statement = "select \(baseStatement) from \(accounttable) where mobile = '\(mobile)'"
+            var originalKeys: [String] = [
+                "userId",
+                "nickname",
+                "portrait",
+                "gender",
+                "status",
+                "collectionCount",
+                "postCount",
+                "attentionCount",
+                "fanCount",
+                "reportCount"]
+            
+            var privateConditions1 = ""
+            var privateConditions2 = ""
+            var countConditions: [String] = [
+                "LEFT JOIN \(collecttable) ON (\(collecttable).authorId = '\(userId)')",
+                "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)')",
+                "LEFT JOIN \(attentionfan) attention ON (attention.authorId = '\(userId)')",
+                "LEFT JOIN \(attentionfan) fan ON (fan.userId = '\(userId)')",
+                "LEFT JOIN \(reportuser) ON (\(reportuser).userId = '\(userId)')"]
+            
+            if loginId != userId {
+                privateConditions1 = "AND \(collecttable).isPrivate = FALSE"
+                privateConditions2 = "AND \(posttable).isPrivate = FALSE"
+                
+                //查看别人公开的帖子、收藏
+                countConditions[0] = "LEFT JOIN \(collecttable) ON (\(collecttable).authorId = '\(userId)' \(privateConditions1))"
+                countConditions[1] = "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)' \(privateConditions2))"
+                
+                //是否关注
+                keys.append("COUNT(DISTINCT \(attentionfan).objectId) fanAttentionCount")
+                originalKeys.append("fanAttentionCount")
+                countConditions.append("LEFT JOIN \(attentionfan) ON (\(attentionfan).authorId = '\(loginId)' AND \(attentionfan).userId = '\(userId)')")
             }
             
             if userId.count > 0 {
-                statement = "select \(baseStatement) from \(accounttable) where userId = '\(userId)'"
+                statement = "SELECT \(keys.joined(separator: ", ")) FROM \(accounttable) \(countConditions.joined(separator: " ")) WHERE \(accounttable).userId = '\(userId)' GROUP BY \(accounttable).userId"
             }
             
             if statement.count == 0 {
-                return Utils.failureResponseJson("获取用户信息失败，缺少手机号或用户id(二选一)")
+                return Utils.failureResponseJson("获取用户信息失败，用户id为空")
             }
             
             if mysql.query(statement: statement) == false {
                 Utils.logError("获取用户信息", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("获取用户信息失败")
             } else {
-                var dict: [String: Any] = [:]
                 let results = mysql.storeResults()!
-                var keys: [String] = baseStatement.components(separatedBy: ", ")
-                
-                results.forEachRow { (row) in
-                    for idx in 0...row.count-1 {
-                        let key = keys[idx]
-                        dict["\(key)"] = row[idx] as Any
+                if results.numRows() > 0 {
+                    var dict: [String: Any] = [:]
+                    var keys: [String] = originalKeys
+                    
+                    results.forEachRow { (row) in
+                        for idx in 0...row.count-1 {
+                            let key = keys[idx]
+                            dict["\(key)"] = row[idx]! as Any
+                        }
                     }
+                    
+                    if dict["nickname"] as! String == "" {
+                        dict["nickname"] = "User_\(dict["userId"] as! String)"
+                    }
+                    
+                    if dict["fanAttentionCount"] != nil {
+                        dict["isAttention"] = false
+                        if Int(dict["fanAttentionCount"] as! String) != 0 {
+                            dict["isAttention"] = true
+                        }
+                        
+                        dict["fanAttentionCount"] = nil
+                    }
+                    
+                    responseJson = Utils.successResponseJson(dict)
+                } else {
+                    responseJson = Utils.failureResponseJson("用户信息查询失败")
                 }
-                
-                if dict["nickname"] as! String == "" {
-                    dict["nickname"] = "User_\(dict["userId"] as! String)"
+            }
+        } else if accountStatus == 0 {
+            responseJson = Utils.failureResponseJson("用户不存在")
+        } else if accountStatus == 2 {
+            responseJson = Utils.failureResponseJson("获取用户信息失败")
+        }
+        
+        return responseJson
+    }
+    
+    func getMyAccount(mobile: String, userId: String) -> String {
+        let accountStatus = checkAccount(mobile: mobile, nickname: "", userId: userId)
+        if accountStatus == 1 {
+            var statement = ""
+            let keys: [String] = [
+                "\(accounttable).userId",
+                "\(accounttable).nickname",
+                "\(accounttable).portrait",
+                "\(accounttable).gender",
+                "\(accounttable).birthday",
+                "\(accounttable).mobile",
+                "\(accounttable).date",
+                "\(accounttable).status",
+                "\(accounttable).level",
+                "COUNT(DISTINCT \(collecttable).objectId) collectionCount",
+                "COUNT(DISTINCT \(posttable).objectId) postCount",
+                "COUNT(DISTINCT \(praisepost).objectId) praiseCount",
+                "COUNT(DISTINCT \(reportuser).objectId) reportCount"]
+            
+            let originalKeys: [String] = [
+                "userId",
+                "nickname",
+                "portrait",
+                "gender",
+                "birthday",
+                "mobile",
+                "date",
+                "status",
+                "level",
+                "collectionCount",
+                "postCount",
+                "praiseCount",
+                "reportCount"]
+            // AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)'),
+            
+            let conditions: [String] = [
+                "LEFT JOIN \(collecttable) ON (\(collecttable).authorId = '\(userId)')",
+                "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)')",
+                "LEFT JOIN \(praisepost) ON (\(praisepost).authorId = '\(userId)')",
+                "LEFT JOIN \(reportuser) ON (\(reportuser).userId = '\(userId)')"]
+            
+            var whereCondition: String = ""
+            if mobile.count > 0 {
+                whereCondition = "WHERE \(accounttable).mobile = '\(mobile)'"
+            }
+            
+            if userId.count > 0 {
+                whereCondition = "WHERE \(accounttable).userId = '\(userId)'"
+            }
+            
+            statement = "SELECT \(keys.joined(separator: ", ")) FROM \(accounttable) \(conditions.joined(separator: " ")) \(whereCondition) GROUP BY \(accounttable).userId"
+            if statement.count == 0 {
+                return Utils.failureResponseJson("获取用户信息失败，缺少手机号或用户id(二选一)")
+            }
+            
+            print("\(statement)")
+            
+            if mysql.query(statement: statement) == false {
+                Utils.logError("获取用户信息", mysql.errorMessage())
+                responseJson = Utils.failureResponseJson("获取用户信息失败")
+            } else {
+                let results = mysql.storeResults()!
+                if results.numRows() > 0 {
+                    var dict: [String: Any] = [:]
+                    var keys: [String] = originalKeys
+                    
+                    results.forEachRow { (row) in
+                        for idx in 0...row.count-1 {
+                            let key = keys[idx]
+                            dict["\(key)"] = row[idx]! as Any
+                        }
+                    }
+                    
+                    if dict["nickname"] as! String == "" {
+                        dict["nickname"] = "User_\(dict["userId"] as! String)"
+                    }
+                    
+                    responseJson = Utils.successResponseJson(dict)
+                } else {
+                    responseJson = Utils.failureResponseJson("用户不存在")
                 }
-                
-                responseJson = Utils.successResponseJson(dict)
             }
         } else if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
@@ -123,12 +267,12 @@ class AccountOperator: BaseOperator {
                 }
             }
             
-            let statement = "update \(accounttable) set \(contentValue.joined(separator: ", ")) where userId = '\(userId)'"
+            let statement = "UPDATE \(accounttable) SET \(contentValue.joined(separator: ", ")) WHERE userId = '\(userId)'"
             if mysql.query(statement: statement) == false {
                 Utils.logError("更新用户信息", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("更新用户信息失败")
             } else {
-                responseJson = self.getAccount(mobile: "", userId: userId)
+                responseJson = self.getMyAccount(mobile: "", userId: userId)
             }
         } else if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
@@ -149,7 +293,7 @@ class AccountOperator: BaseOperator {
         if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
         } else if accountStatus == 1 {
-            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(accounttable) where mobile = '\(mobile)'"
+            let statement = "SELECT AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') FROM \(accounttable) WHERE mobile = '\(mobile)'"
             if mysql.query(statement: statement) == false {
                 Utils.logError("密码检验", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("密码检验失败")
@@ -166,7 +310,7 @@ class AccountOperator: BaseOperator {
                 if passwd == password {
                     responseJson = Utils.failureResponseJson("新密码与原密码相同")
                 } else {
-                    let statement = "update \(accounttable) set password = AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)') where mobile = '\(mobile)'"
+                    let statement = "UPDATE \(accounttable) SET password = AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)') WHERE mobile = '\(mobile)'"
                     
                     if mysql.query(statement: statement) == false {
                         Utils.logError("重置密码", mysql.errorMessage())
@@ -193,7 +337,7 @@ class AccountOperator: BaseOperator {
         if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
         } else if accountStatus == 1 {
-            let statement = "select AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') from \(accounttable) where mobile = '\(mobile)'"
+            let statement = "SELECT AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)') FROM \(accounttable) WHERE mobile = '\(mobile)'"
             if mysql.query(statement: statement) == false {
                 Utils.logError("账号密码登录", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("登录失败")
@@ -208,7 +352,7 @@ class AccountOperator: BaseOperator {
                 }
                 
                 if passwd == password {
-                    responseJson = self.getAccount(mobile: mobile, userId: "")
+                    responseJson = self.getMyAccount(mobile: mobile, userId: "")
                 } else {
                     responseJson = Utils.failureResponseJson("密码错误")
                 }
@@ -236,14 +380,14 @@ class AccountOperator: BaseOperator {
             let date = Utils.dateToString(date: current, format: "yyyy-MM-dd HH:mm:ss")
             
             let values = "('\(mobile)', AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)'), ('\(nickname)'), ('\(portrait)'), ('\(birthday)'), ('\(date)'), ('1'))"
-            let statement = "insert into \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) values \(values)"
+            let statement = "INSERT INTO \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) VALUES \(values)"
             
             if mysql.query(statement: statement) == false {
                 Utils.logError("创建用户", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("用户注册失败")
             } else {
                 //返回登录信息
-                responseJson = self.getAccount(mobile: mobile, userId: "")
+                responseJson = self.getMyAccount(mobile: mobile, userId: "")
             }
         } else if accountStatus == 1 {
             responseJson = Utils.failureResponseJson("该手机号码已被注册")
@@ -265,14 +409,14 @@ class AccountOperator: BaseOperator {
             let date = Utils.dateToString(date: current, format: "yyyy-MM-dd HH:mm:ss")
             
             let values = "('\(mobile)', AES_ENCRYPT('\(password)', '\(AES_ENCRYPT_KEY)'), ('\(nickname)'), ('\(portrait)'), ('\(birthday)'), ('\(date)'), ('0'))"
-            let statement = "insert into \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) values \(values)"
+            let statement = "INSERT INTO \(accounttable) (mobile, password, nickname, portrait, birthday, date, level) VALUES \(values)"
             
             if mysql.query(statement: statement) == false {
                 Utils.logError("创建用户", mysql.errorMessage())
                 responseJson = Utils.failureResponseJson("用户注册失败")
             } else {
                 //返回登录信息
-                responseJson = self.getAccount(mobile: mobile, userId: "")
+                responseJson = self.getMyAccount(mobile: mobile, userId: "")
             }
         } else if accountStatus == 1 {
             responseJson = Utils.failureResponseJson("该手机号码已被注册")

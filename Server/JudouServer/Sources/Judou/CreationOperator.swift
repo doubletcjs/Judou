@@ -38,7 +38,7 @@ class CreationOperator: BaseOperator {
         }
         
         
-        let statement = "insert into \(tableName) (\(keys.joined(separator: ", "))) values (\(values.joined(separator: ", ")))"
+        let statement = "INSERT INTO \(tableName) (\(keys.joined(separator: ", "))) VALUES (\(values.joined(separator: ", ")))"
         
         if mysql.query(statement: statement) == false {
             Utils.logError("创建\(tip)", mysql.errorMessage())
@@ -81,7 +81,7 @@ class CreationOperator: BaseOperator {
         }
         
         // 保存帖子
-        let statement = "insert into \(posttable) (\(keys.joined(separator: ", "))) values (\(values.joined(separator: ", ")))"
+        let statement = "INSERT INTO \(posttable) (\(keys.joined(separator: ", "))) VALUES (\(values.joined(separator: ", ")))"
         
         if mysql.query(statement: statement) == false {
             Utils.logError("发帖", mysql.errorMessage())
@@ -123,7 +123,7 @@ class CreationOperator: BaseOperator {
     }
     // MARK: - 帖子关联标签
     private func postLabelContingency(_ postId: String, _ labelId: String) -> Void {
-        let statement = "insert into \(labelposttable) (postId, labelId) values ('\(postId)', '\(labelId)'))"
+        let statement = "INSERT INTO \(labelposttable) (postId, labelId) VALUES ('\(postId)', '\(labelId)')"
         if mysql.query(statement: statement) == false {
             Utils.logError("帖子关联标签", mysql.errorMessage())
         } else {
@@ -132,7 +132,7 @@ class CreationOperator: BaseOperator {
     }
     // MARK: - 帖子关联名人（作者）
     private func postFamousContingency(_ postId: String, _ famousId: String) -> Void {
-        let statement = "insert into \(famousposttable) (postId, famousId) values ('\(postId)', '\(famousId)'))"
+        let statement = "INSERT INTO \(famousposttable) (postId, famousId) VALUES ('\(postId)', '\(famousId)')"
         if mysql.query(statement: statement) == false {
             Utils.logError("帖子关联名人", mysql.errorMessage())
         } else {
@@ -141,7 +141,7 @@ class CreationOperator: BaseOperator {
     }
     // MARK: - 帖子关联书籍（出处）
     private func postBookContingency(_ postId: String, _ bookId: String) -> Void {
-        let statement = "insert into \(bookposttable) (postId, bookId) values ('\(postId)', '\(bookId)'))"
+        let statement = "INSERT INTO \(bookposttable) (postId, bookId) VALUES ('\(postId)', '\(bookId)')"
         if mysql.query(statement: statement) == false {
             Utils.logError("帖子书籍标签", mysql.errorMessage())
         } else {

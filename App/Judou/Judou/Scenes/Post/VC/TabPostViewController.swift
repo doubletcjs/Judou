@@ -10,10 +10,13 @@ import UIKit
 
 class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     private var tableView: UITableView!
-    private var dataSources: [Any] = []
-    private var currentPage: Int = 0
+    private var dataSources: [PostModel] = []
+    
+    private var currentPage: Int! = 0
+    private var pageSize: Int! = 20
     
     var isHomePage: Bool! = false
+    var userID: String! = ""
     var superFrame: CGRect! = CGRect.zero
 
     override func viewDidLoad() {
@@ -37,8 +40,20 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         
         self.view.addSubview(tableView)
         tableView.fixAreaInsets()
+        
+        tableView.setupRefresh(self, #selector(self.refreshPostData), #selector(self.loadMorePostData))
+        tableView.mj_header.isHidden = false
+        tableView.mj_footer.isHidden = false
     }
     // MARK: - 加载数据
+    func pageRefreshData() -> Void {
+        if dataSources.count == 0 && userID.count > 0 {
+            if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+                tableView.mj_header.beginRefreshing()
+            }
+        }
+    }
+    
     @objc private func refreshPostData() -> Void {
         currentPage = 0
         self.requestPostData()
@@ -50,7 +65,37 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
     }
     
     @objc private func requestPostData() -> Void {
-        
+        if isHomePage == true {
+            Networking.myPostListRequest(params: ["userId": userID!, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [PostModel] = list as! [PostModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
+        } else {
+            //搜索
+        }
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
@@ -72,7 +117,7 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
     
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
         if isHomePage == true {
-            return -(tableView.bounds.size.height/4)
+            return -(tableView.bounds.size.height/5)
         }
         return -(tableView.bounds.size.height/6)
     }
@@ -123,11 +168,16 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         
         cell?.selectionStyle = .none
         
-        let model = dataSources[indexPath.section] as! PostModel
+        let model = dataSources[indexPath.section]
         cell?.createPostBaseCell(model)
         
         cell?.postAuthorHandle = { [weak self] () -> Void in
-            Log("author")
+            if model.author.userId != self?.userID {
+                let postVC = MyPageViewController()
+                postVC.hidesBottomBarWhenPushed = true
+                postVC.account = model.author 
+                self?.navigationController?.pushViewController(postVC, animated: true)
+            }
         }
         
         cell?.postFamousHandle = { [weak self] () -> Void in

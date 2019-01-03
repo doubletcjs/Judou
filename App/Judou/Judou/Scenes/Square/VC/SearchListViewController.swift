@@ -50,7 +50,7 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
     }
     
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
-        return -(tableView.bounds.size.height/6)
+        return -(tableView.bounds.size.height/5)
     }
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {

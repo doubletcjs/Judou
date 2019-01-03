@@ -52,6 +52,7 @@ class AccountListCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = portraitImageView.frame.size.height/2
         portraitImageView.layer.masksToBounds = true
         portraitImageView.clipsToBounds = true
+        portraitImageView.contentMode = .scaleAspectFill
         portraitImageView.tag = itemTag
         itemTag += 1
         self.addSubview(portraitImageView)

@@ -8,18 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		AAFAF2B58E2403B4B0E3A6FB /* Pods_Judou.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1FA2F33A4B27921246A0A93 /* Pods_Judou.framework */; };
-		CC04650321C0A533006435CD /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650221C0A533006435CD /* RegisterViewController.swift */; };
-		CC04650521C0A5F1006435CD /* ForgotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650421C0A5F1006435CD /* ForgotViewController.swift */; };
 		CC04650821C0B6CD006435CD /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650721C0B6CD006435CD /* Networking.swift */; };
 		CC04650A21C0BC43006435CD /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650921C0BC43006435CD /* AccountManager.swift */; };
 		CC04650E21C0EA97006435CD /* JSActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = CC04650D21C0EA97006435CD /* JSActionSheet.m */; };
 		CC04651021C0EE29006435CD /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04650F21C0EE29006435CD /* BaseModel.swift */; };
-		CC04651221C10E2F006435CD /* PostBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651121C10E2F006435CD /* PostBaseCell.swift */; };
 		CC04651421C11024006435CD /* PostManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651321C11024006435CD /* PostManager.swift */; };
 		CC04651621C111E5006435CD /* LabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651521C111E5006435CD /* LabelManager.swift */; };
 		CC04651821C207AE006435CD /* UIButton+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651721C207AE006435CD /* UIButton+Unitl.swift */; };
 		CC04651A21C22B4B006435CD /* ChannelPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651921C22B4B006435CD /* ChannelPostViewController.swift */; };
-		CC04651C21C22D88006435CD /* PostCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651B21C22D88006435CD /* PostCreateViewController.swift */; };
 		CC04651E21C23150006435CD /* SearchCenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04651D21C23150006435CD /* SearchCenterViewController.swift */; };
 		CC13191E21BF4D8300143537 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13191D21BF4D8300143537 /* BaseViewController.swift */; };
 		CC13192021BF4E2900143537 /* DevKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13191F21BF4E2900143537 /* DevKit.swift */; };
@@ -38,34 +34,44 @@
 		CC3ABEF521C2624F00324A99 /* JSVariableMenuHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */; };
 		CC3ABEF721C2646700324A99 /* JSVariableMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */; };
 		CC3ABEF921C269AD00324A99 /* JSVariableMenuControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */; };
-		CC670C7A21C8C3650074EB1C /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */; };
+		CC89969421DD232600F044CA /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969121DD232600F044CA /* MyCollectionViewController.swift */; };
+		CC89969521DD232600F044CA /* CollectionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969221DD232600F044CA /* CollectionDetailViewController.swift */; };
+		CC89969621DD232600F044CA /* TapCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969321DD232600F044CA /* TapCollectionViewController.swift */; };
+		CC89969F21DD238E00F044CA /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969921DD238E00F044CA /* PostDetailViewController.swift */; };
+		CC8996A021DD238E00F044CA /* PostCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969A21DD238E00F044CA /* PostCreateViewController.swift */; };
+		CC8996A121DD238E00F044CA /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969B21DD238E00F044CA /* MyPostViewController.swift */; };
+		CC8996A221DD238E00F044CA /* TabPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969C21DD238E00F044CA /* TabPostViewController.swift */; };
+		CC8996A321DD238E00F044CA /* PostBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969E21DD238E00F044CA /* PostBaseCell.swift */; };
+		CC8996A821DD23D200F044CA /* LabelCenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996A621DD23D200F044CA /* LabelCenterViewController.swift */; };
+		CC8996A921DD23D200F044CA /* CreateLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996A721DD23D200F044CA /* CreateLabelViewController.swift */; };
+		CC8996B221DD242500F044CA /* FamousCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996AD21DD242400F044CA /* FamousCell.swift */; };
+		CC8996B321DD242500F044CA /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996B121DD242500F044CA /* BookCell.swift */; };
+		CC8996BC21DD249400F044CA /* AccountListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996B621DD249400F044CA /* AccountListViewController.swift */; };
+		CC8996BD21DD249400F044CA /* ForgotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996B721DD249400F044CA /* ForgotViewController.swift */; };
+		CC8996BE21DD249400F044CA /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996B821DD249400F044CA /* LoginViewController.swift */; };
+		CC8996BF21DD249400F044CA /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996B921DD249400F044CA /* RegisterViewController.swift */; };
+		CC8996C021DD249400F044CA /* AccountListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996BB21DD249400F044CA /* AccountListCell.swift */; };
+		CC8996C221DD24C700F044CA /* LabelDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996C121DD24C700F044CA /* LabelDetailViewController.swift */; };
+		CC8996C421DD24D200F044CA /* FamousDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996C321DD24D200F044CA /* FamousDetailViewController.swift */; };
+		CC8996C621DD24E700F044CA /* BookDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8996C521DD24E700F044CA /* BookDetailViewController.swift */; };
 		CCA0BA7E21C3B61900C1938C /* UITextView+JS.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */; };
 		CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */; };
-		CCA0BA8221C5737E00C1938C /* LabelCenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */; };
-		CCA0BA8421C5751700C1938C /* CreateLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */; };
 		CCA0BA8621C6055700C1938C /* AddFunctionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */; };
 		CCD6776D21CB8E5E000AF524 /* UIImage+Unitl.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD6776C21CB8E5E000AF524 /* UIImage+Unitl.m */; };
 		CCD6776F21CBFA29000AF524 /* HomePageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6776E21CBFA29000AF524 /* HomePageHeaderView.swift */; };
 		CCD6777121CC7B4E000AF524 /* NSDate+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6777021CC7B4E000AF524 /* NSDate+Unitl.swift */; };
 		CCD6777321CC80CA000AF524 /* NameEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6777221CC80CA000AF524 /* NameEditViewController.swift */; };
 		CCD6777521CC80D5000AF524 /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6777421CC80D5000AF524 /* DatePickerViewController.swift */; };
-		CCD6783621CD5A9C000AF524 /* AccountListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6783521CD5A9C000AF524 /* AccountListViewController.swift */; };
-		CCD6783821CD5F80000AF524 /* AccountListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6783721CD5F80000AF524 /* AccountListCell.swift */; };
 		CCD6783A21CE0476000AF524 /* FamousManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6783921CE0476000AF524 /* FamousManager.swift */; };
 		CCD6783C21CE04A6000AF524 /* BookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6783B21CE04A6000AF524 /* BookManager.swift */; };
 		CCD6783E21CE0959000AF524 /* TopicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6783D21CE0959000AF524 /* TopicManager.swift */; };
 		CCD6784121CE0A2A000AF524 /* TopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784021CE0A2A000AF524 /* TopicCell.swift */; };
 		CCD6784321CE0EBC000AF524 /* EssayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784221CE0EBC000AF524 /* EssayCell.swift */; };
 		CCD6784521D077BE000AF524 /* SearchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784421D077BE000AF524 /* SearchListViewController.swift */; };
-		CCD6784721D07B06000AF524 /* FamousCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784621D07B06000AF524 /* FamousCell.swift */; };
-		CCD6784921D07B12000AF524 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784821D07B12000AF524 /* BookCell.swift */; };
 		CCD6784B21D07F6D000AF524 /* UITableView+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784A21D07F6D000AF524 /* UITableView+Unitl.swift */; };
 		CCD6784F21D0B377000AF524 /* FavoriteListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6784E21D0B377000AF524 /* FavoriteListViewController.swift */; };
-		CCD6785121D0B494000AF524 /* TabPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785021D0B494000AF524 /* TabPostViewController.swift */; };
-		CCD6785A21D0B697000AF524 /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785321D0B697000AF524 /* MyCollectionViewController.swift */; };
 		CCD6785B21D0B697000AF524 /* MyFavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785421D0B697000AF524 /* MyFavoriteViewController.swift */; };
 		CCD6785C21D0B697000AF524 /* MyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785521D0B697000AF524 /* MyInfoViewController.swift */; };
-		CCD6785D21D0B697000AF524 /* MyPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785621D0B697000AF524 /* MyPostViewController.swift */; };
 		CCD6785E21D0B697000AF524 /* MyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785721D0B697000AF524 /* MyPageViewController.swift */; };
 		CCD6785F21D0B697000AF524 /* MyCommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785821D0B697000AF524 /* MyCommentViewController.swift */; };
 		CCD6786021D0B697000AF524 /* MyMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6785921D0B697000AF524 /* MyMessageViewController.swift */; };
@@ -76,25 +82,20 @@
 		CCD6786C21D1D19D000AF524 /* CollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6786B21D1D19D000AF524 /* CollectionManager.swift */; };
 		CCDF5C1221BF48E40075C580 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDF5C1121BF48E40075C580 /* AppDelegate.swift */; };
 		CCDF5C1921BF48E50075C580 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCDF5C1821BF48E50075C580 /* Assets.xcassets */; };
-		CCE3409E21BF9A1D0092905C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE3409D21BF9A1D0092905C /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2B7F31458CB7332EFB3D1D66 /* Pods-Judou.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Judou.release.xcconfig"; path = "Target Support Files/Pods-Judou/Pods-Judou.release.xcconfig"; sourceTree = "<group>"; };
 		B1FA2F33A4B27921246A0A93 /* Pods_Judou.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Judou.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CC04650221C0A533006435CD /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		CC04650421C0A5F1006435CD /* ForgotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotViewController.swift; sourceTree = "<group>"; };
 		CC04650721C0B6CD006435CD /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		CC04650921C0BC43006435CD /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
 		CC04650C21C0EA97006435CD /* JSActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSActionSheet.h; sourceTree = "<group>"; };
 		CC04650D21C0EA97006435CD /* JSActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSActionSheet.m; sourceTree = "<group>"; };
 		CC04650F21C0EE29006435CD /* BaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
-		CC04651121C10E2F006435CD /* PostBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBaseCell.swift; sourceTree = "<group>"; };
 		CC04651321C11024006435CD /* PostManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostManager.swift; sourceTree = "<group>"; };
 		CC04651521C111E5006435CD /* LabelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelManager.swift; sourceTree = "<group>"; };
 		CC04651721C207AE006435CD /* UIButton+Unitl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Unitl.swift"; sourceTree = "<group>"; };
 		CC04651921C22B4B006435CD /* ChannelPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPostViewController.swift; sourceTree = "<group>"; };
-		CC04651B21C22D88006435CD /* PostCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreateViewController.swift; sourceTree = "<group>"; };
 		CC04651D21C23150006435CD /* SearchCenterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCenterViewController.swift; sourceTree = "<group>"; };
 		CC13191D21BF4D8300143537 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		CC13191F21BF4E2900143537 /* DevKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevKit.swift; sourceTree = "<group>"; };
@@ -114,12 +115,29 @@
 		CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuHeader.swift; sourceTree = "<group>"; };
 		CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuView.swift; sourceTree = "<group>"; };
 		CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuControl.swift; sourceTree = "<group>"; };
-		CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		CC89969121DD232600F044CA /* MyCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
+		CC89969221DD232600F044CA /* CollectionDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionDetailViewController.swift; sourceTree = "<group>"; };
+		CC89969321DD232600F044CA /* TapCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapCollectionViewController.swift; sourceTree = "<group>"; };
+		CC89969921DD238E00F044CA /* PostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
+		CC89969A21DD238E00F044CA /* PostCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCreateViewController.swift; sourceTree = "<group>"; };
+		CC89969B21DD238E00F044CA /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
+		CC89969C21DD238E00F044CA /* TabPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabPostViewController.swift; sourceTree = "<group>"; };
+		CC89969E21DD238E00F044CA /* PostBaseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostBaseCell.swift; sourceTree = "<group>"; };
+		CC8996A621DD23D200F044CA /* LabelCenterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelCenterViewController.swift; sourceTree = "<group>"; };
+		CC8996A721DD23D200F044CA /* CreateLabelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateLabelViewController.swift; sourceTree = "<group>"; };
+		CC8996AD21DD242400F044CA /* FamousCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FamousCell.swift; sourceTree = "<group>"; };
+		CC8996B121DD242500F044CA /* BookCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
+		CC8996B621DD249400F044CA /* AccountListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountListViewController.swift; sourceTree = "<group>"; };
+		CC8996B721DD249400F044CA /* ForgotViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForgotViewController.swift; sourceTree = "<group>"; };
+		CC8996B821DD249400F044CA /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		CC8996B921DD249400F044CA /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		CC8996BB21DD249400F044CA /* AccountListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountListCell.swift; sourceTree = "<group>"; };
+		CC8996C121DD24C700F044CA /* LabelDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDetailViewController.swift; sourceTree = "<group>"; };
+		CC8996C321DD24D200F044CA /* FamousDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamousDetailViewController.swift; sourceTree = "<group>"; };
+		CC8996C521DD24E700F044CA /* BookDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewController.swift; sourceTree = "<group>"; };
 		CCA0BA7C21C3B61900C1938C /* UITextView+JS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextView+JS.h"; sourceTree = "<group>"; };
 		CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextView+JS.m"; sourceTree = "<group>"; };
 		CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
-		CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelCenterViewController.swift; sourceTree = "<group>"; };
-		CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLabelViewController.swift; sourceTree = "<group>"; };
 		CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFunctionViewController.swift; sourceTree = "<group>"; };
 		CCD6776B21CB8E5E000AF524 /* UIImage+Unitl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Unitl.h"; sourceTree = "<group>"; };
 		CCD6776C21CB8E5E000AF524 /* UIImage+Unitl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Unitl.m"; sourceTree = "<group>"; };
@@ -127,23 +145,16 @@
 		CCD6777021CC7B4E000AF524 /* NSDate+Unitl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate+Unitl.swift"; sourceTree = "<group>"; };
 		CCD6777221CC80CA000AF524 /* NameEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEditViewController.swift; sourceTree = "<group>"; };
 		CCD6777421CC80D5000AF524 /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
-		CCD6783521CD5A9C000AF524 /* AccountListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountListViewController.swift; sourceTree = "<group>"; };
-		CCD6783721CD5F80000AF524 /* AccountListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountListCell.swift; sourceTree = "<group>"; };
 		CCD6783921CE0476000AF524 /* FamousManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamousManager.swift; sourceTree = "<group>"; };
 		CCD6783B21CE04A6000AF524 /* BookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookManager.swift; sourceTree = "<group>"; };
 		CCD6783D21CE0959000AF524 /* TopicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicManager.swift; sourceTree = "<group>"; };
 		CCD6784021CE0A2A000AF524 /* TopicCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicCell.swift; sourceTree = "<group>"; };
 		CCD6784221CE0EBC000AF524 /* EssayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayCell.swift; sourceTree = "<group>"; };
 		CCD6784421D077BE000AF524 /* SearchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchListViewController.swift; sourceTree = "<group>"; };
-		CCD6784621D07B06000AF524 /* FamousCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamousCell.swift; sourceTree = "<group>"; };
-		CCD6784821D07B12000AF524 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
 		CCD6784A21D07F6D000AF524 /* UITableView+Unitl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Unitl.swift"; sourceTree = "<group>"; };
 		CCD6784E21D0B377000AF524 /* FavoriteListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteListViewController.swift; sourceTree = "<group>"; };
-		CCD6785021D0B494000AF524 /* TabPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPostViewController.swift; sourceTree = "<group>"; };
-		CCD6785321D0B697000AF524 /* MyCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
 		CCD6785421D0B697000AF524 /* MyFavoriteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFavoriteViewController.swift; sourceTree = "<group>"; };
 		CCD6785521D0B697000AF524 /* MyInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyInfoViewController.swift; sourceTree = "<group>"; };
-		CCD6785621D0B697000AF524 /* MyPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPostViewController.swift; sourceTree = "<group>"; };
 		CCD6785721D0B697000AF524 /* MyPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageViewController.swift; sourceTree = "<group>"; };
 		CCD6785821D0B697000AF524 /* MyCommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCommentViewController.swift; sourceTree = "<group>"; };
 		CCD6785921D0B697000AF524 /* MyMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyMessageViewController.swift; sourceTree = "<group>"; };
@@ -156,7 +167,6 @@
 		CCDF5C1121BF48E40075C580 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CCDF5C1821BF48E50075C580 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CCDF5C1D21BF48E50075C580 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CCE3409D21BF9A1D0092905C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E2A6363CD805DDEE6A96C6AB /* Pods-Judou.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Judou.debug.xcconfig"; path = "Target Support Files/Pods-Judou/Pods-Judou.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -221,6 +231,12 @@
 		CC13191721BF4D6600143537 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				CC8996B421DD249400F044CA /* Account */,
+				CC8996AE21DD242500F044CA /* Book */,
+				CC8996AA21DD242400F044CA /* Famous */,
+				CC8996A421DD23D200F044CA /* Label */,
+				CC89969721DD238E00F044CA /* Post */,
+				CC89968F21DD232600F044CA /* Collection */,
 				CC13191A21BF4D6600143537 /* Daily */,
 				CC13191921BF4D6600143537 /* Square */,
 				CC13191821BF4D6600143537 /* Home */,
@@ -305,14 +321,9 @@
 				CCD6785221D0B697000AF524 /* My */,
 				CC13193121BF535900143537 /* HomeViewController.swift */,
 				CC13194221BF940C00143537 /* SettingViewController.swift */,
-				CCD6785021D0B494000AF524 /* TabPostViewController.swift */,
 				CCD6784E21D0B377000AF524 /* FavoriteListViewController.swift */,
-				CCE3409D21BF9A1D0092905C /* LoginViewController.swift */,
-				CC04650221C0A533006435CD /* RegisterViewController.swift */,
-				CC04650421C0A5F1006435CD /* ForgotViewController.swift */,
 				CCD6777221CC80CA000AF524 /* NameEditViewController.swift */,
 				CCD6777421CC80D5000AF524 /* DatePickerViewController.swift */,
-				CCD6783521CD5A9C000AF524 /* AccountListViewController.swift */,
 				CCD6786921D1BE2D000AF524 /* CreationViewController.swift */,
 			);
 			path = VC;
@@ -323,13 +334,9 @@
 			children = (
 				CC13193321BF536600143537 /* SquareViewController.swift */,
 				CC04651921C22B4B006435CD /* ChannelPostViewController.swift */,
-				CC04651B21C22D88006435CD /* PostCreateViewController.swift */,
 				CC04651D21C23150006435CD /* SearchCenterViewController.swift */,
 				CCD6784421D077BE000AF524 /* SearchListViewController.swift */,
-				CCA0BA8121C5737E00C1938C /* LabelCenterViewController.swift */,
-				CCA0BA8321C5751700C1938C /* CreateLabelViewController.swift */,
 				CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */,
-				CC670C7921C8C3650074EB1C /* PostDetailViewController.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -339,8 +346,6 @@
 			children = (
 				CC13194021BF69BF00143537 /* HomeMyHeaderView.swift */,
 				CCD6776E21CBFA29000AF524 /* HomePageHeaderView.swift */,
-				CC04651121C10E2F006435CD /* PostBaseCell.swift */,
-				CCD6783721CD5F80000AF524 /* AccountListCell.swift */,
 				CCD6786721D0E693000AF524 /* SubscribeCell.swift */,
 			);
 			path = View;
@@ -357,6 +362,148 @@
 			path = JSVariableMenu;
 			sourceTree = "<group>";
 		};
+		CC89968F21DD232600F044CA /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				CC89969021DD232600F044CA /* VC */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
+		CC89969021DD232600F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC89969121DD232600F044CA /* MyCollectionViewController.swift */,
+				CC89969221DD232600F044CA /* CollectionDetailViewController.swift */,
+				CC89969321DD232600F044CA /* TapCollectionViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC89969721DD238E00F044CA /* Post */ = {
+			isa = PBXGroup;
+			children = (
+				CC89969821DD238E00F044CA /* VC */,
+				CC89969D21DD238E00F044CA /* View */,
+			);
+			path = Post;
+			sourceTree = "<group>";
+		};
+		CC89969821DD238E00F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC89969B21DD238E00F044CA /* MyPostViewController.swift */,
+				CC89969C21DD238E00F044CA /* TabPostViewController.swift */,
+				CC89969A21DD238E00F044CA /* PostCreateViewController.swift */,
+				CC89969921DD238E00F044CA /* PostDetailViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC89969D21DD238E00F044CA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CC89969E21DD238E00F044CA /* PostBaseCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CC8996A421DD23D200F044CA /* Label */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996A521DD23D200F044CA /* VC */,
+			);
+			path = Label;
+			sourceTree = "<group>";
+		};
+		CC8996A521DD23D200F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996A621DD23D200F044CA /* LabelCenterViewController.swift */,
+				CC8996A721DD23D200F044CA /* CreateLabelViewController.swift */,
+				CC8996C121DD24C700F044CA /* LabelDetailViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC8996AA21DD242400F044CA /* Famous */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996AB21DD242400F044CA /* VC */,
+				CC8996AC21DD242400F044CA /* View */,
+			);
+			path = Famous;
+			sourceTree = "<group>";
+		};
+		CC8996AB21DD242400F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996C321DD24D200F044CA /* FamousDetailViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC8996AC21DD242400F044CA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996AD21DD242400F044CA /* FamousCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CC8996AE21DD242500F044CA /* Book */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996AF21DD242500F044CA /* VC */,
+				CC8996B021DD242500F044CA /* View */,
+			);
+			path = Book;
+			sourceTree = "<group>";
+		};
+		CC8996AF21DD242500F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996C521DD24E700F044CA /* BookDetailViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC8996B021DD242500F044CA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996B121DD242500F044CA /* BookCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CC8996B421DD249400F044CA /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996B521DD249400F044CA /* VC */,
+				CC8996BA21DD249400F044CA /* View */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		CC8996B521DD249400F044CA /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996B621DD249400F044CA /* AccountListViewController.swift */,
+				CC8996B721DD249400F044CA /* ForgotViewController.swift */,
+				CC8996B821DD249400F044CA /* LoginViewController.swift */,
+				CC8996B921DD249400F044CA /* RegisterViewController.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		CC8996BA21DD249400F044CA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CC8996BB21DD249400F044CA /* AccountListCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		CCA0BA7B21C3B5EC00C1938C /* JSTextView */ = {
 			isa = PBXGroup;
 			children = (
@@ -371,8 +518,6 @@
 			children = (
 				CCD6784021CE0A2A000AF524 /* TopicCell.swift */,
 				CCD6784221CE0EBC000AF524 /* EssayCell.swift */,
-				CCD6784621D07B06000AF524 /* FamousCell.swift */,
-				CCD6784821D07B12000AF524 /* BookCell.swift */,
 				CCD6786121D0B8A4000AF524 /* VideoCell.swift */,
 			);
 			path = View;
@@ -381,9 +526,7 @@
 		CCD6785221D0B697000AF524 /* My */ = {
 			isa = PBXGroup;
 			children = (
-				CCD6785321D0B697000AF524 /* MyCollectionViewController.swift */,
 				CCD6785521D0B697000AF524 /* MyInfoViewController.swift */,
-				CCD6785621D0B697000AF524 /* MyPostViewController.swift */,
 				CCD6785721D0B697000AF524 /* MyPageViewController.swift */,
 				CCD6785821D0B697000AF524 /* MyCommentViewController.swift */,
 				CCD6785921D0B697000AF524 /* MyMessageViewController.swift */,
@@ -572,70 +715,75 @@
 			files = (
 				CCD6784121CE0A2A000AF524 /* TopicCell.swift in Sources */,
 				CCD6786021D0B697000AF524 /* MyMessageViewController.swift in Sources */,
-				CC670C7A21C8C3650074EB1C /* PostDetailViewController.swift in Sources */,
 				CCD6785E21D0B697000AF524 /* MyPageViewController.swift in Sources */,
+				CC8996C021DD249400F044CA /* AccountListCell.swift in Sources */,
 				CC04650E21C0EA97006435CD /* JSActionSheet.m in Sources */,
-				CCE3409E21BF9A1D0092905C /* LoginViewController.swift in Sources */,
-				CCD6784921D07B12000AF524 /* BookCell.swift in Sources */,
 				CCD6784F21D0B377000AF524 /* FavoriteListViewController.swift in Sources */,
 				CCD6777121CC7B4E000AF524 /* NSDate+Unitl.swift in Sources */,
 				CC13192921BF518200143537 /* UINavigationController+Unitl.swift in Sources */,
+				CC8996C221DD24C700F044CA /* LabelDetailViewController.swift in Sources */,
 				CCD6786A21D1BE2D000AF524 /* CreationViewController.swift in Sources */,
 				CC13192621BF505E00143537 /* BaseTabBarController.swift in Sources */,
 				CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */,
 				CCD6777321CC80CA000AF524 /* NameEditViewController.swift in Sources */,
 				CC04650821C0B6CD006435CD /* Networking.swift in Sources */,
+				CC8996C621DD24E700F044CA /* BookDetailViewController.swift in Sources */,
+				CC8996A221DD238E00F044CA /* TabPostViewController.swift in Sources */,
+				CC8996A921DD23D200F044CA /* CreateLabelViewController.swift in Sources */,
 				CCD6786C21D1D19D000AF524 /* CollectionManager.swift in Sources */,
+				CC8996BE21DD249400F044CA /* LoginViewController.swift in Sources */,
 				CC13193821BF5A7400143537 /* BaseShowBarViewController.swift in Sources */,
-				CCD6785A21D0B697000AF524 /* MyCollectionViewController.swift in Sources */,
 				CCD6786821D0E693000AF524 /* SubscribeCell.swift in Sources */,
+				CC8996A821DD23D200F044CA /* LabelCenterViewController.swift in Sources */,
+				CC89969F21DD238E00F044CA /* PostDetailViewController.swift in Sources */,
 				CC13193A21BF5A8300143537 /* BaseHideBarViewController.swift in Sources */,
-				CCD6783821CD5F80000AF524 /* AccountListCell.swift in Sources */,
+				CC89969421DD232600F044CA /* MyCollectionViewController.swift in Sources */,
 				CCD6784321CE0EBC000AF524 /* EssayCell.swift in Sources */,
+				CC89969621DD232600F044CA /* TapCollectionViewController.swift in Sources */,
 				CCD6783A21CE0476000AF524 /* FamousManager.swift in Sources */,
-				CC04650521C0A5F1006435CD /* ForgotViewController.swift in Sources */,
 				CCD6786221D0B8A4000AF524 /* VideoCell.swift in Sources */,
-				CC04650321C0A533006435CD /* RegisterViewController.swift in Sources */,
 				CCD6776D21CB8E5E000AF524 /* UIImage+Unitl.m in Sources */,
 				CCD6784521D077BE000AF524 /* SearchListViewController.swift in Sources */,
-				CCD6783621CD5A9C000AF524 /* AccountListViewController.swift in Sources */,
-				CCD6785121D0B494000AF524 /* TabPostViewController.swift in Sources */,
 				CC13194121BF69BF00143537 /* HomeMyHeaderView.swift in Sources */,
 				CCDF5C1221BF48E40075C580 /* AppDelegate.swift in Sources */,
 				CC04651A21C22B4B006435CD /* ChannelPostViewController.swift in Sources */,
 				CCD6786421D0E483000AF524 /* MySubscribeViewController.swift in Sources */,
 				CC04651021C0EE29006435CD /* BaseModel.swift in Sources */,
-				CCD6785D21D0B697000AF524 /* MyPostViewController.swift in Sources */,
 				CC13191E21BF4D8300143537 /* BaseViewController.swift in Sources */,
+				CC8996BC21DD249400F044CA /* AccountListViewController.swift in Sources */,
 				CCD6783E21CE0959000AF524 /* TopicManager.swift in Sources */,
 				CC13193421BF536600143537 /* SquareViewController.swift in Sources */,
 				CCA0BA8621C6055700C1938C /* AddFunctionViewController.swift in Sources */,
 				CC04651E21C23150006435CD /* SearchCenterViewController.swift in Sources */,
-				CCA0BA8221C5737E00C1938C /* LabelCenterViewController.swift in Sources */,
+				CC8996A021DD238E00F044CA /* PostCreateViewController.swift in Sources */,
 				CC1CEC3321D4E025005CD897 /* UIScrollView+Unitl.swift in Sources */,
-				CC04651221C10E2F006435CD /* PostBaseCell.swift in Sources */,
 				CC13192021BF4E2900143537 /* DevKit.swift in Sources */,
+				CC89969521DD232600F044CA /* CollectionDetailViewController.swift in Sources */,
+				CC8996C421DD24D200F044CA /* FamousDetailViewController.swift in Sources */,
 				CCD6784B21D07F6D000AF524 /* UITableView+Unitl.swift in Sources */,
 				CC3ABEF521C2624F00324A99 /* JSVariableMenuHeader.swift in Sources */,
 				CCD6785B21D0B697000AF524 /* MyFavoriteViewController.swift in Sources */,
 				CC13193621BF537000143537 /* DailyViewController.swift in Sources */,
+				CC8996BF21DD249400F044CA /* RegisterViewController.swift in Sources */,
 				CC3ABEF321C25D6100324A99 /* JSVariableMenuCell.swift in Sources */,
 				CC3ABEF921C269AD00324A99 /* JSVariableMenuControl.swift in Sources */,
 				CC04651821C207AE006435CD /* UIButton+Unitl.swift in Sources */,
-				CCA0BA8421C5751700C1938C /* CreateLabelViewController.swift in Sources */,
 				CC13193221BF535900143537 /* HomeViewController.swift in Sources */,
+				CC8996A121DD238E00F044CA /* MyPostViewController.swift in Sources */,
 				CC04651421C11024006435CD /* PostManager.swift in Sources */,
-				CC04651C21C22D88006435CD /* PostCreateViewController.swift in Sources */,
 				CCD6777521CC80D5000AF524 /* DatePickerViewController.swift in Sources */,
+				CC8996BD21DD249400F044CA /* ForgotViewController.swift in Sources */,
 				CCA0BA7E21C3B61900C1938C /* UITextView+JS.m in Sources */,
+				CC8996B221DD242500F044CA /* FamousCell.swift in Sources */,
 				CC04651621C111E5006435CD /* LabelManager.swift in Sources */,
+				CC8996B321DD242500F044CA /* BookCell.swift in Sources */,
 				CC3ABEF721C2646700324A99 /* JSVariableMenuView.swift in Sources */,
+				CC8996A321DD238E00F044CA /* PostBaseCell.swift in Sources */,
 				CCD6776F21CBFA29000AF524 /* HomePageHeaderView.swift in Sources */,
 				CCD6785C21D0B697000AF524 /* MyInfoViewController.swift in Sources */,
 				CCD6783C21CE04A6000AF524 /* BookManager.swift in Sources */,
 				CCD6785F21D0B697000AF524 /* MyCommentViewController.swift in Sources */,
 				CC13194321BF940C00143537 /* SettingViewController.swift in Sources */,
-				CCD6784721D07B06000AF524 /* FamousCell.swift in Sources */,
 				CC04650A21C0BC43006435CD /* AccountManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

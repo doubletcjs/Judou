@@ -11,6 +11,7 @@ import UIKit
 class MyFavoriteViewController: BaseShowBarViewController, SGPageTitleViewDelegate, SGPageContentScrollViewDelegate {
     private var pageTitleView: SGPageTitleView!
     private var pageContentScrollView: SGPageContentScrollView!
+    private var controllers: Array<FavoriteListViewController>! = Array()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,6 @@ class MyFavoriteViewController: BaseShowBarViewController, SGPageTitleViewDelega
         self.view.addSubview(pageTitleView)
         
         let controllerRect = CGRect.init(x: 0, y: pageTitleView.frame.maxY, width: kScreenWidth(), height: self.view.bounds.size.height-pageTitleView.frame.maxY)~
-        var controllers: Array<FavoriteListViewController> = Array()
         titleNames.forEach { (name) in
             let favoriteListVC = FavoriteListViewController()
             favoriteListVC.favoriteType = name
@@ -52,14 +52,22 @@ class MyFavoriteViewController: BaseShowBarViewController, SGPageTitleViewDelega
     // MARK: - SGPageTitleViewDelegate / SGPageContentScrollViewDelegate
     func pageTitleView(_ pageTitleView: SGPageTitleView!, selectedIndex: Int) {
         pageContentScrollView.setPageContentScrollViewCurrentIndex(selectedIndex)
+        
+        self.reloadFavoriteData(selectedIndex)
     }
     
     func pageContentScrollView(_ pageContentScrollView: SGPageContentScrollView!, progress: CGFloat, originalIndex: Int, targetIndex: Int) {
         pageTitleView.setPageTitleViewWithProgress(progress, originalIndex: originalIndex, targetIndex: targetIndex)
         
         if progress == 1 {
-            
+            self.reloadFavoriteData(targetIndex)
         }
+    }
+    // MARK: - 加载数据
+    func reloadFavoriteData(_ selectIndex: Int) -> Void {
+        let favoriteListVC: FavoriteListViewController = controllers[selectIndex]
+        favoriteListVC.pageRefreshData()
+        
     }
     // MARK: - 搜索
     @objc private func goSearchPost() -> Void {

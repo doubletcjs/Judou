@@ -39,8 +39,7 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         personalHeader.homePageTapHandle = { [weak self] () -> Void in
             if AccountManager.accountLogin() == true {
                 let postVC = MyPageViewController() 
-                postVC.hidesBottomBarWhenPushed = true
-                postVC.title = "我的主页"
+                postVC.hidesBottomBarWhenPushed = true 
                 self?.navigationController?.pushViewController(postVC, animated: true)
             } else {
                 self?.publicLoginAction()
@@ -215,7 +214,6 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         } else if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                
                 break
             case 1:
                 
@@ -248,6 +246,19 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         let nav = UINavigationController.init(rootViewController: loginVC)
         self.present(nav, animated: true, completion: nil)
     }
+    
+    func registerUser1() -> Void {
+        Networking.adminRegisterRequest(mobile: "15217224985", password: "870704") { (userModel, error) in
+            
+        }
+    }
+    
+    func registerUser2() -> Void {
+        Networking.adminRegisterRequest(mobile: "15217224986", password: "880312") { (userModel, error) in
+            
+        }
+    }
+    
     /*
     // MARK: - Navigation
 

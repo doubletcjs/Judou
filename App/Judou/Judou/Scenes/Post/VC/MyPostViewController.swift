@@ -39,6 +39,9 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         
         tableView.setupRefresh(self, #selector(self.refreshPostData), #selector(self.loadMorePostData))
         tableView.mj_header.isHidden = false
+        tableView.mj_footer.isHidden = false
+        
+        self.refreshPostData()
     }
     // MARK: - 加载数据
     @objc private func refreshPostData() -> Void {
@@ -52,11 +55,40 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     }
     
     @objc private func requestPostData() -> Void {
-        
+        Networking.myPostListRequest(params: ["userId": UserModel.fetchUser().userId, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+            if error != nil {
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                
+                if self!.currentPage > 0 {
+                    self?.currentPage -= 1
+                    self?.tableView.mj_footer.endRefreshing()
+                }
+            } else {
+                let array: [PostModel] = list as! [PostModel]
+                if self!.currentPage == 0 {
+                    self?.dataSources = array
+                } else {
+                    self?.dataSources = self!.dataSources+array
+                }
+                
+                self?.tableView.reloadData()
+                
+                if array.count < self!.pageSize {
+                    self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                } else {
+                    self?.tableView.mj_footer.endRefreshing()
+                }
+            }
+            
+            self?.tableView.mj_header.endRefreshing()
+        }
     }
     // MARK: - 发布
     @objc private func goCreatePost() -> Void {
         let createPostVC = PostCreateViewController()
+        createPostVC.creationCompletionHandle = { [weak self] () -> Void in
+            self?.refreshPostData()
+        }
         let nav = UINavigationController.init(rootViewController: createPostVC)
         
         self.present(nav, animated: true, completion: nil)

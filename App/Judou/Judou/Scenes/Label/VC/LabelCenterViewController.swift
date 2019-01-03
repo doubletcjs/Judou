@@ -52,7 +52,7 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
         }
         
         var isAdmin: Bool = false
-        if AccountManager.accountLogin() == true && UserModel.fetchUser().level == 0 {
+        if UserModel.fetchUser().level == 0 {
             isAdmin = true
         }
         
@@ -117,6 +117,7 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
         let model: LabelModel = dataSources[indexPath.item]
         
         let imageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: cellWidth, height: cellWidth)~)
+        imageView.contentMode = .scaleAspectFill
         imageView.yy_setImage(with: URL.init(string: model.cover),
                               placeholder: nil,
                               options: kWebImageOptions,
@@ -156,15 +157,38 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let model: LabelModel = dataSources[indexPath.item]
         
-        if labelSelectHandle != nil {
-            labelSelectHandle!(model)
+        if UserModel.fetchUser().level == 0 && model.status == 0 {
+            let actionSheet: JSActionSheet = JSActionSheet.init(title: nil, cancelTitle: "取消", otherTitles: ["选择标签", "通过审核"])
+            actionSheet.showView()
+            actionSheet.dismiss(forCompletionHandle: { [weak self] (index, isCancel) in
+                if isCancel == false {
+                    DispatchQueueMainAsyncAfter(deadline: .now(), target: self, execute: {
+                        if index == 0 {
+                            if self!.labelSelectHandle != nil {
+                                self?.labelSelectHandle!(model)
+                            }
+                            
+                            self?.labelCloseAction()
+                        } else {
+                            
+                        }
+                    })
+                }
+            })
+        } else {
+            if labelSelectHandle != nil {
+                labelSelectHandle!(model)
+            }
+            
+            self.labelCloseAction()
         }
-        
-        self.labelCloseAction()
     }
     // MARK: - 添加标签
     @objc private func createLabelAction() -> Void {
         let createLabelVC = CreateLabelViewController()
+        createLabelVC.creationCompletionHandle = { [weak self] () -> Void in
+            self?.requestLabelList()
+        }
         let nav = UINavigationController.init(rootViewController: createLabelVC)
         
         self.present(nav, animated: true, completion: nil)

@@ -17,39 +17,46 @@ class HomePageHeaderView: UIView {
                     button.setTitle("编辑", for: .normal)
                     button.removeTarget(self, action: #selector(self.attentionAccount), for: .touchUpInside)
                     button.addTarget(self, action: #selector(self.showMyInfo), for: .touchUpInside)
-                    
-                    nameLabel.text = account.nickname
-                    nameLabel.sizeToFit()
-                    
-                    let imageWH: CGFloat = 22
-                    var rect = nameLabel.frame
-                    rect.origin.x = (self.bounds.size.width-nameLabel.frame.size.width)/2.0
-                    rect.origin.y = fanButton.frame.origin.y-rect.size.height-8
-                    nameLabel.frame = rect~
-                    
-                    portraitImageView.center = CGPoint.init(x: button.center.x, y: nameLabel.frame.origin.y-16-portraitImageView.frame.size.height/2)~
-                    portraitImageView.yy_setImage(with: URL.init(string: account.portrait),
-                                               placeholder: UIImage.init(named: "topic_default_avatar"),
-                                               options: kWebImageOptions,
-                                               completion: nil)
-                    
-                    if account.gender == 0 {
-                        genderImageView.isHidden = true
+                } else {
+                    if account.isAttention == true {
+                        button.setTitle("取消关注", for: .normal)
                     } else {
-                        genderImageView.isHidden = false
-                        genderImageView.image = UIImage.init(named: "icon_male")
-                        if account.gender == 2 {
-                            genderImageView.image = UIImage.init(named: "icon_female")
-                        }
-                        
-                        genderImageView.contentMode = .scaleAspectFit
-                        rect = genderImageView.frame
-                        rect.size.width = imageWH
-                        rect.size.height = imageWH
-                        rect.origin.x = nameLabel.frame.maxX+6
-                        genderImageView.frame = rect~
-                        genderImageView.center = CGPoint.init(x: genderImageView.center.x, y: nameLabel.center.y)~
+                        button.setTitle("关注", for: .normal)
                     }
+                }
+                
+                nameLabel.text = account.nickname
+                nameLabel.sizeToFit()
+                
+                let imageWH: CGFloat = 22
+                var rect = nameLabel.frame
+                rect.origin.x = (self.bounds.size.width-nameLabel.frame.size.width)/2.0
+                rect.origin.y = fanButton.frame.origin.y-rect.size.height-8
+                nameLabel.frame = rect~
+                
+                portraitImageView.center = CGPoint.init(x: button.center.x, y: nameLabel.frame.origin.y-16-portraitImageView.frame.size.height/2)~
+                portraitImageView.contentMode = .scaleAspectFill
+                portraitImageView.yy_setImage(with: URL.init(string: account.portrait),
+                                              placeholder: UIImage.init(named: "topic_default_avatar"),
+                                              options: kWebImageOptions,
+                                              completion: nil)
+                
+                if account.gender == 0 {
+                    genderImageView.isHidden = true
+                } else {
+                    genderImageView.isHidden = false
+                    genderImageView.image = UIImage.init(named: "icon_male")
+                    if account.gender == 2 {
+                        genderImageView.image = UIImage.init(named: "icon_female")
+                    }
+                    
+                    genderImageView.contentMode = .scaleAspectFit
+                    rect = genderImageView.frame
+                    rect.size.width = imageWH
+                    rect.size.height = imageWH
+                    rect.origin.x = nameLabel.frame.maxX+6
+                    genderImageView.frame = rect~
+                    genderImageView.center = CGPoint.init(x: genderImageView.center.x, y: nameLabel.center.y)~
                 }
             }
         }
@@ -100,7 +107,7 @@ class HomePageHeaderView: UIView {
         
         //分割线
         let lineLabel = UILabel.init(frame: CGRect.init(x: (self.bounds.size.width-0.8)/2, y: 0, width: 0.8, height: 17)~)
-        lineLabel.backgroundColor = kRGBColor(red: 147, green: 135, blue: 141, alpha: 1)
+        lineLabel.backgroundColor = UIColor.lightGray.withAlphaComponent(0.4)
         self.addSubview(lineLabel)
         lineLabel.center = CGPoint.init(x: lineLabel.center.x, y: attentionButton.center.y)~
         
@@ -121,16 +128,17 @@ class HomePageHeaderView: UIView {
         portraitImageView.layer.cornerRadius = portraitImageView.frame.size.width/2
         portraitImageView.layer.masksToBounds = true
         portraitImageView.clipsToBounds = true
-        portraitImageView.backgroundColor = .red
+        portraitImageView.image = UIImage.init(named: "topic_default_avatar")
         self.addSubview(portraitImageView)
         portraitImageView.isUserInteractionEnabled = true
         portraitImageView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(self.showPortrait)))
+        portraitImageView.center = CGPoint.init(x: button.center.x, y: fanButton.frame.origin.y-16-portraitImageView.frame.size.height/2)~
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     } 
-    // MARK: - 关注
+    // MARK: - 关注、取消关注
     @objc private func attentionAccount() -> Void {
     }
     // MARK: - 查看关注

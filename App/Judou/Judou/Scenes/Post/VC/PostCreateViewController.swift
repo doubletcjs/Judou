@@ -20,10 +20,13 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
     
     private var labelModel: LabelModel! = nil
     private var isPrivate: Bool! = false
-    private var postImageDatas: [Data]! = []
+    private var postImageData: Data! = Data()
+    private var postImageUrl: String! = ""
     
     private var famousModel: FamousModel! = nil
     private var bookModel: BookModel! = nil
+      
+    var creationCompletionHandle: CreationCompletionBlock?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -166,6 +169,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
             }
         }
         
+        cell?.textLabel?.text = nil
         cell?.textLabel?.font = kBaseFont(17)
         cell?.accessoryView = UIImageView.init(image: UIImage.init(named: "icon_right_arrow"))
         cell?.imageView?.image = nil
@@ -264,6 +268,8 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
                 imageButton.imageView?.contentMode = .scaleAspectFit
                 
                 imageButton.handleControlEvent(controlEvent: .touchUpInside) { [weak self] (sender) in
+                    self?.textView.resignFirstResponder()
+                    
                     let actionSheet: JSActionSheet = JSActionSheet.init(title: nil, cancelTitle: "取消", otherTitles: ["拍摄", "从手机相册选择"])
                     actionSheet.showView()
                     actionSheet.dismiss(forCompletionHandle: { [weak self] (index, isCancel) in
@@ -386,7 +392,8 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         func postCreate(_ fileUrl: String, _ hud: MBProgressHUD) -> Void {
             var params: [String: Any] = ["postDate": NSDate.dateToString(date: Date(), format: "yyyy-MM-dd HH:mm:ss")!,
                                          "authorId": UserModel.fetchUser().userId,
-                                         "content": textView.text!]
+                                         "content": textView.text!,
+                                         "postType": currentPage!]
             
             if labelModel != nil {
                 params["labelId"] = labelModel.objectId
@@ -412,7 +419,12 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
                 hud.hide(false)
                 
                 if isSuccessful == true {
+                    if self?.creationCompletionHandle != nil {
+                        self?.creationCompletionHandle!()
+                    }
+                    
                     showTextHUD("发帖成功", inView: nil, hideAfterDelay: 1.5)
+                    UserModel.updateUserInfo()
                     self?.postCloseAction()
                 } else {
                     showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
@@ -420,11 +432,11 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
             }
         }
         
-        if postImageDatas.count > 0 {
+        if postImageData.count > 0 {
             let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
             hud.mode = .determinate
             
-            Networking.fileUploadFunction(fileDataList: postImageDatas, function: "post", progressHandler: { (progress) in
+            Networking.fileUploadFunction(fileDataList: [postImageData], function: "post", progressHandler: { (progress) in
                 hud.progress = Float(progress!)
             }) { (fileUrls, error) in
                 if error != nil {
@@ -433,6 +445,8 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
                 } else {
                     let fileUrl: String = fileUrls!.first! as String
                     if isStringEmpty(fileUrl) == false {
+                        self.postImageData = Data()
+                        self.postImageUrl = fileUrl
                         hud.mode = .indeterminate
                         postCreate(fileUrl, hud)
                     } else {
@@ -441,6 +455,9 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
                     }
                 }
             }
+        } else if postImageUrl.count > 0 {
+            let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
+            postCreate(postImageUrl, hud)
         } else {
             let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
             postCreate("", hud)
@@ -512,7 +529,9 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
         
         let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
         imageButton.setImage(image, for: .normal)
-        postImageDatas.append(image.jpegData(compressionQuality: 0.8)!)
+        
+        postImageUrl = nil
+        postImageData = image.jpegData(compressionQuality: 0.8)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

@@ -12,7 +12,10 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
     private var tableView: UITableView!
     private var textField: UITextField!
     private var coverButton: UIButton!
-    private var coverImage: UIImage!
+    private var coverImageData: Data! = Data()
+    private var coverImageUrl: String! = ""
+    
+    var creationCompletionHandle: CreationCompletionBlock?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,6 +129,8 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
                 coverButton.imageView?.contentMode = .scaleAspectFit
                 coverButton.tag = 11
                 coverButton.handleControlEvent(controlEvent: .touchUpInside) { [weak self] (sender) in
+                    self?.textField.resignFirstResponder()
+                    
                     let actionSheet: JSActionSheet = JSActionSheet.init(title: nil, cancelTitle: "取消", otherTitles: ["拍摄", "从手机相册选择"])
                     actionSheet.showView()
                     actionSheet.dismiss(forCompletionHandle: { [weak self] (index, isCancel) in
@@ -188,7 +193,7 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
             return
         }
         
-        if coverImage == nil {
+        if coverImageData.count == 0 && coverImageUrl.count == 0 {
             showTextHUD("尚未添加封面", inView: nil, hideAfterDelay: 1.8)
             
             return
@@ -197,24 +202,6 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
         textField.resignFirstResponder()
         let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
         hud.mode = .determinate
-        
-        Networking.fileUploadFunction(fileDataList: [coverImage.jpegData(compressionQuality: 0.8)!], function: "label", progressHandler: { (progress) in
-            hud.progress = Float(progress!)
-        }) { [weak self] (fileUrls, error) in
-            if error != nil {
-                hud.hide(false)
-                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
-            } else {
-                let fileUrl: String = fileUrls!.first! as String
-                if isStringEmpty(fileUrl) == false {
-                    hud.mode = .indeterminate
-                    createLabelRequest(hud, fileUrl)
-                } else {
-                    hud.hide(false)
-                    showTextHUD("文件地址返回为空～", inView: nil, hideAfterDelay: 1.5)
-                }
-            }
-        }
         
         func createLabelRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
             var status: Int = 0
@@ -227,17 +214,47 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
                                                         "cover": coverUrl,
                                                         "status": status],
                                                function: "label") { [weak self] (isSuccessful, error) in
-                hud.hide(false)
-                
-                if isSuccessful == true {
-                    if status == 0 {
-                        showTextHUD("创建成功,待管理员审核通过后方可显示", inView: nil, hideAfterDelay: 1.5)
-                    }
-                    self?.labelCloseAction()
-                } else {
+                                                hud.hide(false)
+                                                
+                                                if isSuccessful == true {
+                                                    if self?.creationCompletionHandle != nil {
+                                                        self?.creationCompletionHandle!()
+                                                    }
+                                                    
+                                                    if status == 0 {
+                                                        showTextHUD("创建成功,待管理员审核通过后方可显示", inView: nil, hideAfterDelay: 1.5)
+                                                    }
+                                                    self?.labelCloseAction()
+                                                } else {
+                                                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                                                }
+            }
+        }
+        
+        if coverImageData.count > 0 {
+            Networking.fileUploadFunction(fileDataList: [coverImageData], function: "label", progressHandler: { (progress) in
+                hud.progress = Float(progress!)
+            }) { [weak self] (fileUrls, error) in
+                if error != nil {
+                    hud.hide(false)
                     showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                } else {
+                    let fileUrl: String = fileUrls!.first! as String
+                    if isStringEmpty(fileUrl) == false {
+                        self?.coverImageData = Data()
+                        self?.coverImageUrl = fileUrl
+                        
+                        hud.mode = .indeterminate
+                        createLabelRequest(hud, fileUrl)
+                    } else {
+                        hud.hide(false)
+                        showTextHUD("文件地址返回为空～", inView: nil, hideAfterDelay: 1.5)
+                    }
                 }
             }
+        } else if coverImageUrl.count > 0 {
+            hud.mode = .indeterminate
+            createLabelRequest(hud, coverImageUrl)
         }
     }
     // MARK: - 关闭
@@ -313,7 +330,9 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
         let image: UIImage = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
         coverButton.setImage(image, for: .normal)
         coverButton.viewWithTag(100)?.removeFromSuperview()
-        coverImage = image
+        
+        coverImageUrl = ""
+        coverImageData = image.jpegData(compressionQuality: 0.8)!
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

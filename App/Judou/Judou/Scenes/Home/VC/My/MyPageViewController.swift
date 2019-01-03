@@ -13,25 +13,28 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
     private var scrollView: MXScrollView!
     private var headerImageView: UIImageView!
     private var topBar: UIView!
+    private var topBarImageView: UIImageView!
     private var backButton: UIButton!
     private var nameLabel: UILabel!
     private var pageHeaderView: HomePageHeaderView!
+    private var controllers: Array<UIViewController>! = Array()
     
     private var pageTitleView: SGPageTitleView!
     private var pageContentScrollView: SGPageContentScrollView!
     
-    var account: UserModel!
+    var account: UserModel! = UserModel()
 
     override func viewDidLoad() {
         statusBarStyle = UIApplication.shared.statusBarStyle
         
         super.viewDidLoad()
-        
-        if account == nil {
-            account = UserModel.fetchUser()
-        }
 
         // Do any additional setup after loading the view.
+        //导航栏
+        topBar = UIView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: kStatusBarHeight()+self.navigationController!.navigationBar.frame.size.height)~)
+        self.view.addSubview(topBar)
+        topBar.clipsToBounds = true
+        
         scrollView = MXScrollView.init(frame: CGRect.init(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height)~)
         self.view.addSubview(scrollView)
         scrollView.contentSize = CGSize.init(width: 0, height: kScreenHeight()-currentSafeAreaInsets().bottom)~
@@ -43,7 +46,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         let height = (kScreenWidth()*3.0)/5.0+kStatusBarHeight()
         headerImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
         headerImageView.yy_setImage(with: URL.init(string: account.portrait),
-                                    placeholder: UIImage.init(named: "default_music_big")?.byBlurLight(),
+                                    placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
                                     options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
                                         if image != nil {
                                             self?.headerImageView.image = image!.byBlurLight()
@@ -52,6 +55,19 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         
         headerImageView.contentMode = .scaleAspectFill
         headerImageView.isUserInteractionEnabled = true
+        
+        //顶部栏背景图片
+        topBarImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
+        topBarImageView.yy_setImage(with: URL.init(string: account.portrait),
+                                    placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
+                                    options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
+                                        if image != nil {
+                                            self?.topBarImageView.image = image!.byBlurLight()
+                                        }
+        }
+        
+        topBarImageView.contentMode = .scaleAspectFill
+        topBar.insertSubview(topBarImageView, at: 0)
         
         scrollView.parallaxHeader.height = headerImageView.bounds.size.height
         scrollView.parallaxHeader.minimumHeight = kStatusBarHeight()+self.navigationController!.navigationBar.frame.size.height
@@ -64,11 +80,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         pageHeaderView.account = account
         pageHeaderView.currentVC = self
         headerImageView.addSubview(pageHeaderView)
-        
-        //导航栏
-        topBar = UIView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: kStatusBarHeight()+self.navigationController!.navigationBar.frame.size.height)~)
-        self.view.addSubview(topBar)
-        topBar.clipsToBounds = true
+        pageHeaderView.isUserInteractionEnabled = false
         
         //返回
         let bottomHeight = self.navigationController!.navigationBar.frame.size.height
@@ -84,7 +96,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         //顶部用户名
         nameLabel = UILabel.init(frame: CGRect.init(x: 0, y: topBar.frame.size.height, width: topBar.frame.size.width-54*2, height: backButton.frame.size.height)~)
         topBar.addSubview(nameLabel)
-        nameLabel.font = kBaseFont(16)
+        nameLabel.font = kBaseFont(17)
         nameLabel.text = account.nickname
         nameLabel.textAlignment = .center
         nameLabel.textColor = .white
@@ -112,14 +124,37 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         let postVC = TabPostViewController()
         postVC.superFrame = controllerRect
         postVC.isHomePage = true
+        postVC.userID = account.userId
+        controllers.append(postVC)
         
-        let collectionVC = UIViewController()
-        collectionVC.view.backgroundColor = .white
-        collectionVC.view.frame = controllerRect
+        let collectionVC = TapCollectionViewController()
+        collectionVC.superFrame = controllerRect
+        collectionVC.isHomePage = true
+        collectionVC.userID = account.userId
+        controllers.append(collectionVC)
         
-        pageContentScrollView = SGPageContentScrollView.init(frame: controllerRect, parentVC: self, childVCs: [postVC, collectionVC])
+        pageContentScrollView = SGPageContentScrollView.init(frame: controllerRect, parentVC: self, childVCs: controllers)
         pageContentScrollView.delegatePageContentScrollView = self
         scrollView.addSubview(pageContentScrollView)
+        
+        self.view.bringSubviewToFront(topBar)
+        
+        if account.userId.count == 0 {
+            account = UserModel.fetchUser()
+        }
+        
+        let hud = indicatorTextHUD("") 
+        Networking.myHomePageRequest(params: ["userId": account.userId, "loginId": UserModel.fetchUser().userId]) { (userModel, error) in
+            if error == nil {
+                self.account = userModel as? UserModel
+                self.refreshHomePage()
+                
+                hud.hide(true)
+            } else {
+                hud.hide(false)
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -132,6 +167,11 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         if account.userId == UserModel.fetchUser().userId {
             account = UserModel.fetchUser()
             pageHeaderView.account = account
+            self.refreshHomePage()
+        }
+        
+        if pageHeaderView != nil {
+            pageHeaderView.currentVC = self
         }
     }
     
@@ -141,18 +181,68 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         if statusBarStyle == .default && (self.presentedViewController == nil || "\(self.presentedViewController!.classForCoder)" != "STPopupContainerViewController") {
             UIApplication.shared.setStatusBarStyle(.default, animated: true)
         }
+        
+        if pageHeaderView != nil {
+            pageHeaderView.currentVC = nil
+        }
+    }
+    // MARK: - 加载首页数据
+    @objc private func refreshHomePage() -> Void {
+        DispatchQueueMainAsyncAfter(deadline: .now(), target: self, execute: {
+            self.pageHeaderView.isUserInteractionEnabled = true
+            self.pageHeaderView.account = self.account
+            
+            self.reloadHomePageData(self.pageTitleView.selectedIndex)
+            self.nameLabel.text = self.account.nickname
+            
+            self.headerImageView.yy_setImage(with: URL.init(string: self.account.portrait),
+                                             placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
+                                             options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
+                                                if image != nil {
+                                                    self?.headerImageView.image = image!.byBlurLight()
+                                                }
+            }
+            
+            self.topBarImageView.yy_setImage(with: URL.init(string: self.account.portrait),
+                                             placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
+                                             options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
+                                                if image != nil {
+                                                    self?.topBarImageView.image = image!.byBlurLight()
+                                                }
+            }
+            
+            var array: [String] = ["句子 0", "收藏夹 0"]
+            array[0] = "句子 \(self.account.postCount)"
+            array[1] = "收藏夹 \(self.account.collectionCount)"
+            
+            self.pageTitleView.resetTitle(array[0], for: 0)
+            self.pageTitleView.resetTitle(array[1], for: 1)
+        })
     }
     // MARK: - SGPageTitleViewDelegate / SGPageContentScrollViewDelegate
     func pageTitleView(_ pageTitleView: SGPageTitleView!, selectedIndex: Int) {
         pageContentScrollView.setPageContentScrollViewCurrentIndex(selectedIndex)
         
+        self.reloadHomePageData(selectedIndex)
     }
     
     func pageContentScrollView(_ pageContentScrollView: SGPageContentScrollView!, progress: CGFloat, originalIndex: Int, targetIndex: Int) {
         pageTitleView.setPageTitleViewWithProgress(progress, originalIndex: originalIndex, targetIndex: targetIndex)
         
         if progress == 1 {
-            
+            self.reloadHomePageData(targetIndex)
+        }
+    }
+    // MARK: - 加载数据
+    func reloadHomePageData(_ selectIndex: Int) -> Void {
+        if selectIndex == 0 {
+            let postVC: TabPostViewController = controllers[selectIndex] as! TabPostViewController
+            postVC.userID = account.userId
+            postVC.pageRefreshData()
+        } else if selectIndex == 1 {
+            let collectionVC: TapCollectionViewController = controllers[selectIndex] as! TapCollectionViewController
+            collectionVC.userID = account.userId
+            collectionVC.pageRefreshData()
         }
     }
     // MARK: - MXParallaxHeaderDelegate
@@ -168,16 +258,19 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         var frame = pageHeaderView.frame
         frame.origin.y = parallaxHeader.contentView.bounds.size.height-pageHeaderView.frame.size.height
         pageHeaderView.frame = frame
-        pageHeaderView.alpha = progress
+        
+        frame = topBarImageView.frame
+        frame.size.height = parallaxHeader.contentView.bounds.size.height
+        topBarImageView.frame = frame
         
         if alpha > 0.6 {
-            UIView.animate(withDuration: UIApplication.shared.statusBarOrientationAnimationDuration) {
+            UIView.animate(withDuration: 0.4) {
                 var frame = self.nameLabel.frame
                 frame.origin.y = self.backButton.frame.origin.y
                 self.nameLabel.frame = frame
             }
         } else {
-            UIView.animate(withDuration: UIApplication.shared.statusBarOrientationAnimationDuration) {
+            UIView.animate(withDuration: 0.4) {
                 var frame = self.nameLabel.frame
                 frame.origin.y = self.topBar.frame.size.height
                 self.nameLabel.frame = frame

@@ -62,21 +62,45 @@ class UserModel: BaseModel {
      */
     @objc var date: String = ""
     /**
-     *     状态 0 正常 1 禁言 2 禁用
-     */
-    @objc var status: Int = 0
-    /**
-     *     被举报次数
-     */
-    @objc var report: Int = 0
-    /**
      *     用户等级 0 管理员 1 普通用户
      */
     @objc var level: Int = 0
     /**
+     *     状态 0 正常 1 禁言 2 禁用
+     */
+    @objc var status: Int = 0
+    /**
      *     是否关注
      */
     @objc var isAttention: Bool = false
+    /**
+     *     被举报次数
+     */
+    @objc var reportCount: Int = 0
+    /**
+     *     订阅数
+     */
+    @objc var subscribeCount: Int = 0
+    /**
+     *     发帖数
+     */
+    @objc var postCount: Int = 0
+    /**
+     *     喜欢数
+     */
+    @objc var praiseCount: Int = 0
+    /**
+     *     收藏夹数
+     */
+    @objc var collectionCount: Int = 0
+    /**
+     *     关注
+     */
+    @objc var attentionCount: Int = 0
+    /**
+     *     粉丝
+     */
+    @objc var fanCount: Int = 0
     
     // MARK: - 主键
     @objc override class func getPrimaryKey() -> String {
@@ -102,7 +126,7 @@ class UserModel: BaseModel {
     
     class func fetchNewestUser(_ completionHandler: @escaping () -> Void) -> Void {
         let userId = UserDefaults.standard.object(forKey: kLoginUserID) as! String
-        Networking.requestUserInfo(userId) { (aUserModel, aError) in
+        Networking.requestMyInfo(userId: userId) { (aUserModel, aError) in
             if aUserModel == nil {
                 DispatchQueue.main.async {
                     completionHandler()
@@ -114,6 +138,13 @@ class UserModel: BaseModel {
                     completionHandler()
                 }
             }
+        }
+    }
+    
+    //发帖、创建收藏夹、点赞、收藏
+    class func updateUserInfo() -> Void {
+        self.fetchNewestUser {
+            
         }
     }
     // MARK: - 缓存用户信息

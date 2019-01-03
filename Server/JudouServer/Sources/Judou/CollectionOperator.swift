@@ -1,18 +1,19 @@
 //
-//  QueryOperator.swift
+//  CollectionOperator.swift
 //  Judou
 //
-//  Created by 4work on 2018/12/27.
+//  Created by 4work on 2019/1/3.
 //
 
 import Foundation
 
-class QueryOperator: BaseOperator {
-    // MARK: - 帖子列表
-    private func basePostListQuery(params: [String: Any], collectSQL: String, orderSQL: String) -> String {
+class CollectionOperator: BaseOperator {
+    // MARK: - 收藏夹帖子列表
+    func collectionPostListQuery(params: [String: Any]) -> String {
+        let loginId: String = params["loginId"] as! String
+        let collectionId: String = params["collectionId"] as! String
         let currentPage: Int = Int(params["currentPage"] as! String)!
         let pageSize: Int = Int(params["pageSize"] as! String)!
-        let loginId: String = params["loginId"] as! String
         
         let keys: [String] = [
             "\(posttable).objectId",
@@ -23,7 +24,7 @@ class QueryOperator: BaseOperator {
             "\(posttable).postType",
             "COUNT(DISTINCT \(praisepost).objectId) praiseCount",
             "COUNT(DISTINCT \(commenttable).objectId) commentCount",
-            "COUNT(DISTINCT \(collectpost).objectId) collectCount",
+            "COUNT(DISTINCT allcollectpost.objectId) collectCount",
             "COUNT(DISTINCT praisepost.objectId) isPraiseCount",
             "COUNT(DISTINCT collectpost.objectId) isCollectCount",
             "\(accounttable).userId",
@@ -31,14 +32,17 @@ class QueryOperator: BaseOperator {
             "\(accounttable).portrait"] //基础字段
         
         let statements: [String] = [
+            "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(collectpost).postId)",
             "LEFT JOIN \(praisepost) ON (\(praisepost).postId = \(posttable).objectId)",
             "LEFT JOIN \(commenttable) ON (\(commenttable).postId = \(posttable).objectId)",
-            "LEFT JOIN \(collectpost) ON (\(collectpost).postId = \(posttable).objectId)",
+            "LEFT JOIN \(collectpost) allcollectpost ON (allcollectpost.postId = \(posttable).objectId)",
             "LEFT JOIN \(praisepost) praisepost ON (praisepost.postId = \(posttable).objectId AND praisepost.authorId = \(loginId))",
             "LEFT JOIN \(collectpost) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = \(loginId))",
             "LEFT JOIN \(accounttable) ON (\(accounttable).userId = \(posttable).authorId)"]
         
-        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(posttable) \(statements.joined(separator: " ")) \(collectSQL) GROUP BY \(posttable).objectId \(orderSQL) LIMIT \(currentPage*pageSize), \(pageSize)"
+        let collectSQL: String = "WHERE \(collectpost).objectId = \(collectionId)"
+        
+        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(collectpost) \(statements.joined(separator: " ")) \(collectSQL) GROUP BY \(posttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
         
         let valueOfKeys: [String] = [
             "objectId",
@@ -58,6 +62,7 @@ class QueryOperator: BaseOperator {
             "nickname",
             "portrait"];
         
+        print("statement:\(statement)")
         if mysql.query(statement: statement) == false {
             Utils.logError("我的帖子列表", mysql.errorMessage())
             responseJson = Utils.failureResponseJson("我的帖子列表查询失败")
@@ -107,24 +112,68 @@ class QueryOperator: BaseOperator {
                 }
             }
             
+            print("postList:\(postList)")
             responseJson = Utils.successResponseJson(postList)
         }
         
         return responseJson
     }
-    // MARK: - 用户发布的帖子列表
-    func myPostListQuery(params: [String: Any]) -> String {
+    // MARK: - 收藏夹列表
+    func collectionListQuery(params: [String: Any]) -> String {
         let loginId: String = params["loginId"] as! String
         let userId: String = params["userId"] as! String
+        let currentPage: Int = Int(params["currentPage"] as! String)!
+        let pageSize: Int = Int(params["pageSize"] as! String)!
         
-        var collectSQL: String = "WHERE \(posttable).authorId = '\(userId)' AND \(posttable).isPrivate = false"
-        var orderSQL: String = ""
+        var collectSQL: String = "WHERE \(collecttable).authorId = '\(userId)' AND \(collecttable).isPrivate = false"
         if loginId.count > 0 && loginId == userId {
-            //当前登录用户查看自己所有的帖子
-            collectSQL = "WHERE \(posttable).authorId = '\(userId)'"
-            orderSQL = "ORDER BY \(posttable).objectId DESC"
+            //当前登录用户查看自己的收藏夹
+            collectSQL = "WHERE \(collecttable).authorId = '\(userId)'"
         }
         
-        return self.basePostListQuery(params: params, collectSQL: collectSQL, orderSQL: orderSQL)
+        let statementKeys: [String] = [
+            "\(collecttable).objectId",
+            "\(collecttable).name",
+            "\(collecttable).cover",
+            "\(collecttable).isPrivate",
+            "\(collecttable).introduction",
+            "COUNT(DISTINCT \(collectpost).objectId) postCount"]
+        
+        let countStatements: [String] = [
+            "LEFT JOIN \(collectpost) ON (\(collectpost).authorId = \(userId) AND \(collectpost).collectId = \(collecttable).objectId)"]
+        
+        let statement = "SELECT \(statementKeys.joined(separator: ", ")) FROM \(collecttable) \(countStatements.joined(separator: " ")) \(collectSQL) GROUP BY \(collecttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
+        
+        let keys: [String] = [
+            "objectId",
+            "name",
+            "cover",
+            "isPrivate",
+            "introduction",
+            "postCount"]
+        
+        if mysql.query(statement: statement) == false {
+            Utils.logError("收藏夹列表", mysql.errorMessage())
+            responseJson = Utils.failureResponseJson("收藏夹列表查询失败")
+        } else {
+            let results = mysql.storeResults()!
+            var collectionList = [[String: Any]]()
+            if results.numRows() > 0 {
+                results.forEachRow { (row) in
+                    var dict: [String: Any] = [:]
+                    for idx in 0...row.count-1 {
+                        let key = keys[idx]
+                        let value = row[idx]
+                        dict[key] = value
+                    }
+                    
+                    collectionList.append(dict)
+                }
+            }
+            
+            responseJson = Utils.successResponseJson(collectionList)
+        }
+        
+        return responseJson
     }
 }

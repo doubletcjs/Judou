@@ -14,6 +14,11 @@ let accounttable = "account_table"
 let posttable = "post_table"
 let commenttable = "comment_table"
 
+let praisepost = "praise_post"
+let collectpost = "collect_post"
+let reportuser = "report_user"
+let attentionfan = "attention_fan"
+
 let labelposttable = "label_post"
 let famousposttable = "famous_post"
 let bookposttable = "book_post"

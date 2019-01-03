@@ -33,4 +33,8 @@ class CollectionModel: BaseModel {
      *     是否私密
      */
     @objc var isPrivate: Bool = false
+    /**
+     *     收藏帖子数
+     */
+    @objc var postCount: Int = 0
 }

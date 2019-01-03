@@ -91,6 +91,7 @@ class PostBaseCell: UITableViewCell {
         portraitImageView.layer.cornerRadius = portraitImageView.frame.size.height/2
         portraitImageView.layer.masksToBounds = true
         portraitImageView.clipsToBounds = true
+        portraitImageView.contentMode = .scaleAspectFill
         portraitImageView.tag = cellTag
         cellTag += 1
         self.addSubview(portraitImageView)
@@ -212,6 +213,7 @@ class PostBaseCell: UITableViewCell {
             postImageView.layer.cornerRadius = 16
             postImageView.layer.masksToBounds = true
             postImageView.clipsToBounds = true
+            postImageView.contentMode = .scaleAspectFill
             postImageView.tag = cellTag
             cellTag += 1
             self.addSubview(postImageView)
@@ -273,7 +275,7 @@ class PostBaseCell: UITableViewCell {
         itemView.addSubview(lineLabel)
         
         var items: [String] = ["icon_like", "icon_comment", "icon_collect", "icon_share"]
-        let itemValues: [Int] = [postModel.praise, postModel.comment, postModel.collect, 0]
+        let itemValues: [Int] = [postModel.praiseCount, postModel.commentCount, postModel.collectCount, 0]
         if postModel.isPraise == true {
             items[0] = "icon_like_selected"
         }

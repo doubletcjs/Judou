@@ -59,7 +59,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             params["birthday"] = userInfoModel.birthday
         }
         
-        func uploadPortrait(_ userParams: [String: Any], _ showHUD: Bool) -> Void {
+        func uploadUserInfo(_ userParams: [String: Any], _ showHUD: Bool) -> Void {
             if userParams.keys.count > 1 {
                 var hud = MBProgressHUD()
                 if showHUD == true {
@@ -74,6 +74,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
                     if isSuccessful == true {
                         showTextHUD("修改成功", inView: nil, hideAfterDelay: 1.5)
                         self!.navigationController?.popViewController(animated: true)
+                        UserModel.updateUserInfo()
                     } else {
                         showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
                     }
@@ -104,10 +105,10 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
                     }
                 }
                 
-                uploadPortrait(params, false)
+                uploadUserInfo(params, false)
             }
         } else {
-            uploadPortrait(params, true)
+            uploadUserInfo(params, true)
         }
     }
     // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -165,6 +166,7 @@ class MyInfoViewController: BaseShowBarViewController, UITableViewDelegate, UITa
             imageView.layer.cornerRadius = imageView.frame.size.height/2
             imageView.layer.masksToBounds = true
             imageView.clipsToBounds = true
+            imageView.contentMode = .scaleAspectFill 
             imageView.tag = cellTag
             cellTag += 1
             cell?.addSubview(imageView)
