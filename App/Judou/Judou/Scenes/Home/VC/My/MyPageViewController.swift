@@ -11,9 +11,9 @@ import UIKit
 class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate, SGPageTitleViewDelegate, SGPageContentScrollViewDelegate {
     private var statusBarStyle: UIStatusBarStyle!
     private var scrollView: MXScrollView!
-    private var headerImageView: UIImageView!
+    private var headerImageView: BlurImageView!
     private var topBar: UIView!
-    private var topBarImageView: UIImageView!
+    private var topBarImageView: BlurImageView!
     private var backButton: UIButton!
     private var nameLabel: UILabel!
     private var pageHeaderView: HomePageHeaderView!
@@ -44,29 +44,15 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         
         // 5/4 = w/h
         let height = (kScreenWidth()*3.0)/5.0+kStatusBarHeight()
-        headerImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        headerImageView.yy_setImage(with: URL.init(string: account.portrait),
-                                    placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
-                                    options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
-                                        if image != nil {
-                                            self?.headerImageView.image = image!.byBlurLight()
-                                        }
-        }
-        
-        headerImageView.contentMode = .scaleAspectFill
+        headerImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
+        headerImageView.setImage(with: account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
+        headerImageView.showBlurOriginal = false
         headerImageView.isUserInteractionEnabled = true
         
         //顶部栏背景图片
-        topBarImageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        topBarImageView.yy_setImage(with: URL.init(string: account.portrait),
-                                    placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
-                                    options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
-                                        if image != nil {
-                                            self?.topBarImageView.image = image!.byBlurLight()
-                                        }
-        }
-        
-        topBarImageView.contentMode = .scaleAspectFill
+        topBarImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
+        topBarImageView.setImage(with: account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
+        topBarImageView.showBlurOriginal = false
         topBar.insertSubview(topBarImageView, at: 0)
         
         scrollView.parallaxHeader.height = headerImageView.bounds.size.height

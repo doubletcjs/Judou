@@ -107,7 +107,7 @@ class HomePageHeaderView: UIView {
         
         //分割线
         let lineLabel = UILabel.init(frame: CGRect.init(x: (self.bounds.size.width-0.8)/2, y: 0, width: 0.8, height: 17)~)
-        lineLabel.backgroundColor = UIColor.lightGray.withAlphaComponent(0.4)
+        lineLabel.backgroundColor = UIColor.white
         self.addSubview(lineLabel)
         lineLabel.center = CGPoint.init(x: lineLabel.center.x, y: attentionButton.center.y)~
         
@@ -174,5 +174,9 @@ class HomePageHeaderView: UIView {
     @objc private func showMyInfo() -> Void {
         let infoVC = MyInfoViewController()
         currentVC.navigationController?.pushViewController(infoVC, animated: true)
+    }
+    // MARK: -
+    deinit {
+        Log("deinit \(self.classForCoder)")
     }
 }

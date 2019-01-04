@@ -62,7 +62,6 @@ class CollectionOperator: BaseOperator {
             "nickname",
             "portrait"];
         
-        print("statement:\(statement)")
         if mysql.query(statement: statement) == false {
             Utils.logError("我的帖子列表", mysql.errorMessage())
             responseJson = Utils.failureResponseJson("我的帖子列表查询失败")
@@ -112,7 +111,6 @@ class CollectionOperator: BaseOperator {
                 }
             }
             
-            print("postList:\(postList)")
             responseJson = Utils.successResponseJson(postList)
         }
         
@@ -136,6 +134,7 @@ class CollectionOperator: BaseOperator {
             "\(collecttable).name",
             "\(collecttable).cover",
             "\(collecttable).isPrivate",
+            "\(collecttable).authorId",
             "\(collecttable).introduction",
             "COUNT(DISTINCT \(collectpost).objectId) postCount"]
         
@@ -149,6 +148,7 @@ class CollectionOperator: BaseOperator {
             "name",
             "cover",
             "isPrivate",
+            "authorId",
             "introduction",
             "postCount"]
         
@@ -176,4 +176,6 @@ class CollectionOperator: BaseOperator {
         
         return responseJson
     }
+    // MARK: - 删除收藏夹
+    // MARK: - 编辑收藏夹
 }

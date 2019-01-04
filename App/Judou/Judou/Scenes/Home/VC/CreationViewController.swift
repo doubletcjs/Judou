@@ -28,6 +28,11 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
 
         // Do any additional setup after loading the view.
         self.title = "创建收藏夹"
+        if createType == 1 {
+            self.title = "创建名人"
+        } else if createType == 2 {
+            self.title = "创建书籍"
+        }
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.collectionCloseAction))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_done"), style: .plain, target: self, action: #selector(self.createCollectionAction))

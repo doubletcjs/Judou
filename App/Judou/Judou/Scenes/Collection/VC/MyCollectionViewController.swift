@@ -186,6 +186,21 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
             privateBtn.frame = CGRect.init(x: 12, y: cell.bounds.size.height-12-8, width: 8, height: 8)~
         }
         
+        //数量
+        if model.postCount > 0 {
+            let countLabel = UILabel.init()
+            countLabel.font = kBaseFont(10)
+            countLabel.textColor = .white
+            countLabel.text = "\(model.postCount)"+"句"
+            countLabel.numberOfLines = 0
+            countLabel.textAlignment = .center
+            countLabel.tag = cellTag
+            cellTag += 1
+            cell.addSubview(countLabel)
+            countLabel.sizeToFit()
+            countLabel.frame = CGRect.init(x: cell.bounds.size.width-12-countLabel.frame.size.width, y: cell.bounds.size.height-8-countLabel.frame.size.height, width: countLabel.frame.size.width, height: countLabel.frame.size.height)~
+        }
+        
         return cell
     }
     

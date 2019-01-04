@@ -368,6 +368,43 @@ class Networking: NSObject {
             })
         }
     }
+    // MARK: - 删除收藏夹
+    /**
+     * 参数内容 collectionId（不能为空）
+     */
+    class func collectionDeleteRequest(params: [String: Any], completionHandler: SuccessFailureBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/collectionDelete", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    if completionHandler != nil {
+                        completionHandler!(true, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(false, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 修改收藏夹
+    class func editCollection(_ info: Dictionary<String, Any>, completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/collectionEdit", method: .post, parameters: info).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let collectionModel = CollectionModel.mj_object(withKeyValues: data!) as CollectionModel?
+                    
+                    if completionHandler != nil {
+                        completionHandler!(collectionModel, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
     // MARK: - 我的列表
     /**
      * 参数内容 userId（不能为空）、currentPage、pageSize、loginId (loginId==userId，自己查看自己的帖子)

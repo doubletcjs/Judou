@@ -166,4 +166,8 @@ class HomeMyHeaderView: UIView {
             itemTapHandle!(button.tag-10)
         }
     }
+    // MARK: -
+    deinit {
+        Log("deinit \(self.classForCoder)")
+    }
 }

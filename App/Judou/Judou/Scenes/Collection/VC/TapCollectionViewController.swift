@@ -217,6 +217,14 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets.init(top: 20, left: 20, bottom: 0, right: 20)~
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let model = dataSources[indexPath.row]
+        
+        let detailVC = CollectionDetailViewController()
+        detailVC.collectionModel = model
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
     /*
     // MARK: - Navigation
 

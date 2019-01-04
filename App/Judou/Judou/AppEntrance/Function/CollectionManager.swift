@@ -37,4 +37,8 @@ class CollectionModel: BaseModel {
      *     收藏帖子数
      */
     @objc var postCount: Int = 0
+    /**
+     *     作者
+     */
+    @objc var authorId: String = ""
 }

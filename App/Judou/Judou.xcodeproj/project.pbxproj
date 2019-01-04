@@ -34,6 +34,7 @@
 		CC3ABEF521C2624F00324A99 /* JSVariableMenuHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */; };
 		CC3ABEF721C2646700324A99 /* JSVariableMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */; };
 		CC3ABEF921C269AD00324A99 /* JSVariableMenuControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */; };
+		CC7A932521DE124200095EDD /* BlurImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7A932421DE124200095EDD /* BlurImageView.swift */; };
 		CC89969421DD232600F044CA /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969121DD232600F044CA /* MyCollectionViewController.swift */; };
 		CC89969521DD232600F044CA /* CollectionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969221DD232600F044CA /* CollectionDetailViewController.swift */; };
 		CC89969621DD232600F044CA /* TapCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC89969321DD232600F044CA /* TapCollectionViewController.swift */; };
@@ -115,6 +116,7 @@
 		CC3ABEF421C2624F00324A99 /* JSVariableMenuHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuHeader.swift; sourceTree = "<group>"; };
 		CC3ABEF621C2646700324A99 /* JSVariableMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuView.swift; sourceTree = "<group>"; };
 		CC3ABEF821C269AD00324A99 /* JSVariableMenuControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSVariableMenuControl.swift; sourceTree = "<group>"; };
+		CC7A932421DE124200095EDD /* BlurImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurImageView.swift; sourceTree = "<group>"; };
 		CC89969121DD232600F044CA /* MyCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
 		CC89969221DD232600F044CA /* CollectionDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionDetailViewController.swift; sourceTree = "<group>"; };
 		CC89969321DD232600F044CA /* TapCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapCollectionViewController.swift; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 			children = (
 				CC13194021BF69BF00143537 /* HomeMyHeaderView.swift */,
 				CCD6776E21CBFA29000AF524 /* HomePageHeaderView.swift */,
+				CC7A932421DE124200095EDD /* BlurImageView.swift */,
 				CCD6786721D0E693000AF524 /* SubscribeCell.swift */,
 			);
 			path = View;
@@ -713,6 +716,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC7A932521DE124200095EDD /* BlurImageView.swift in Sources */,
 				CCD6784121CE0A2A000AF524 /* TopicCell.swift in Sources */,
 				CCD6786021D0B697000AF524 /* MyMessageViewController.swift in Sources */,
 				CCD6785E21D0B697000AF524 /* MyPageViewController.swift in Sources */,
