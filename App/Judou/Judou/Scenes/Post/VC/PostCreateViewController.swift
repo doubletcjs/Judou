@@ -420,7 +420,7 @@ class PostCreateViewController: BaseShowBarViewController, SGPageTitleViewDelega
                 
                 if isSuccessful == true {
                     if self?.creationCompletionHandle != nil {
-                        self?.creationCompletionHandle!()
+                        self?.creationCompletionHandle!(nil)
                     }
                     
                     showTextHUD("发帖成功", inView: nil, hideAfterDelay: 1.5)

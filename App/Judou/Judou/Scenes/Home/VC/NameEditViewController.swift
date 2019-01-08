@@ -25,6 +25,7 @@ class NameEditViewController: BaseShowBarViewController {
         textField = UITextField.init(frame: CGRect.init(x: 0, y: kStatusBarHeight()+self.navigationController!.navigationBar.frame.size.height+20, width: kScreenWidth(), height: 38)~)
         textField.backgroundColor = .white
         textField.leftViewMode = .always
+        textField.clearButtonMode = .whileEditing
         textField.placeholder = "2～16个字"
         textField.font = kBaseFont(17)
         textField.text = currentNickName

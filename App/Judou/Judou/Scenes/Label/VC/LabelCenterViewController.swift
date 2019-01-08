@@ -118,7 +118,7 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
         
         let imageView = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: cellWidth, height: cellWidth)~)
         imageView.contentMode = .scaleAspectFill
-        imageView.yy_setImage(with: URL.init(string: model.cover),
+        imageView.yy_setImage(with: URL.init(string: kBaseURL+model.cover),
                               placeholder: nil,
                               options: kWebImageOptions,
                               completion: nil)
@@ -186,7 +186,7 @@ class LabelCenterViewController: BaseShowBarViewController, UICollectionViewDele
     // MARK: - 添加标签
     @objc private func createLabelAction() -> Void {
         let createLabelVC = CreateLabelViewController()
-        createLabelVC.creationCompletionHandle = { [weak self] () -> Void in
+        createLabelVC.creationCompletionHandle = { [weak self] (model) -> Void in
             self?.requestLabelList()
         }
         let nav = UINavigationController.init(rootViewController: createLabelVC)

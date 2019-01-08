@@ -17,7 +17,7 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
     
     var isHomePage: Bool! = false
     var userID: String! = ""
-    var superFrame: CGRect! = CGRect.zero
+    var superFrame: CGRect! = CGRect.zero 
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +45,22 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         collectionView.setupRefresh(self, #selector(self.refreshCollection), #selector(self.loadMoreCollection))
         collectionView.mj_header.isHidden = false
         collectionView.mj_footer.isHidden = false
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.needUpdate), name: kCollectSelectionNotification, object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        collectionView.reloadData()
+    }
+    // MARK: - 刷新标记
+    @objc private func needUpdate() -> Void {
+        if userID.count > 0 {
+            if collectionView.mj_header.isRefreshing == false {
+                collectionView.mj_header.beginRefreshing()
+            }
+        }
     }
     // MARK: - 获取收藏夹列表
     func pageRefreshData() -> Void {
@@ -119,7 +135,7 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
     // MARK: - 添加收藏夹
     @objc private func createCollectioAction() -> Void {
         let creationVC = CreationViewController()
-        creationVC.creationCompletionHandle = { [weak self] () -> Void in
+        creationVC.creationCompletionHandle = { [weak self] (model) -> Void in
             self?.refreshCollection()
         }
         let nav = UINavigationController.init(rootViewController: creationVC)
@@ -160,7 +176,7 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         cellTag += 1
         cell.addSubview(coverImageView)
         
-        coverImageView.yy_setImage(with: URL.init(string: model.cover),
+        coverImageView.yy_setImage(with: URL.init(string: kBaseURL+model.cover),
                                    placeholder: UIImage.init(named: "big_image_placeholder"),
                                    options: kWebImageOptions,
                                    completion: nil)
@@ -197,6 +213,21 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
             privateBtn.frame = CGRect.init(x: 12, y: cell.bounds.size.height-12-8, width: 8, height: 8)~
         }
         
+        //数量
+        if model.postCount > 0 {
+            let countLabel = UILabel.init()
+            countLabel.font = kBaseFont(10)
+            countLabel.textColor = .white
+            countLabel.text = "\(model.postCount)"+"句"
+            countLabel.numberOfLines = 0
+            countLabel.textAlignment = .center
+            countLabel.tag = cellTag
+            cellTag += 1
+            cell.addSubview(countLabel)
+            countLabel.sizeToFit()
+            countLabel.frame = CGRect.init(x: cell.bounds.size.width-12-countLabel.frame.size.width, y: cell.bounds.size.height-8-countLabel.frame.size.height, width: countLabel.frame.size.width, height: countLabel.frame.size.height)~
+        }
+        
         return cell
     }
     
@@ -224,6 +255,10 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         let detailVC = CollectionDetailViewController()
         detailVC.collectionModel = model
         self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+    // MARK: - delloc
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: kCollectSelectionNotification, object: nil)
     }
     /*
     // MARK: - Navigation

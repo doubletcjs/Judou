@@ -28,7 +28,7 @@ class HomePageHeaderView: UIView {
                 nameLabel.text = account.nickname
                 nameLabel.sizeToFit()
                 
-                let imageWH: CGFloat = 22
+                let imageWH: CGFloat = 18
                 var rect = nameLabel.frame
                 rect.origin.x = (self.bounds.size.width-nameLabel.frame.size.width)/2.0
                 rect.origin.y = fanButton.frame.origin.y-rect.size.height-8
@@ -36,7 +36,7 @@ class HomePageHeaderView: UIView {
                 
                 portraitImageView.center = CGPoint.init(x: button.center.x, y: nameLabel.frame.origin.y-16-portraitImageView.frame.size.height/2)~
                 portraitImageView.contentMode = .scaleAspectFill
-                portraitImageView.yy_setImage(with: URL.init(string: account.portrait),
+                portraitImageView.yy_setImage(with: URL.init(string: kBaseURL+account.portrait),
                                               placeholder: UIImage.init(named: "topic_default_avatar"),
                                               options: kWebImageOptions,
                                               completion: nil)
@@ -140,6 +140,41 @@ class HomePageHeaderView: UIView {
     } 
     // MARK: - 关注、取消关注
     @objc private func attentionAccount() -> Void {
+        let hud = indicatorTextHUD("")
+        Networking.accountAttentionRequest(params: ["loginId": UserModel.fetchUser().userId, "userId": account.userId]) { [weak self] (data, error) in
+            if error != nil {
+                hud.hide(false)
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            } else {
+                let dict: [String: Any] = data as! [String : Any]
+                let isSuccessful: Bool = dict["isSuccessful"]! as! Bool
+                var status: Int = 0 //0 查询失败 不改变状态 1 已关注 2 未关注
+                if dict["status"] != nil {
+                    status = dict["status"]! as! Int
+                }
+                
+                if isSuccessful == true {
+                    hud.hide(true)
+                    
+                    if status > 0 {
+                        let model: UserModel = self!.account
+                        
+                        var isAttention: Bool = model.isAttention
+                        if status == 1 {
+                            isAttention = true
+                        } else if status == 2 {
+                            isAttention = false
+                        }
+                        
+                        model.isAttention = isAttention
+                        self?.account = model
+                    }
+                } else {
+                    hud.hide(false)
+                    showTextHUD("操作失败", inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
     }
     // MARK: - 查看关注
     @objc private func showAttention() -> Void {
@@ -150,6 +185,7 @@ class HomePageHeaderView: UIView {
         } else if account.gender == 2 {
             gender = "她"
         }
+        attentionVC.userId = account.userId
         attentionVC.title = "\(gender)"+"的关注"
         currentVC.navigationController?.pushViewController(attentionVC, animated: true)
     }
@@ -164,6 +200,7 @@ class HomePageHeaderView: UIView {
         }
         fanVC.title = "\(gender)"+"的粉丝"
         fanVC.isFan = true
+        fanVC.userId = account.userId
         currentVC.navigationController?.pushViewController(fanVC, animated: true)
     }
     // MARK: - 查看头像

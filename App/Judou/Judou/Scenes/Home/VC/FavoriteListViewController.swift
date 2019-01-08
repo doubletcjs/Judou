@@ -73,11 +73,37 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
     
     @objc private func requestFavoriteData() -> Void {
         if favoriteType == "视频" {
-            
+            tableView.mj_header.endRefreshing()
         } else if favoriteType == "随笔" {
-            
+            tableView.mj_header.endRefreshing()
         } else {
-            
+            Networking.postPraiseListRequest(params: ["userId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [PostModel] = list as! [PostModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
         }
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
@@ -186,7 +212,9 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
             cell?.createPostBaseCell(model)
             
             cell?.postAuthorHandle = { [weak self] () -> Void in
-                Log("author")
+                let myPageVC = MyPageViewController()
+                myPageVC.hidesBottomBarWhenPushed = true 
+                self?.navigationController?.pushViewController(myPageVC, animated: true)
             }
             
             cell?.postFamousHandle = { [weak self] () -> Void in
@@ -194,7 +222,48 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
             }
             
             cell?.postPraiseHandle = { [weak self] () -> Void in
-                Log("praise")
+                let hud = indicatorTextHUD("")
+                Networking.publicPraiseRequest(params: ["objectId": model.objectId, "praiseType": "0", "authorId": UserModel.fetchUser().userId], completionHandler: { (data, error) in
+                    hud.hide(false)
+                    
+                    if error != nil {
+                        showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    } else {
+                        let dict: [String: Bool] = data as! [String : Bool]
+                        let isSuccessful: Bool = dict["isSuccessful"]!
+                        
+                        if model.isPraise == true {
+                            if isSuccessful == true {
+                                showTextHUD("取消点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                
+                                model.isPraise = false
+                                model.praiseCount -= 1
+                                if model.praiseCount < 0 {
+                                    model.praiseCount = 0
+                                }
+                                
+                                UserModel.updateUserInfo()
+                                self?.dataSources[indexPath.section] = model
+                                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                            } else {
+                                showTextHUD("取消点赞失败", inView: nil, hideAfterDelay: 1.8)
+                            }
+                        } else {
+                            if isSuccessful == true {
+                                showTextHUD("点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                
+                                model.isPraise = true
+                                model.praiseCount += 1
+                                
+                                UserModel.updateUserInfo()
+                                self?.dataSources[indexPath.section] = model
+                                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                            } else {
+                                showTextHUD("点赞失败", inView: nil, hideAfterDelay: 1.8)
+                            }
+                        }
+                    }
+                })
             }
             
             cell?.postCommentHandle = { [weak self] () -> Void in

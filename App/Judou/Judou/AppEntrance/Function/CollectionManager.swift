@@ -41,4 +41,8 @@ class CollectionModel: BaseModel {
      *     作者
      */
     @objc var authorId: String = ""
+    /**
+     *     帖子是否加入该收藏
+     */
+    @objc var isPostCollect: Bool = false
 }

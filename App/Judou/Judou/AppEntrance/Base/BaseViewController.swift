@@ -47,6 +47,12 @@ class BaseViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func defaultBackAction() -> Void {
         self.navigationController?.popViewController(animated: true)
     }
+    // MARK: - 登录
+    @objc func publicLoginAction() -> Void {
+        let loginVC = LoginViewController()
+        let nav = UINavigationController.init(rootViewController: loginVC)
+        self.present(nav, animated: true, completion: nil)
+    }
     // MARK: -
     deinit {
         Log("deinit \(self.classForCoder)")

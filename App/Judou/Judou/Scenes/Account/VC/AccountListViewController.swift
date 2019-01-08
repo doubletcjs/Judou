@@ -10,9 +10,13 @@ import UIKit
 
 class AccountListViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     private var tableView: UITableView!
-    private var dataSources: [Any] = []
+    private var dataSources: [UserModel] = []
+    
+    private var currentPage: Int! = 0
+    private var pageSize: Int! = 20
     
     var isFan: Bool! = false
+    var userId: String! = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +37,88 @@ class AccountListViewController: BaseShowBarViewController, UITableViewDelegate,
         tableView.emptyDataSetDelegate = self
         
         self.view.addSubview(tableView)
+        
+        tableView.setupRefresh(self, #selector(self.refreshAccountData), #selector(self.loadMoreAccountData))
+        tableView.mj_header.isHidden = false
+        tableView.mj_footer.isHidden = false
+        
+        self.refreshAccountData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
+    }
+    // MARK: - 加载数据
+    @objc private func refreshAccountData() -> Void {
+        currentPage = 0
+        self.requestAccountData()
+    }
+    
+    @objc private func loadMoreAccountData() -> Void {
+        currentPage += 1
+        self.requestAccountData()
+    }
+    
+    @objc private func requestAccountData() -> Void {
+        if isFan == true {
+            Networking.fanListRequest(params: ["userId": userId!, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [UserModel] = list as! [UserModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
+        } else {
+            Networking.attentionListRequest(params: ["userId": userId!, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [UserModel] = list as! [UserModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
+        }
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
@@ -97,7 +183,7 @@ class AccountListViewController: BaseShowBarViewController, UITableViewDelegate,
         }
         
         cell?.selectionStyle = .none
-        cell?.createAccountCell(dataSources[indexPath.row] as! UserModel)
+        cell?.createAccountCell(dataSources[indexPath.row])
         
         return cell!
     }

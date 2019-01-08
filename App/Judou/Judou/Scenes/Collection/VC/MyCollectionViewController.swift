@@ -42,6 +42,13 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
         collectionView.mj_footer.isHidden = false
         
         self.refreshCollection()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCollection), name: kCollectSelectionNotification, object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        collectionView.reloadData()
     }
     // MARK: - 获取收藏夹列表
     @objc private func refreshCollection() -> Void {
@@ -107,7 +114,7 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
     // MARK: - 添加收藏夹
     @objc private func createCollectioAction() -> Void {
         let creationVC = CreationViewController()
-        creationVC.creationCompletionHandle = { [weak self] () -> Void in
+        creationVC.creationCompletionHandle = { [weak self] (model) -> Void in
             self?.refreshCollection()
         }
         let nav = UINavigationController.init(rootViewController: creationVC)
@@ -144,12 +151,11 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
         let coverImageView = UIImageView.init(frame: cell.bounds~)
         coverImageView.contentMode = .scaleAspectFill
         coverImageView.clipsToBounds = true
-        coverImageView.tag = cellTag
-        coverImageView.contentMode = .scaleAspectFill 
+        coverImageView.tag = cellTag 
         cellTag += 1
         cell.addSubview(coverImageView)
         
-        coverImageView.yy_setImage(with: URL.init(string: model.cover),
+        coverImageView.yy_setImage(with: URL.init(string: kBaseURL+model.cover),
                                    placeholder: UIImage.init(named: "big_image_placeholder"),
                                    options: kWebImageOptions,
                                    completion: nil)
@@ -227,7 +233,20 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
         
         let detailVC = CollectionDetailViewController()
         detailVC.collectionModel = model
+        detailVC.editCompletionHandle = { [weak self] (newModel) -> Void in
+            if newModel == nil {
+                self?.dataSources.remove(at: indexPath.row)
+                self?.collectionView.deleteItems(at: [indexPath])
+            } else {
+                self?.dataSources[indexPath.row] = newModel as! CollectionModel
+                self?.collectionView.reloadItems(at: [indexPath])
+            }
+        }
         self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+    // MARK: - delloc
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: kCollectSelectionNotification, object: nil)
     }
     /*
     // MARK: - Navigation

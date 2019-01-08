@@ -6,7 +6,7 @@
 //  Copyright © 2018 Sam Cooper Studio. All rights reserved.
 //
 
-import UIKit 
+import UIKit
 
 class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     private var tableView: UITableView!
@@ -22,6 +22,10 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
     
     //0 收藏夹 1 名人 2 书籍
     var createType: Int = 0
+    var collectionModel: CollectionModel!
+    var famousModel: FamousModel!
+    var bookModel: BookModel!
+    private var creationEditting: Bool! = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +36,25 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             self.title = "创建名人"
         } else if createType == 2 {
             self.title = "创建书籍"
+        }
+        
+        if collectionModel != nil {
+            self.title = "编辑收藏夹"
+            isPrivate = collectionModel.isPrivate
+            coverImageUrl = collectionModel.cover
+            creationEditting = true
+        }
+        
+        if famousModel != nil {
+            self.title = "编辑名人"
+            coverImageUrl = famousModel.cover
+            creationEditting = true
+        }
+        
+        if bookModel != nil {
+            self.title = "编辑书籍"
+            coverImageUrl = bookModel.cover
+            creationEditting = true
         }
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_close"), style: .plain, target: self, action: #selector(self.collectionCloseAction))
@@ -136,6 +159,18 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
                 textField.tag = 10
             }
             
+            if collectionModel != nil {
+                textField.text = collectionModel.name
+            }
+            
+            if famousModel != nil {
+                textField.text = famousModel.name
+            }
+            
+            if bookModel != nil {
+                textField.text = bookModel.name
+            }
+            
             cell?.addSubview(textField)
         } else if indexPath.row == 0 {
             let coverWH: CGFloat = 120
@@ -177,6 +212,32 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             }
             
             cell?.addSubview(coverButton)
+            
+            var cover: String = ""
+            if collectionModel != nil {
+                cover = collectionModel.cover
+            }
+            
+            if famousModel != nil {
+                cover = famousModel.cover
+            }
+            
+            if bookModel != nil {
+                cover = bookModel.cover
+            }
+            
+            if cover.count > 0 {
+                coverButton.yy_setImage(with: URL.init(string: kBaseURL+cover),
+                                        for: .normal,
+                                        placeholder: UIImage.init(named: "big_image_placeholder"),
+                                        options: kWebImageOptions,
+                                        completion:nil)
+                
+                let coverTipLabel = coverButton.viewWithTag(1010) as! UILabel
+                coverTipLabel.text = ""
+                coverButton.viewWithTag(100)?.removeFromSuperview()
+            }
+            
         } else if indexPath.row == 2 {
             cell?.backgroundColor = .white
             
@@ -188,6 +249,18 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             }
             
             cell?.addSubview(textView)
+            
+            if collectionModel != nil {
+                textView.text = collectionModel.introduction
+            }
+            
+            if famousModel != nil {
+                textView.text = famousModel.introduction
+            }
+            
+            if bookModel != nil {
+                textView.text = bookModel.introduction
+            }
         } else if indexPath.row == 3 {
             cell?.backgroundColor = .white
             cell?.textLabel?.text = "设为私密"
@@ -237,6 +310,66 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
             return
         }
         
+        func checkForEdit() -> [String: Any]! {
+            var name: String = ""
+            var introduction: String = ""
+            var cover: String = ""
+            var objectId: String = ""
+            var collectionPrivate: Bool = false
+            var editedDict: [String: Any] = [:]
+            
+            if collectionModel != nil {
+                name = collectionModel.name
+                introduction = collectionModel.introduction
+                cover = collectionModel.cover
+                collectionPrivate = collectionModel.isPrivate
+                objectId = collectionModel.objectId
+            }
+            
+            if famousModel != nil {
+                name = famousModel.name
+                introduction = famousModel.introduction
+                cover = famousModel.cover
+                objectId = famousModel.objectId
+            }
+            
+            if bookModel != nil {
+                name = bookModel.name
+                introduction = bookModel.introduction
+                cover = bookModel.cover
+                objectId = bookModel.objectId
+            }
+            
+            editedDict["objectId"] = objectId
+            
+            if textField.text != name {
+                editedDict["name"] = textField.text
+            }
+            
+            if textView.text != introduction {
+                editedDict["introduction"] = textView.text
+            }
+            
+            if coverImageUrl != cover {
+                editedDict["cover"] = coverImageUrl
+            }
+            
+            if isPrivate != collectionPrivate {
+                editedDict["isPrivate"] = isPrivate
+            }
+            
+            return editedDict
+        }
+        
+        if creationEditting == true {
+            let dict: [String: Any] = checkForEdit()
+            if dict.count <= 1 {
+                showTextHUD("至少改点啥", inView: nil, hideAfterDelay: 1.8)
+                
+                return
+            }
+        }
+        
         var function: String = "collect"
         if createType == 1 {
             function = "famous"
@@ -250,45 +383,119 @@ class CreationViewController: BaseShowBarViewController, UITableViewDelegate, UI
         let hud = MBProgressHUD.showAdded(to: UIApplication.shared.keyWindow, animated: true)!
         hud.mode = .determinate
         
-        func createCollectRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
-            var dict: [String: Any] = ["authorId": UserModel.fetchUser().userId,
-                                       "name": textField.text!,
-                                       "isPrivate": isPrivate,
-                                       "introduction": textView.text!,
-                                       "cover": coverUrl]
-            
-            if createType > 0 {
-                var status: Int = 0
-                if UserModel.fetchUser().level == 0 {
-                    status = 3
-                }
-                
-                dict = ["authorId": UserModel.fetchUser().userId,
-                        "name": textField.text!,
-                        "status": status,
-                        "introduction": textView.text!,
-                        "cover": coverUrl]
-            }
-            
-            var function: String = "collect"
-            if createType == 1 {
-                function = "famous"
-            } else if createType == 2 {
-                function = "book"
-            }
-            
-            Networking.functionCreationRequest(params: dict, function: function) { [weak self] (isSuccessful, error) in
+        func editCollectRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
+            let dict: [String: Any] = checkForEdit()
+            Networking.creationEditRequest(dict, createType) { [weak self] (isSuccessful, error) in
                 hud.hide(false)
                 
                 if isSuccessful == true {
-                    if self?.creationCompletionHandle != nil {
-                        self?.creationCompletionHandle!()
+                    var model: BaseModel? = BaseModel()
+                    if self?.createType == 0 {
+                        let tempModel = CollectionModel.mj_object(withKeyValues: self?.collectionModel.mj_keyValues())
+                        if dict["name"] != nil {
+                            tempModel?.name = dict["name"] as! String
+                        }
+                        
+                        if dict["introduction"] != nil {
+                            tempModel?.introduction = dict["introduction"] as! String
+                        }
+                        
+                        if dict["cover"] != nil {
+                            tempModel?.introduction = dict["cover"] as! String
+                        }
+                        
+                        if dict["isPrivate"] != nil {
+                            tempModel?.isPrivate = dict["isPrivate"] as! Bool
+                        }
+                        
+                        model = tempModel
+                    } else if self?.createType == 1 {
+                        let tempModel = FamousModel.mj_object(withKeyValues: self?.famousModel.mj_keyValues())
+                        if dict["name"] != nil {
+                            tempModel?.name = dict["name"] as! String
+                        }
+                        
+                        if dict["introduction"] != nil {
+                            tempModel?.introduction = dict["introduction"] as! String
+                        }
+                        
+                        if dict["cover"] != nil {
+                            tempModel?.introduction = dict["cover"] as! String
+                        }
+                        
+                        model = tempModel
+                    } else if self?.createType == 2 {
+                        let tempModel = BookModel.mj_object(withKeyValues: self?.bookModel.mj_keyValues())
+                        if dict["name"] != nil {
+                            tempModel?.name = dict["name"] as! String
+                        }
+                        
+                        if dict["introduction"] != nil {
+                            tempModel?.introduction = dict["introduction"] as! String
+                        }
+                        
+                        if dict["cover"] != nil {
+                            tempModel?.introduction = dict["cover"] as! String
+                        }
+                        
+                        model = tempModel
                     }
                     
-                    showTextHUD("创建成功", inView: nil, hideAfterDelay: 1.5)
+                    if self?.creationCompletionHandle != nil {
+                        self?.creationCompletionHandle!(model)
+                    }
+                    
+                    showTextHUD("修改成功", inView: nil, hideAfterDelay: 1.5)
                     self?.collectionCloseAction()
                 } else {
                     showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                }
+            }
+        }
+        
+        func createCollectRequest(_ hud: MBProgressHUD, _ coverUrl: String) -> Void {
+            if creationEditting == true {
+                editCollectRequest(hud, coverUrl)
+            } else {
+                var dict: [String: Any] = ["authorId": UserModel.fetchUser().userId,
+                                           "name": textField.text!,
+                                           "isPrivate": isPrivate,
+                                           "introduction": textView.text!,
+                                           "cover": coverUrl]
+                
+                if createType > 0 {
+                    var status: Int = 0
+                    if UserModel.fetchUser().level == 0 {
+                        status = 3
+                    }
+                    
+                    dict = ["authorId": UserModel.fetchUser().userId,
+                            "name": textField.text!,
+                            "status": status,
+                            "introduction": textView.text!,
+                            "cover": coverUrl]
+                }
+                
+                var function: String = "collect"
+                if createType == 1 {
+                    function = "famous"
+                } else if createType == 2 {
+                    function = "book"
+                }
+                
+                Networking.functionCreationRequest(params: dict, function: function) { [weak self] (isSuccessful, error) in
+                    hud.hide(false)
+                    
+                    if isSuccessful == true {
+                        if self?.creationCompletionHandle != nil {
+                            self?.creationCompletionHandle!(nil)
+                        }
+                        
+                        showTextHUD("创建成功", inView: nil, hideAfterDelay: 1.5)
+                        self?.collectionCloseAction()
+                    } else {
+                        showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    }
                 }
             }
         }

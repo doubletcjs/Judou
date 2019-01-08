@@ -12,6 +12,8 @@ let kLoginUserID = "kLoginUserID"
 let APP_ID = ""
 let APP_URL = "https://itunes.apple.com/cn/app/id\(APP_ID)?mt=8"
 let kWebImageOptions: YYWebImageOptions = YYWebImageOptions.init(rawValue: YYWebImageOptions.allowInvalidSSLCertificates.rawValue | YYWebImageOptions.allowBackgroundTask.rawValue | YYWebImageOptions.progressiveBlur.rawValue | YYWebImageOptions.setImageWithFadeAnimation.rawValue)
+let kCollectSelectionNotification = NSNotification.Name.init("CollectSelectionStatusChange")
+let kChangeLoginAccountNotification = NSNotification.Name.init("ChangeLoginAccount")
 
 private func JSScreenScale() -> CGFloat {
     return UIScreen.main.scale

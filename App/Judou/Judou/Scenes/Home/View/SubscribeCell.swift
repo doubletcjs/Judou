@@ -58,7 +58,7 @@ class SubscribeCell: UITableViewCell {
         cellTag += 1
         self.addSubview(coverImageView)
         
-        coverImageView.yy_setImage(with: URL.init(string: cover),
+        coverImageView.yy_setImage(with: URL.init(string: kBaseURL+cover),
                                    placeholder: UIImage.init(named: "big_image_placeholder"),
                                    options: kWebImageOptions,
                                    completion: nil)

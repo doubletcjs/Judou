@@ -22,7 +22,7 @@ class AddFunctionViewController: BaseShowBarViewController {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage.init(named: "nav_add"), style: .plain, target: self, action: #selector(self.createCollectioAction))
         }
     }
-    // MARK: - 添加收藏夹
+    // MARK: - 添加收藏夹、名人、书籍
     @objc private func createCollectioAction() -> Void {
         let creationVC = CreationViewController()
         creationVC.createType = 2

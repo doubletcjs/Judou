@@ -12,9 +12,10 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
     private var tableView: UITableView!
     private var dataSources: [Any] = []
     private var currentPage: Int = 0
+    private var pageSize: Int! = 20
     var channelName: String!
     var superFrame: CGRect!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,32 +45,96 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
         
         self.view.addSubview(tableView)
         
+        tableView.setupRefresh(self, #selector(self.refreshData), #selector(self.loadMoreData))
+        tableView.mj_header.isHidden = false
+        tableView.mj_footer.isHidden = false
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kChangeLoginAccountNotification, object: nil)
+        
         //推荐、订阅(名人收录)、广场(最新，包含收录或者原创)、原创(最新原创)、情感(标签爱情、亲情、友情)、励志(标签治愈、励志)、毒汤(标签毒汤)、英文(标签英文志) PostBaseCell
         
         //话题 TopicCell
         //随笔 cell3 未知
     }
     // MARK: - 加载数据
+    @objc private func handleRefreshStatus() -> Void {
+        if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+            tableView.mj_header.beginRefreshing()
+        }
+    }
+    
+    func pageRefreshData() -> Void {
+        if dataSources.count == 0 {
+            if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+                tableView.mj_header.beginRefreshing()
+            }
+        }
+    }
+    
     @objc private func refreshData() -> Void {
         currentPage = 0
-        self.requestPostData()
+        
+        if channelName == "话题" {
+            self.requestTopicData()
+        } else if channelName == "随笔" {
+            self.requestEssayData()
+        } else {
+            self.requestPostData()
+        }
     }
     
     @objc private func loadMoreData() -> Void {
         currentPage += 1
-        self.requestPostData()
+        
+        if channelName == "话题" {
+            self.requestTopicData()
+        } else if channelName == "随笔" {
+            self.requestEssayData()
+        } else {
+            self.requestPostData()
+        }
     }
     
     @objc private func requestPostData() -> Void {
-        
+        if channelName == "广场" {
+            Networking.squarePostListRequest(params: ["loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [PostModel] = list as! [PostModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    } 
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
+        } else {
+            tableView.mj_header.endRefreshing()
+        }
     }
     
     @objc private func requestTopicData() -> Void {
-        
+        tableView.mj_header.endRefreshing()
     }
     
     @objc private func requestEssayData() -> Void {
-        
+        tableView.mj_header.endRefreshing()
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
@@ -171,7 +236,13 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
             cell?.createPostBaseCell(model)
              
             cell?.postAuthorHandle = { [weak self] () -> Void in
-                Log("author")
+                let myPageVC = MyPageViewController()
+                myPageVC.hidesBottomBarWhenPushed = true
+                if model.author.userId != UserModel.fetchUser().userId {
+                    myPageVC.account = model.author
+                }
+                
+                self?.navigationController?.pushViewController(myPageVC, animated: true)
             }
             
             cell?.postFamousHandle = { [weak self] () -> Void in
@@ -179,17 +250,74 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
             }
             
             cell?.postPraiseHandle = { [weak self] () -> Void in
-                Log("praise")
+                if AccountManager.accountLogin() == true {
+                    let hud = indicatorTextHUD("")
+                    Networking.publicPraiseRequest(params: ["objectId": model.objectId, "praiseType": "0", "authorId": UserModel.fetchUser().userId], completionHandler: { (data, error) in
+                        hud.hide(false)
+                        
+                        if error != nil {
+                            showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                        } else {
+                            let dict: [String: Bool] = data as! [String : Bool]
+                            let isSuccessful: Bool = dict["isSuccessful"]!
+                            
+                            if model.isPraise == true {
+                                if isSuccessful == true {
+                                    showTextHUD("取消点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                    
+                                    model.isPraise = false
+                                    model.praiseCount -= 1
+                                    if model.praiseCount < 0 {
+                                        model.praiseCount = 0
+                                    }
+                                    
+                                    UserModel.updateUserInfo()
+                                    self?.dataSources[indexPath.section] = model
+                                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                                } else {
+                                    showTextHUD("取消点赞失败", inView: nil, hideAfterDelay: 1.8)
+                                }
+                            } else {
+                                if isSuccessful == true {
+                                    showTextHUD("点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                    
+                                    model.isPraise = true
+                                    model.praiseCount += 1
+                                    
+                                    UserModel.updateUserInfo()
+                                    self?.dataSources[indexPath.section] = model
+                                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                                } else {
+                                    showTextHUD("点赞失败", inView: nil, hideAfterDelay: 1.8)
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    self?.publicLoginAction()
+                }
             }
             
             cell?.postCommentHandle = { [weak self] () -> Void in
                 let postDetailVC = PostDetailViewController()
                 postDetailVC.postModel = model
+                postDetailVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(postDetailVC, animated: true)
             }
             
             cell?.postCollectionHandle = { [weak self] () -> Void in
-                Log("collection")
+                if AccountManager.accountLogin() == true {
+                    let collectSelectionVC = CollectSelectionViewController()
+                    collectSelectionVC.postModel = model
+                    collectSelectionVC.selectionFinishHandle = { [weak self] (isCollect) -> Void in
+                        model.isCollect = isCollect
+                        self?.tableView.reloadRows(at: [indexPath], with: .none)
+                    }
+                    let nav = UINavigationController.init(rootViewController: collectSelectionVC)
+                    self?.present(nav, animated: true, completion: nil)
+                } else {
+                    self?.publicLoginAction()
+                }
             }
             
             cell?.postShareHandle = { [weak self] () -> Void in
@@ -222,6 +350,7 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
             
             let postDetailVC = PostDetailViewController()
             postDetailVC.postModel = model
+            postDetailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(postDetailVC, animated: true)
         }
         

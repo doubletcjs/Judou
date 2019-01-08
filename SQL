@@ -133,6 +133,15 @@ CREATE TABLE `praise_post` (
 PRIMARY KEY (`objectId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
 
+#点赞评论表
+
+CREATE TABLE `praise_comment` (
+`objectId` int(20) unsigned NOT NULL AUTO_INCREMENT,
+`commentId` int(20) unsigned NOT NULL,
+`authorId` int(20) unsigned NOT NULL,
+PRIMARY KEY (`objectId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
 #帖子标签表
 
 CREATE TABLE `label_post` (

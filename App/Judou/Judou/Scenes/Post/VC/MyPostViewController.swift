@@ -43,6 +43,12 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         
         self.refreshPostData()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
+    }
     // MARK: - 加载数据
     @objc private func refreshPostData() -> Void {
         currentPage = 0
@@ -86,7 +92,7 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
     // MARK: - 发布
     @objc private func goCreatePost() -> Void {
         let createPostVC = PostCreateViewController()
-        createPostVC.creationCompletionHandle = { [weak self] () -> Void in
+        createPostVC.creationCompletionHandle = { [weak self] (model) -> Void in
             self?.refreshPostData()
         }
         let nav = UINavigationController.init(rootViewController: createPostVC)

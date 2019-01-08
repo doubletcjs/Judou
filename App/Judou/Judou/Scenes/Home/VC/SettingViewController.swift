@@ -266,14 +266,7 @@ class SettingViewController: BaseShowBarViewController, UITableViewDelegate, UIT
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-    // MARK: - 登录
-    @objc private func publicLoginAction() -> Void {
-        let loginVC = LoginViewController()
-        let nav = UINavigationController.init(rootViewController: loginVC)
-        self.present(nav, animated: true, completion: nil)
-    }
-    
+    } 
     // Helper function inserted by Swift 4.2 migrator.
     fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
         return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})

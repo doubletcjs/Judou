@@ -57,7 +57,7 @@ class AccountListCell: UITableViewCell {
         itemTag += 1
         self.addSubview(portraitImageView)
         
-        portraitImageView.yy_setImage(with: URL.init(string: account.portrait),
+        portraitImageView.yy_setImage(with: URL.init(string: kBaseURL+account.portrait),
                                       placeholder: UIImage.init(named: "topic_default_avatar"),
                                       options: kWebImageOptions,
                                       completion: nil)

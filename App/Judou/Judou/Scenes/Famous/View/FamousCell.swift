@@ -37,7 +37,7 @@ class FamousCell: UITableViewCell {
         cellTag += 1
         self.addSubview(coverImageView)
         
-        coverImageView.yy_setImage(with: URL.init(string: famousModel.cover),
+        coverImageView.yy_setImage(with: URL.init(string: kBaseURL+famousModel.cover),
                                    placeholder: UIImage.init(named: "big_image_placeholder"),
                                    options: kWebImageOptions,
                                    completion: nil)

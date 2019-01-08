@@ -54,7 +54,7 @@ class AccountOperator: BaseOperator {
     // MARK: - 获取我的账号(登录)信息
     ///
     /// - Parameters:
-    ///   - mobile: 手机号
+    ///   - loginId: 登录用户id
     ///   - userId: 用户id
     /// - Returns: 返回JSON数据
     func getAccountHomePage(userId: String, loginId: String) -> String {
@@ -71,7 +71,8 @@ class AccountOperator: BaseOperator {
                 "COUNT(DISTINCT \(posttable).objectId) postCount",
                 "COUNT(DISTINCT attention.authorId) attentionCount",
                 "COUNT(DISTINCT fan.userId) fanCount",
-                "COUNT(DISTINCT \(reportuser).objectId) reportCount"]
+                "COUNT(DISTINCT \(praiseposttable).objectId) praiseCount",
+                "COUNT(DISTINCT \(reportusertable).objectId) reportCount"]
             
             var originalKeys: [String] = [
                 "userId",
@@ -83,6 +84,7 @@ class AccountOperator: BaseOperator {
                 "postCount",
                 "attentionCount",
                 "fanCount",
+                "praiseCount",
                 "reportCount"]
             
             var privateConditions1 = ""
@@ -90,9 +92,10 @@ class AccountOperator: BaseOperator {
             var countConditions: [String] = [
                 "LEFT JOIN \(collecttable) ON (\(collecttable).authorId = '\(userId)')",
                 "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)')",
-                "LEFT JOIN \(attentionfan) attention ON (attention.authorId = '\(userId)')",
-                "LEFT JOIN \(attentionfan) fan ON (fan.userId = '\(userId)')",
-                "LEFT JOIN \(reportuser) ON (\(reportuser).userId = '\(userId)')"]
+                "LEFT JOIN \(attentionfantable) attention ON (attention.authorId = '\(userId)')",
+                "LEFT JOIN \(attentionfantable) fan ON (fan.userId = '\(userId)')",
+                "LEFT JOIN \(praiseposttable) ON (\(praiseposttable).authorId = '\(userId)')",
+                "LEFT JOIN \(reportusertable) ON (\(reportusertable).userId = '\(userId)')"]
             
             if loginId != userId {
                 privateConditions1 = "AND \(collecttable).isPrivate = FALSE"
@@ -103,9 +106,9 @@ class AccountOperator: BaseOperator {
                 countConditions[1] = "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)' \(privateConditions2))"
                 
                 //是否关注
-                keys.append("COUNT(DISTINCT \(attentionfan).objectId) fanAttentionCount")
+                keys.append("COUNT(DISTINCT \(attentionfantable).objectId) fanAttentionCount")
                 originalKeys.append("fanAttentionCount")
-                countConditions.append("LEFT JOIN \(attentionfan) ON (\(attentionfan).authorId = '\(loginId)' AND \(attentionfan).userId = '\(userId)')")
+                countConditions.append("LEFT JOIN \(attentionfantable) ON (\(attentionfantable).authorId = '\(loginId)' AND \(attentionfantable).userId = '\(userId)')")
             }
             
             if userId.count > 0 {
@@ -162,83 +165,29 @@ class AccountOperator: BaseOperator {
     func getMyAccount(mobile: String, userId: String) -> String {
         let accountStatus = checkAccount(mobile: mobile, nickname: "", userId: userId)
         if accountStatus == 1 {
-            var statement = ""
-            let keys: [String] = [
-                "\(accounttable).userId",
-                "\(accounttable).nickname",
-                "\(accounttable).portrait",
-                "\(accounttable).gender",
-                "\(accounttable).birthday",
-                "\(accounttable).mobile",
-                "\(accounttable).date",
-                "\(accounttable).status",
-                "\(accounttable).level",
-                "COUNT(DISTINCT \(collecttable).objectId) collectionCount",
-                "COUNT(DISTINCT \(posttable).objectId) postCount",
-                "COUNT(DISTINCT \(praisepost).objectId) praiseCount",
-                "COUNT(DISTINCT \(reportuser).objectId) reportCount"]
-            
-            let originalKeys: [String] = [
-                "userId",
-                "nickname",
-                "portrait",
-                "gender",
-                "birthday",
-                "mobile",
-                "date",
-                "status",
-                "level",
-                "collectionCount",
-                "postCount",
-                "praiseCount",
-                "reportCount"]
-            // AES_DECRYPT(password, '\(AES_ENCRYPT_KEY)'),
-            
-            let conditions: [String] = [
-                "LEFT JOIN \(collecttable) ON (\(collecttable).authorId = '\(userId)')",
-                "LEFT JOIN \(posttable) ON (\(posttable).authorId = '\(userId)')",
-                "LEFT JOIN \(praisepost) ON (\(praisepost).authorId = '\(userId)')",
-                "LEFT JOIN \(reportuser) ON (\(reportuser).userId = '\(userId)')"]
-            
-            var whereCondition: String = ""
-            if mobile.count > 0 {
-                whereCondition = "WHERE \(accounttable).mobile = '\(mobile)'"
-            }
-            
             if userId.count > 0 {
-                whereCondition = "WHERE \(accounttable).userId = '\(userId)'"
-            }
-            
-            statement = "SELECT \(keys.joined(separator: ", ")) FROM \(accounttable) \(conditions.joined(separator: " ")) \(whereCondition) GROUP BY \(accounttable).userId"
-            if statement.count == 0 {
-                return Utils.failureResponseJson("获取用户信息失败，缺少手机号或用户id(二选一)")
-            }
-            
-            print("\(statement)")
-            
-            if mysql.query(statement: statement) == false {
-                Utils.logError("获取用户信息", mysql.errorMessage())
-                responseJson = Utils.failureResponseJson("获取用户信息失败")
+                responseJson = self.getAccountHomePage(userId: userId, loginId: userId)
             } else {
-                let results = mysql.storeResults()!
-                if results.numRows() > 0 {
-                    var dict: [String: Any] = [:]
-                    var keys: [String] = originalKeys
-                    
-                    results.forEachRow { (row) in
-                        for idx in 0...row.count-1 {
-                            let key = keys[idx]
-                            dict["\(key)"] = row[idx]! as Any
-                        }
-                    }
-                    
-                    if dict["nickname"] as! String == "" {
-                        dict["nickname"] = "User_\(dict["userId"] as! String)"
-                    }
-                    
-                    responseJson = Utils.successResponseJson(dict)
+                let statement = "SELECT \(accounttable).userId FROM \(accounttable) WHERE \(accounttable).mobile = '\(mobile)'"
+                
+                if mysql.query(statement: statement) == false {
+                    Utils.logError("获取用户信息", mysql.errorMessage())
+                    responseJson = Utils.failureResponseJson("获取用户信息失败")
                 } else {
-                    responseJson = Utils.failureResponseJson("用户不存在")
+                    let results = mysql.storeResults()!
+                    if results.numRows() > 0 {
+                        var aUserId: String = ""
+                        
+                        results.forEachRow { (row) in
+                            for idx in 0...row.count-1 {
+                                aUserId = row[idx]!
+                            }
+                        }
+                        
+                        responseJson = self.getAccountHomePage(userId: aUserId, loginId: aUserId)
+                    } else {
+                        responseJson = Utils.failureResponseJson("用户不存在")
+                    }
                 }
             }
         } else if accountStatus == 0 {

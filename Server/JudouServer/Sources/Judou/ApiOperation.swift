@@ -59,6 +59,12 @@ class BasicRoutes {
             // 创建标签、收藏夹、名人、书籍
             baseRoutes.add(method: .post, uri: "/functionCreation", handler: functionCreationHandle)
             
+            // 编辑收藏夹、名人、书籍
+            baseRoutes.add(method: .post, uri: "/creationEdit", handler: creationEditHandle)
+            
+            // 删除收藏夹、名人、书籍
+            baseRoutes.add(method: .post, uri: "/creationDelete", handler: creationDeleteHandle)
+            
             // 发帖
             baseRoutes.add(method: .post, uri: "/postCreation", handler: postCreationHandle)
             
@@ -74,8 +80,29 @@ class BasicRoutes {
             // 用户帖子列表
             baseRoutes.add(method: .post, uri: "/postList", handler: postListHandle)
             
+            // 喜欢的帖子列表
+            baseRoutes.add(method: .post, uri: "/postPraiseList", handler: postPraiseListHandle)
+            
             // 主页用户信息
             baseRoutes.add(method: .post, uri: "/myHomePage", handler: myHomePageHandle)
+            
+            // 帖子、评论点赞
+            baseRoutes.add(method: .post, uri: "/publicPraise", handler: publicPraiseHandle)
+            
+            // 收藏帖子
+            baseRoutes.add(method: .post, uri: "/postCollect", handler: postCollectHandle)
+            
+            // 粉丝
+            baseRoutes.add(method: .post, uri: "/userFanList", handler: userFanListHandle)
+            
+            // 关注
+            baseRoutes.add(method: .post, uri: "/userAttentionList", handler: userAttentionListHandle)
+            
+            // 关注用户
+            baseRoutes.add(method: .post, uri: "/accountAttention", handler: accountAttentionHandle)
+            
+            // 广场
+            baseRoutes.add(method: .post, uri: "/squarePostList", handler: squarePostListHandle)
             
             print("接口版本: v0.0.1")
             
@@ -309,7 +336,7 @@ class BasicRoutes {
             dict[param.0] = param.1
         }
         
-        guard dict.keys.count == 4 else {
+        guard dict.keys.count >= 4 else {
             response.setBody(string: Utils.failureResponseJson("请求参数错误"))
             response.completed()
             
@@ -317,6 +344,69 @@ class BasicRoutes {
         }
         
         let requestJson = CollectionOperator().collectionListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 用户粉丝列表
+    private func userFanListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().userFanListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 关注用户
+    private func accountAttentionHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 2 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CreationOperator().accountAttention(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 用户关注列表
+    private func userAttentionListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().userAttentionListQuery(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }
@@ -341,6 +431,27 @@ class BasicRoutes {
         response.appendBody(string: requestJson)
         response.completed()
     }
+    // MARK: - 喜欢的帖子列表
+    private func postPraiseListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 3 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().postPraiseListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
     // MARK: - 用户帖子列表
     private func postListHandle(request: HTTPRequest, response: HTTPResponse) {
         let params = request.params()
@@ -362,6 +473,79 @@ class BasicRoutes {
         response.appendBody(string: requestJson)
         response.completed()
     }
+    // MARK: - 广场
+    private func squarePostListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 3 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().squarePostListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 收藏帖子
+    private func postCollectHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count >= 2 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CreationOperator().postCollectContingency(params: dict)
+        
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 帖子、评论点赞
+    private func publicPraiseHandle(request: HTTPRequest, response: HTTPResponse) {
+        var objectId: String = ""
+        var authorId: String = ""
+        var praiseType: Int = -1
+        
+        if request.param(name: "objectId") != nil {
+            objectId = request.param(name: "objectId")!
+        }
+        
+        if request.param(name: "authorId") != nil {
+            authorId = request.param(name: "authorId")!
+        }
+        
+        if request.param(name: "praiseType") != nil {
+            praiseType = Int(request.param(name: "praiseType")!) ?? -1
+        }
+        
+        guard objectId.count > 0 && authorId.count > 0 && praiseType > -1 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CreationOperator().publicPraiseContingency(objectId: objectId, authorId: authorId, praiseType: praiseType)
+        
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
     // MARK: - 发帖
     private func postCreationHandle(request: HTTPRequest, response: HTTPResponse) {
         let params = request.params()
@@ -380,6 +564,48 @@ class BasicRoutes {
         }
         
         let requestJson = CreationOperator().postCreation(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 删除收藏夹、名人、书籍
+    private func creationDeleteHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 3 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CreationOperator().creationDelete(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 编辑收藏夹、名人、书籍
+    private func creationEditHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count > 1 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = CreationOperator().creationEdit(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }
@@ -495,8 +721,9 @@ class BasicRoutes {
                             let resultPath = fileDir.path + upload.fileName
                             let _ = try thisFile.moveTo(path: resultPath, overWrite: true)
                             
-                            let urlPath = resultPath.replacingOccurrences(of: server.documentRoot, with: "http://\(server.serverAddress):\(server.serverPort)")
-                            pathArray.append(urlPath)
+                            // 服务器绝对路径
+                            let absolutePath = resultPath.replacingOccurrences(of: server.documentRoot, with: "")
+                            pathArray.append(absolutePath)
                         } catch {
                             response.setBody(string: Utils.failureResponseJson("\(error)"))
                             response.completed()

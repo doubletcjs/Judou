@@ -11,6 +11,7 @@ import UIKit
 class PostDetailViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource {
     private var tableView: UITableView!
     var postModel: PostModel!
+    var fromHomePage: Bool! = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +69,89 @@ class PostDetailViewController: BaseShowBarViewController, UITableViewDelegate, 
         if indexPath.section == 0 {
             cell?.isDetail = true
             cell?.createPostBaseCell(postModel)
+            
+            cell?.postAuthorHandle = { [weak self] () -> Void in
+                if self!.fromHomePage == false {
+                    let myPageVC = MyPageViewController()
+                    myPageVC.hidesBottomBarWhenPushed = true
+                    if self!.postModel.author.userId != UserModel.fetchUser().userId {
+                        myPageVC.account = self?.postModel.author
+                    }
+                    
+                    self?.navigationController?.pushViewController(myPageVC, animated: true)
+                } else {
+                    if self!.postModel.author.userId != UserModel.fetchUser().userId {
+                        let myPageVC = MyPageViewController()
+                        myPageVC.hidesBottomBarWhenPushed = true
+                        myPageVC.account = self?.postModel.author
+                        self?.navigationController?.pushViewController(myPageVC, animated: true)
+                    } else {
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+            
+            cell?.postPraiseHandle = { [weak self] () -> Void in
+                if AccountManager.accountLogin() == true {
+                    let hud = indicatorTextHUD("")
+                    Networking.publicPraiseRequest(params: ["objectId": self!.postModel.objectId, "praiseType": "0", "authorId": UserModel.fetchUser().userId], completionHandler: { (data, error) in
+                        hud.hide(false)
+                        
+                        if error != nil {
+                            showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                        } else {
+                            let dict: [String: Bool] = data as! [String : Bool]
+                            let isSuccessful: Bool = dict["isSuccessful"]!
+                            
+                            if self!.postModel.isPraise == true {
+                                if isSuccessful == true {
+                                    showTextHUD("取消点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                    
+                                    self?.postModel.isPraise = false
+                                    self?.postModel.praiseCount -= 1
+                                    if self!.postModel.praiseCount < 0 {
+                                        self?.postModel.praiseCount = 0
+                                    }
+                                    
+                                    UserModel.updateUserInfo()
+                                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                                } else {
+                                    showTextHUD("取消点赞失败", inView: nil, hideAfterDelay: 1.8)
+                                }
+                            } else {
+                                if isSuccessful == true {
+                                    showTextHUD("点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                    
+                                    self?.postModel.isPraise = true
+                                    self?.postModel.praiseCount += 1
+                                    
+                                    UserModel.updateUserInfo()
+                                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                                } else {
+                                    showTextHUD("点赞失败", inView: nil, hideAfterDelay: 1.8)
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    self?.publicLoginAction()
+                }
+            }
+            
+            cell?.postCollectionHandle = { [weak self] () -> Void in
+                if AccountManager.accountLogin() == true {
+                    let collectSelectionVC = CollectSelectionViewController()
+                    collectSelectionVC.postModel = self?.postModel
+                    collectSelectionVC.selectionFinishHandle = { [weak self] (isCollect) -> Void in
+                        self?.postModel.isCollect = isCollect 
+                        self?.tableView.reloadRows(at: [indexPath], with: .none)
+                    }
+                    let nav = UINavigationController.init(rootViewController: collectSelectionVC)
+                    self?.present(nav, animated: true, completion: nil)
+                } else {
+                    self?.publicLoginAction()
+                }
+            }
         }
         
         return cell!

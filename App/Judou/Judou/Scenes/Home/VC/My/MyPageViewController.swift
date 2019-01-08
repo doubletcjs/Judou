@@ -45,13 +45,13 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         // 5/4 = w/h
         let height = (kScreenWidth()*3.0)/5.0+kStatusBarHeight()
         headerImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        headerImageView.setImage(with: account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
+        headerImageView.setImage(with: kBaseURL+account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
         headerImageView.showBlurOriginal = false
         headerImageView.isUserInteractionEnabled = true
         
         //顶部栏背景图片
         topBarImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        topBarImageView.setImage(with: account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
+        topBarImageView.setImage(with: kBaseURL+account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
         topBarImageView.showBlurOriginal = false
         topBar.insertSubview(topBarImageView, at: 0)
         
@@ -181,21 +181,8 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
             self.reloadHomePageData(self.pageTitleView.selectedIndex)
             self.nameLabel.text = self.account.nickname
             
-            self.headerImageView.yy_setImage(with: URL.init(string: self.account.portrait),
-                                             placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
-                                             options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
-                                                if image != nil {
-                                                    self?.headerImageView.image = image!.byBlurLight()
-                                                }
-            }
-            
-            self.topBarImageView.yy_setImage(with: URL.init(string: self.account.portrait),
-                                             placeholder: UIImage.init(named: "topic_default_avatar")?.byBlurLight(),
-                                             options: kWebImageOptions) { [weak self] (image, url, imageFromType, imageStage, error) in
-                                                if image != nil {
-                                                    self?.topBarImageView.image = image!.byBlurLight()
-                                                }
-            }
+            self.headerImageView.setImage(with: kBaseURL+self.account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!)
+            self.topBarImageView.setImage(with: kBaseURL+self.account.portrait, placeholder: UIImage.init(named: "topic_default_avatar")!) 
             
             var array: [String] = ["句子 0", "收藏夹 0"]
             array[0] = "句子 \(self.account.postCount)"

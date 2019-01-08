@@ -218,7 +218,7 @@ class CreateLabelViewController: BaseShowBarViewController, UITableViewDelegate,
                                                 
                                                 if isSuccessful == true {
                                                     if self?.creationCompletionHandle != nil {
-                                                        self?.creationCompletionHandle!()
+                                                        self?.creationCompletionHandle!(nil)
                                                     }
                                                     
                                                     if status == 0 {

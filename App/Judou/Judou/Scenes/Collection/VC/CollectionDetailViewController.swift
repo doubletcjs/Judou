@@ -25,6 +25,9 @@ class CollectionDetailViewController: BaseHideBarViewController, MXParallaxHeade
     private var controllers: [TabPostViewController]! = []
     private var centerNameLabel: UILabel!
     private var countLabel: UILabel!
+    
+    // 返回空，为删除
+    var editCompletionHandle: CreationCompletionBlock?
 
     override func viewDidLoad() {
         statusBarStyle = UIApplication.shared.statusBarStyle
@@ -51,13 +54,13 @@ class CollectionDetailViewController: BaseHideBarViewController, MXParallaxHeade
         // 5/4 = w/h
         let height = (kScreenWidth()*2.0)/5.0+kStatusBarHeight()
         headerImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        headerImageView.setImage(with: collectionModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
+        headerImageView.setImage(with: kBaseURL+collectionModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
         headerImageView.showBlurOriginal = true
         headerImageView.isUserInteractionEnabled = true
         
         //顶部栏背景图片
         topBarImageView = BlurImageView.init(frame: CGRect.init(x: 0, y: 0, width: kScreenWidth(), height: height)~)
-        topBarImageView.setImage(with: collectionModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
+        topBarImageView.setImage(with: kBaseURL+collectionModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
         topBarImageView.showBlurOriginal = true
         topBar.insertSubview(topBarImageView, at: 0)
         
@@ -179,9 +182,71 @@ class CollectionDetailViewController: BaseHideBarViewController, MXParallaxHeade
             if isCancel == false {
                 DispatchQueueMainAsyncAfter(deadline: .now(), target: self, execute: {
                     if index == 0 {
+                        let creationVC = CreationViewController()
+                        creationVC.collectionModel = self?.collectionModel
+                        creationVC.creationCompletionHandle = { [weak self] (model) -> Void in
+                            if model != nil {
+                                let tempModel = model as! CollectionModel
+                                var changed: Bool = false
+                                if tempModel.cover.count > 0 && tempModel.cover != self?.collectionModel.cover {
+                                    self?.headerImageView.setImage(with: kBaseURL+tempModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
+                                    self?.topBarImageView.setImage(with: kBaseURL+tempModel.cover, placeholder: UIImage.init(named: "big_image_placeholder")!)
+                                    changed = true
+                                }
+                                
+                                if tempModel.name.count > 0 && tempModel.name != self?.collectionModel.name {
+                                    self?.nameLabel.text = tempModel.name
+                                    self?.centerNameLabel.text = tempModel.name
+                                    changed = true
+                                }
+                                
+                                if tempModel.introduction.count > 0 && tempModel.introduction != self?.collectionModel.introduction {
+                                    changed = true
+                                }
+                                
+                                if tempModel.isPrivate != self?.collectionModel.isPrivate {
+                                    changed = true
+                                }
+                                
+                                if changed == true {
+                                    self?.collectionModel = tempModel
+                                    
+                                    if self?.editCompletionHandle != nil {
+                                        self?.editCompletionHandle!(tempModel)
+                                    }
+                                }
+                            }
+                        }
+                        let nav = UINavigationController.init(rootViewController: creationVC)
                         
+                        self?.present(nav, animated: true, completion: nil)
                     } else {
+                        let alertViewController: UIAlertController = UIAlertController.init(title: "提示", message: "删除操作不可逆，收藏夹内数据也将会被一并删除，请确认。", preferredStyle: .alert)
+                        let cancel: UIAlertAction = UIAlertAction.init(title: "取消", style: .cancel, handler: { (action: UIAlertAction?) in
+                            
+                        })
                         
+                        let clean: UIAlertAction = UIAlertAction.init(title: "确定", style: .default, handler: { [weak self] (action: UIAlertAction?) in
+                            let hud = indicatorTextHUD("")
+                            Networking.creationDeleteRequest(params: ["objectId": self!.collectionModel.objectId, "cover": self!.collectionModel.cover, "createType": "0"], completionHandler: { [weak self] (isSuccessful, error) in
+                                hud.hide(false)
+                                
+                                if isSuccessful == true {
+                                    if self?.editCompletionHandle != nil {
+                                        self?.editCompletionHandle!(nil)
+                                    }
+                                    
+                                    showTextHUD("删除成功", inView: nil, hideAfterDelay: 1.5)
+                                    self?.defaultBackAction()
+                                } else {
+                                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                                }
+                            })
+                        })
+                        
+                        alertViewController.addAction(cancel)
+                        alertViewController.addAction(clean)
+                        self?.present(alertViewController, animated: true, completion: nil)
                     }
                 })
             }

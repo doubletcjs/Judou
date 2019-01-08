@@ -22,7 +22,7 @@ class CollectionOperator: BaseOperator {
             "\(posttable).image",
             "\(posttable).content",
             "\(posttable).postType",
-            "COUNT(DISTINCT \(praisepost).objectId) praiseCount",
+            "COUNT(DISTINCT \(praiseposttable).objectId) praiseCount",
             "COUNT(DISTINCT \(commenttable).objectId) commentCount",
             "COUNT(DISTINCT allcollectpost.objectId) collectCount",
             "COUNT(DISTINCT praisepost.objectId) isPraiseCount",
@@ -32,17 +32,17 @@ class CollectionOperator: BaseOperator {
             "\(accounttable).portrait"] //基础字段
         
         let statements: [String] = [
-            "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(collectpost).postId)",
-            "LEFT JOIN \(praisepost) ON (\(praisepost).postId = \(posttable).objectId)",
+            "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(collectposttable).postId)",
+            "LEFT JOIN \(praiseposttable) ON (\(praiseposttable).postId = \(posttable).objectId)",
             "LEFT JOIN \(commenttable) ON (\(commenttable).postId = \(posttable).objectId)",
-            "LEFT JOIN \(collectpost) allcollectpost ON (allcollectpost.postId = \(posttable).objectId)",
-            "LEFT JOIN \(praisepost) praisepost ON (praisepost.postId = \(posttable).objectId AND praisepost.authorId = \(loginId))",
-            "LEFT JOIN \(collectpost) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = \(loginId))",
+            "LEFT JOIN \(collectposttable) allcollectpost ON (allcollectpost.postId = \(posttable).objectId)",
+            "LEFT JOIN \(praiseposttable) praisepost ON (praisepost.postId = \(posttable).objectId AND praisepost.authorId = '\(loginId)')",
+            "LEFT JOIN \(collectposttable) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = '\(loginId)')",
             "LEFT JOIN \(accounttable) ON (\(accounttable).userId = \(posttable).authorId)"]
         
-        let collectSQL: String = "WHERE \(collectpost).objectId = \(collectionId)"
+        let collectSQL: String = "WHERE \(collectposttable).collectId = \(collectionId)"
         
-        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(collectpost) \(statements.joined(separator: " ")) \(collectSQL) GROUP BY \(posttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
+        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(collectposttable) \(statements.joined(separator: " ")) \(collectSQL) GROUP BY \(posttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
         
         let valueOfKeys: [String] = [
             "objectId",
@@ -122,6 +122,10 @@ class CollectionOperator: BaseOperator {
         let userId: String = params["userId"] as! String
         let currentPage: Int = Int(params["currentPage"] as! String)!
         let pageSize: Int = Int(params["pageSize"] as! String)!
+        var postId: String = ""
+        if params["postId"] != nil {
+            postId = params["postId"] as! String
+        }
         
         var collectSQL: String = "WHERE \(collecttable).authorId = '\(userId)' AND \(collecttable).isPrivate = false"
         if loginId.count > 0 && loginId == userId {
@@ -129,21 +133,26 @@ class CollectionOperator: BaseOperator {
             collectSQL = "WHERE \(collecttable).authorId = '\(userId)'"
         }
         
-        let statementKeys: [String] = [
+        var statementKeys: [String] = [
             "\(collecttable).objectId",
             "\(collecttable).name",
             "\(collecttable).cover",
             "\(collecttable).isPrivate",
             "\(collecttable).authorId",
             "\(collecttable).introduction",
-            "COUNT(DISTINCT \(collectpost).objectId) postCount"]
+            "COUNT(DISTINCT \(collectposttable).objectId) postCount"]
         
-        let countStatements: [String] = [
-            "LEFT JOIN \(collectpost) ON (\(collectpost).authorId = \(userId) AND \(collectpost).collectId = \(collecttable).objectId)"]
+        var countStatements: [String] = [
+            "LEFT JOIN \(collectposttable) ON (\(collectposttable).authorId = \(userId) AND \(collectposttable).collectId = \(collecttable).objectId)"]
+        
+        if postId.count > 0 {
+            statementKeys.append("COUNT(DISTINCT cp.objectId) isPostCollectCount")
+            countStatements.append("LEFT JOIN \(collectposttable) cp ON (cp.authorId = '\(userId)' AND cp.postId = '\(postId)' AND cp.collectId = \(collecttable).objectId)")
+        }
         
         let statement = "SELECT \(statementKeys.joined(separator: ", ")) FROM \(collecttable) \(countStatements.joined(separator: " ")) \(collectSQL) GROUP BY \(collecttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
         
-        let keys: [String] = [
+        var keys: [String] = [
             "objectId",
             "name",
             "cover",
@@ -151,6 +160,10 @@ class CollectionOperator: BaseOperator {
             "authorId",
             "introduction",
             "postCount"]
+        
+        if postId.count > 0 {
+            keys.append("isPostCollectCount")
+        }
         
         if mysql.query(statement: statement) == false {
             Utils.logError("收藏夹列表", mysql.errorMessage())
@@ -165,6 +178,15 @@ class CollectionOperator: BaseOperator {
                         let key = keys[idx]
                         let value = row[idx]
                         dict[key] = value
+                        
+                        if dict["isPostCollectCount"] != nil {
+                            dict["isPostCollect"] = false
+                            if Int(dict["isPostCollectCount"] as! String) != 0 {
+                                dict["isPostCollect"] = true
+                            }
+                            
+                            dict["isPostCollectCount"] = nil
+                        }
                     }
                     
                     collectionList.append(dict)
@@ -176,6 +198,4 @@ class CollectionOperator: BaseOperator {
         
         return responseJson
     }
-    // MARK: - 删除收藏夹
-    // MARK: - 编辑收藏夹
 }

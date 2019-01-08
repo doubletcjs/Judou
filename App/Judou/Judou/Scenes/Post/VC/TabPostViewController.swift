@@ -54,6 +54,12 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
             tableView.mj_header.isHidden = true
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
+    }
     // MARK: - 加载数据
     func pageRefreshData() -> Void {
         if isHomePage == true {
@@ -237,10 +243,10 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
             }
             
             if showHomePage == true {
-                let postVC = MyPageViewController()
-                postVC.hidesBottomBarWhenPushed = true
-                postVC.account = model.author
-                self?.navigationController?.pushViewController(postVC, animated: true)
+                let myPageVC = MyPageViewController()
+                myPageVC.hidesBottomBarWhenPushed = true
+                myPageVC.account = model.author
+                self?.navigationController?.pushViewController(myPageVC, animated: true)
             }
         }
         
@@ -249,7 +255,52 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         }
         
         cell?.postPraiseHandle = { [weak self] () -> Void in
-            Log("praise")
+            if AccountManager.accountLogin() == true {
+                let hud = indicatorTextHUD("")
+                Networking.publicPraiseRequest(params: ["objectId": model.objectId, "praiseType": "0", "authorId": UserModel.fetchUser().userId], completionHandler: { (data, error) in
+                    hud.hide(false)
+                    
+                    if error != nil {
+                        showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    } else {
+                        let dict: [String: Bool] = data as! [String : Bool]
+                        let isSuccessful: Bool = dict["isSuccessful"]!
+                        
+                        if model.isPraise == true {
+                            if isSuccessful == true {
+                                showTextHUD("取消点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                
+                                model.isPraise = false
+                                model.praiseCount -= 1
+                                if model.praiseCount < 0 {
+                                    model.praiseCount = 0
+                                }
+                                
+                                UserModel.updateUserInfo()
+                                self?.dataSources[indexPath.section] = model
+                                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                            } else {
+                                showTextHUD("取消点赞失败", inView: nil, hideAfterDelay: 1.8)
+                            }
+                        } else {
+                            if isSuccessful == true {
+                                showTextHUD("点赞成功", inView: nil, hideAfterDelay: 1.8)
+                                
+                                model.isPraise = true
+                                model.praiseCount += 1
+                                
+                                UserModel.updateUserInfo()
+                                self?.dataSources[indexPath.section] = model
+                                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                            } else {
+                                showTextHUD("点赞失败", inView: nil, hideAfterDelay: 1.8)
+                            }
+                        }
+                    }
+                })
+            } else {
+                self?.publicLoginAction()
+            }
         }
         
         cell?.postCommentHandle = { [weak self] () -> Void in
@@ -259,7 +310,19 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         }
         
         cell?.postCollectionHandle = { [weak self] () -> Void in
-            Log("collection")
+            if AccountManager.accountLogin() == true {
+                let collectSelectionVC = CollectSelectionViewController()
+                collectSelectionVC.postModel = model
+                collectSelectionVC.selectionFinishHandle = { [weak self] (isCollect) -> Void in
+                    model.isCollect = isCollect
+                    self?.dataSources[indexPath.section] = model
+                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                }
+                let nav = UINavigationController.init(rootViewController: collectSelectionVC)
+                self?.present(nav, animated: true, completion: nil) 
+            } else {
+                self?.publicLoginAction()
+            }
         }
         
         cell?.postShareHandle = { [weak self] () -> Void in
@@ -270,16 +333,20 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let model = dataSources[indexPath.section] as! PostModel
+        let model = dataSources[indexPath.section]
         
         return PostBaseCell.getPostBaseCellHeight(model, false)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let model = dataSources[indexPath.section] as! PostModel
+        let model = dataSources[indexPath.section]
         
         let postDetailVC = PostDetailViewController()
         postDetailVC.postModel = model
+        if isHomePage == true {
+            postDetailVC.fromHomePage = true
+        }
+        
         self.navigationController?.pushViewController(postDetailVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)

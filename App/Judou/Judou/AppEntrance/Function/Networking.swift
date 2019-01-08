@@ -9,7 +9,7 @@
 import UIKit
 
 // MARK: - 基础信息
-private let kBaseURL: String = "http://0.0.0.0:8089"
+let kBaseURL: String = "http://0.0.0.0:8088"
 private let formatError: NSError = NSError.init(domain: "未知错误", code: -999, userInfo: [NSLocalizedDescriptionKey: "返回数据格式错误"])
 
 private let kRequestSuccessCode: String = "1000"
@@ -23,7 +23,7 @@ typealias FileUploadProgressBlock = (_ progress: Double?) -> Void
 typealias SuccessFailureBlock = (_ isSuccessful: Bool?, _ aError: NSError?) -> Void
 typealias ErrorBlock = (_ aError: NSError?) -> Void
 
-typealias CreationCompletionBlock = () -> Void
+typealias CreationCompletionBlock = (_ model: Any?) -> Void
 
 // MARK: - Networking
 class Networking: NSObject {
@@ -368,12 +368,12 @@ class Networking: NSObject {
             })
         }
     }
-    // MARK: - 删除收藏夹
+    // MARK: - 删除收藏夹、名人、书籍
     /**
-     * 参数内容 collectionId（不能为空）
+     * 参数内容 objectId（不能为空）createType 0 收藏夹 1 名人 2 书籍 cover（封面url，删除服务器文件）
      */
-    class func collectionDeleteRequest(params: [String: Any], completionHandler: SuccessFailureBlock?) -> Void {
-        Alamofire.request("\(kBaseURL)/collectionDelete", method: .post, parameters: params).responseJSON { response in
+    class func creationDeleteRequest(params: [String: Any], completionHandler: SuccessFailureBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/creationDelete", method: .post, parameters: params).responseJSON { response in
             self.handleResponseData(response, finish: { (data, error) in
                 if error == nil {
                     if completionHandler != nil {
@@ -387,25 +387,29 @@ class Networking: NSObject {
             })
         }
     }
-    // MARK: - 修改收藏夹
-    class func editCollection(_ info: Dictionary<String, Any>, completionHandler: ResponseResultBlock?) -> Void {
-        Alamofire.request("\(kBaseURL)/collectionEdit", method: .post, parameters: info).responseJSON { response in
+    // MARK: - 修改收藏夹、名人、书籍
+    /**
+     *  createType 0 收藏夹 1 名人 2 书籍
+    */
+    class func creationEditRequest(_ info: Dictionary<String, Any>, _ createType: Int, completionHandler: SuccessFailureBlock?) -> Void {
+        var dict: [String: Any] = info
+        dict["createType"] = "\(createType)"
+        
+        Alamofire.request("\(kBaseURL)/creationEdit", method: .post, parameters: dict).responseJSON { response in
             self.handleResponseData(response, finish: { (data, error) in
                 if error == nil {
-                    let collectionModel = CollectionModel.mj_object(withKeyValues: data!) as CollectionModel?
-                    
                     if completionHandler != nil {
-                        completionHandler!(collectionModel, nil)
+                        completionHandler!(true, nil)
                     }
                 } else {
                     if completionHandler != nil {
-                        completionHandler!(nil, error)
+                        completionHandler!(false, error)
                     }
                 }
             })
         }
     }
-    // MARK: - 我的列表
+    // MARK: - 我发布的帖子列表
     /**
      * 参数内容 userId（不能为空）、currentPage、pageSize、loginId (loginId==userId，自己查看自己的帖子)
      */
@@ -417,6 +421,147 @@ class Networking: NSObject {
                     
                     if completionHandler != nil {
                         completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 广场
+    /**
+     * 参数内容 currentPage、pageSize、loginId
+     */
+    class func squarePostListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/squarePostList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [PostModel] = PostModel.mj_objectArray(withKeyValuesArray: data) as! [PostModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 我喜欢的帖子列表
+    /**
+     * 参数内容 userId（不能为空）、currentPage、pageSize
+     */
+    class func postPraiseListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/postPraiseList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [PostModel] = PostModel.mj_objectArray(withKeyValuesArray: data) as! [PostModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 粉丝列表
+    /**
+     * 参数内容 userId（不能为空）、currentPage、pageSize、loginId
+     */
+    class func fanListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/userFanList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [UserModel] = UserModel.mj_objectArray(withKeyValuesArray: data) as! [UserModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 关注列表
+    /**
+     * 参数内容 userId（不能为空）、currentPage、pageSize、loginId
+     */
+    class func attentionListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/userAttentionList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [UserModel] = UserModel.mj_objectArray(withKeyValuesArray: data) as! [UserModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 帖子、评论点赞
+    /**
+     * 参数内容 objectId 帖子、评论id authorId: 点赞人 praiseType: 点赞类型 0 帖子 1 评论
+     */
+    class func publicPraiseRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/publicPraise", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    if completionHandler != nil {
+                        completionHandler!(data, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 关注用户
+    /**
+     * 参数内容 userId 被关注人 loginId: 关注人
+     */
+    class func accountAttentionRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/accountAttention", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    if completionHandler != nil {
+                        completionHandler!(data, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 收藏帖子
+    /**
+     * 参数内容 postId 帖子id authorId: 收藏人 collectId: 收藏夹id
+     */
+    class func postCollectRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/postCollect", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    if completionHandler != nil {
+                        completionHandler!(data, nil)
                     }
                 } else {
                     if completionHandler != nil {

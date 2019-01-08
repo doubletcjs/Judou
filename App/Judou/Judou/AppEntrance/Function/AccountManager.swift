@@ -24,6 +24,7 @@ class AccountManager: NSObject {
         UserDefaults.standard.synchronize()
         
         UserModel.recordUserInfo(userModel)
+        NotificationCenter.default.post(name: kChangeLoginAccountNotification, object: nil)
     }
     
     class func logout() -> Void {
@@ -125,18 +126,24 @@ class UserModel: BaseModel {
     }
     
     class func fetchNewestUser(_ completionHandler: @escaping () -> Void) -> Void {
-        let userId = UserDefaults.standard.object(forKey: kLoginUserID) as! String
-        Networking.requestMyInfo(userId: userId) { (aUserModel, aError) in
-            if aUserModel == nil {
-                DispatchQueue.main.async {
-                    completionHandler()
+        if AccountManager.accountLogin() == true {
+            let userId = UserDefaults.standard.object(forKey: kLoginUserID) as! String
+            Networking.requestMyInfo(userId: userId) { (aUserModel, aError) in
+                if aUserModel == nil {
+                    DispatchQueue.main.async {
+                        completionHandler()
+                    }
+                } else {
+                    UserModel.recordUserInfo(aUserModel!)
+                    
+                    DispatchQueue.main.async {
+                        completionHandler()
+                    }
                 }
-            } else {
-                UserModel.recordUserInfo(aUserModel!)
-                
-                DispatchQueue.main.async {
-                    completionHandler()
-                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                completionHandler()
             }
         }
     }

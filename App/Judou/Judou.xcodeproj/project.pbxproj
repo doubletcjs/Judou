@@ -58,6 +58,7 @@
 		CCA0BA7E21C3B61900C1938C /* UITextView+JS.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */; };
 		CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */; };
 		CCA0BA8621C6055700C1938C /* AddFunctionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */; };
+		CCBAD19D21E1FE5F006CB3CC /* CollectSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBAD19C21E1FE5F006CB3CC /* CollectSelectionViewController.swift */; };
 		CCD6776D21CB8E5E000AF524 /* UIImage+Unitl.m in Sources */ = {isa = PBXBuildFile; fileRef = CCD6776C21CB8E5E000AF524 /* UIImage+Unitl.m */; };
 		CCD6776F21CBFA29000AF524 /* HomePageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6776E21CBFA29000AF524 /* HomePageHeaderView.swift */; };
 		CCD6777121CC7B4E000AF524 /* NSDate+Unitl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD6777021CC7B4E000AF524 /* NSDate+Unitl.swift */; };
@@ -141,6 +142,7 @@
 		CCA0BA7D21C3B61900C1938C /* UITextView+JS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextView+JS.m"; sourceTree = "<group>"; };
 		CCA0BA7F21C56B5C00C1938C /* ChannelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
 		CCA0BA8521C6055700C1938C /* AddFunctionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFunctionViewController.swift; sourceTree = "<group>"; };
+		CCBAD19C21E1FE5F006CB3CC /* CollectSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectSelectionViewController.swift; sourceTree = "<group>"; };
 		CCD6776B21CB8E5E000AF524 /* UIImage+Unitl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Unitl.h"; sourceTree = "<group>"; };
 		CCD6776C21CB8E5E000AF524 /* UIImage+Unitl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Unitl.m"; sourceTree = "<group>"; };
 		CCD6776E21CBFA29000AF524 /* HomePageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageHeaderView.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 				CC89969121DD232600F044CA /* MyCollectionViewController.swift */,
 				CC89969221DD232600F044CA /* CollectionDetailViewController.swift */,
 				CC89969321DD232600F044CA /* TapCollectionViewController.swift */,
+				CCBAD19C21E1FE5F006CB3CC /* CollectSelectionViewController.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -728,6 +731,7 @@
 				CC8996C221DD24C700F044CA /* LabelDetailViewController.swift in Sources */,
 				CCD6786A21D1BE2D000AF524 /* CreationViewController.swift in Sources */,
 				CC13192621BF505E00143537 /* BaseTabBarController.swift in Sources */,
+				CCBAD19D21E1FE5F006CB3CC /* CollectSelectionViewController.swift in Sources */,
 				CCA0BA8021C56B5C00C1938C /* ChannelManager.swift in Sources */,
 				CCD6777321CC80CA000AF524 /* NameEditViewController.swift in Sources */,
 				CC04650821C0B6CD006435CD /* Networking.swift in Sources */,

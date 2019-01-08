@@ -164,6 +164,8 @@ class SquareViewController: BaseHideBarViewController, SGPageTitleViewDelegate, 
             
             self.loadPageScrollView()
         }
+        
+        controllerArray[selectedIndex].pageRefreshData()
     }
     
     func pageContentScrollView(_ pageContentScrollView: SGPageContentScrollView!, progress: CGFloat, originalIndex: Int, targetIndex: Int) {
@@ -171,6 +173,7 @@ class SquareViewController: BaseHideBarViewController, SGPageTitleViewDelegate, 
         
         if progress == 1 {
             currentChannelName = currentChannelNames[targetIndex]
+            controllerArray[targetIndex].pageRefreshData()
         }
     }
     // MARK: - 管理频道

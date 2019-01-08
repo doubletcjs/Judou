@@ -130,7 +130,7 @@ class HomeMyHeaderView: UIView {
         if AccountManager.accountLogin() == true {
             let userModel = UserModel.fetchUser()
             
-            imageView.yy_setImage(with: URL.init(string: userModel.portrait),
+            imageView.yy_setImage(with: URL.init(string: kBaseURL+userModel.portrait),
                                   placeholder: UIImage.init(named: "topic_default_avatar"),
                                   options: kWebImageOptions,
                                   completion: nil)
@@ -152,6 +152,15 @@ class HomeMyHeaderView: UIView {
                                   completion: nil)
             nameLabel.text = "点击头像登录"
             tipLabel.text = "登录句读收藏喜欢的句子"
+            
+            let values: [String] = ["0", "0", "0"];
+            self.subviews.forEach { (view) in
+                if view.tag >= 10 {
+                    let btn = view as! UIButton
+                    let label = btn.viewWithTag(99999) as! UILabel
+                    label.text = values[btn.tag-10]
+                }
+            }
         }
     }
     // MARK: - 查看个人主页

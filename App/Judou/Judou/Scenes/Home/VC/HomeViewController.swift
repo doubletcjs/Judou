@@ -11,7 +11,17 @@ import UIKit
 class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITableViewDataSource {
     private var tableView: UITableView!
     private var personalHeader: HomeMyHeaderView!
-
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        UserModel.updateUserInfo()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,9 +32,7 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         tableView.tableFooterView = UIView()
         tableView.separatorColor = kRGBColor(red: 237, green: 238, blue: 238, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
-        tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
+        tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1) 
         
         self.view.addSubview(tableView)
         
@@ -38,9 +46,9 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         tableView.tableHeaderView = personalHeader
         personalHeader.homePageTapHandle = { [weak self] () -> Void in
             if AccountManager.accountLogin() == true {
-                let postVC = MyPageViewController() 
-                postVC.hidesBottomBarWhenPushed = true 
-                self?.navigationController?.pushViewController(postVC, animated: true)
+                let myPageVC = MyPageViewController()
+                myPageVC.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(myPageVC, animated: true)
             } else {
                 self?.publicLoginAction()
             }
@@ -70,7 +78,7 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         
         let tempView = UIView.init(frame: CGRect.init(x: 0, y: -kScreenHeight(), width: tableView.bounds.size.width, height: kScreenHeight())~)
         tempView.backgroundColor = .white
-        tableView.insertSubview(tempView, at: 0)
+        tableView.insertSubview(tempView, at: 0) 
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -214,6 +222,7 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         } else if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
+                
                 break
             case 1:
                 
@@ -240,21 +249,38 @@ class HomeViewController: BaseHideBarViewController, UITableViewDelegate, UITabl
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    // MARK: - 登录
-    @objc private func publicLoginAction() -> Void {
-        let loginVC = LoginViewController()
-        let nav = UINavigationController.init(rootViewController: loginVC)
-        self.present(nav, animated: true, completion: nil)
-    }
-    
+    // MARK: - 注册测试用户
     func registerUser1() -> Void {
+        // Admin
         Networking.adminRegisterRequest(mobile: "15217224985", password: "870704") { (userModel, error) in
             
         }
     }
     
     func registerUser2() -> Void {
+        // Kaye
         Networking.adminRegisterRequest(mobile: "15217224986", password: "880312") { (userModel, error) in
+            
+        }
+    }
+    
+    func registerUser3() -> Void {
+        // 管理员
+        Networking.adminRegisterRequest(mobile: "15217224987", password: "870704") { (userModel, error) in
+            
+        }
+    }
+    
+    func registerUser4() -> Void {
+        // 一地鸡毛
+        Networking.mobileRegisterRequest(mobile: "15217224988", password: "870704") { (userModel, error) in
+            
+        }
+    }
+    
+    func registerUser5() -> Void {
+        // 迷路的孩子
+        Networking.mobileRegisterRequest(mobile: "15217224989", password: "870704") { (userModel, error) in
             
         }
     }

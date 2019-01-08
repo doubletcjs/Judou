@@ -95,7 +95,7 @@ class PostBaseCell: UITableViewCell {
         portraitImageView.tag = cellTag
         cellTag += 1
         self.addSubview(portraitImageView)
-        portraitImageView.yy_setImage(with: URL.init(string: userModel.portrait),
+        portraitImageView.yy_setImage(with: URL.init(string: kBaseURL+userModel.portrait),
                                       placeholder: UIImage.init(named: "topic_default_avatar"),
                                       options: kWebImageOptions,
                                       completion: nil)
@@ -139,7 +139,7 @@ class PostBaseCell: UITableViewCell {
         //收录
         if postModel.postType == 0 {
             portraitImageView.layer.cornerRadius = 4
-            portraitImageView.yy_setImage(with: URL.init(string: postModel.famous.cover),
+            portraitImageView.yy_setImage(with: URL.init(string: kBaseURL+postModel.famous.cover),
                                           placeholder: UIImage.init(named: "topic_default_avatar"),
                                           options: kWebImageOptions,
                                           completion: nil)
@@ -217,7 +217,7 @@ class PostBaseCell: UITableViewCell {
             postImageView.tag = cellTag
             cellTag += 1
             self.addSubview(postImageView)
-            postImageView.yy_setImage(with: URL.init(string: postModel.image),
+            postImageView.yy_setImage(with: URL.init(string: kBaseURL+postModel.image),
                                       placeholder: UIImage.init(named: "big_image_placeholder"),
                                       options: kWebImageOptions,
                                       completion: nil)
@@ -239,7 +239,7 @@ class PostBaseCell: UITableViewCell {
             imageView.layer.masksToBounds = true
             imageView.clipsToBounds = true
             includedButton.addSubview(imageView)
-            imageView.yy_setImage(with: URL.init(string: userModel.portrait),
+            imageView.yy_setImage(with: URL.init(string: kBaseURL+userModel.portrait),
                                   placeholder: UIImage.init(named: "topic_default_avatar"),
                                   options: kWebImageOptions,
                                   completion: nil)
@@ -275,13 +275,13 @@ class PostBaseCell: UITableViewCell {
         itemView.addSubview(lineLabel)
         
         var items: [String] = ["icon_like", "icon_comment", "icon_collect", "icon_share"]
-        let itemValues: [Int] = [postModel.praiseCount, postModel.commentCount, postModel.collectCount, 0]
+        let itemValues: [Int] = [postModel.praiseCount, postModel.commentCount, 0, 0]
         if postModel.isPraise == true {
             items[0] = "icon_like_selected"
         }
         
         if postModel.isCollect == true {
-            items[2] = "icon_comment_selected"
+            items[2] = "icon_collect_selected"
         }
         
         let itemH: CGFloat = 36
