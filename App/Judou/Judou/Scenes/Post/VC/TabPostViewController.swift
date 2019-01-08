@@ -53,6 +53,8 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         if isCollection == true {
             tableView.mj_header.isHidden = true
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kChangeLoginAccountNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,6 +63,12 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         tableView.reloadData()
     }
     // MARK: - 加载数据
+    @objc private func handleRefreshStatus() -> Void {
+        if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+            tableView.mj_header.beginRefreshing()
+        }
+    }
+    
     func pageRefreshData() -> Void {
         if isHomePage == true {
             if dataSources.count == 0 && userID.count > 0 {
@@ -124,7 +132,7 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
                 self?.tableView.mj_header.endRefreshing()
             }
         } else if isCollection == true {
-            Networking.collectionPostListRequest(params: ["collectionId": collectionModel.objectId, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+            Networking.collectionPostListRequest(params: ["collectionId": collectionModel.objectId, "userId": userID!, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
                 if error != nil {
                     showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
                     
@@ -350,6 +358,10 @@ class TabPostViewController: BaseHideBarViewController, UITableViewDelegate, UIT
         self.navigationController?.pushViewController(postDetailVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    // MARK: -
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
     }
     /*
     // MARK: - Navigation

@@ -63,7 +63,6 @@ class MyFavoriteViewController: BaseShowBarViewController, SGPageTitleViewDelega
             self.reloadFavoriteData(targetIndex)
         }
     }
-    // MARK: - 加载数据
     func reloadFavoriteData(_ selectIndex: Int) -> Void {
         let favoriteListVC: FavoriteListViewController = controllers[selectIndex]
         favoriteListVC.pageRefreshData()
@@ -71,10 +70,14 @@ class MyFavoriteViewController: BaseShowBarViewController, SGPageTitleViewDelega
     }
     // MARK: - 搜索
     @objc private func goSearchPost() -> Void {
-        let searchCenterVC = SearchCenterViewController()
-        searchCenterVC.hidesBottomBarWhenPushed = true
-        
-        self.navigationController?.pushViewController(searchCenterVC, animated: true)
+        if AccountManager.accountLogin() == true {
+            let searchCenterVC = SearchCenterViewController()
+            searchCenterVC.hidesBottomBarWhenPushed = true
+            
+            self.navigationController?.pushViewController(searchCenterVC, animated: true)
+        } else {
+            self.publicLoginAction()
+        }
     }
      
     /*

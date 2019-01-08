@@ -349,7 +349,7 @@ class Networking: NSObject {
     }
     // MARK: - 收藏夹帖子列表
     /**
-     * 参数内容 collectionId（不能为空）、currentPage、pageSize、loginId
+     * 参数内容 collectionId（不能为空）、currentPage、pageSize、loginId、userId
      */
     class func collectionPostListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
         Alamofire.request("\(kBaseURL)/collectionPostList", method: .post, parameters: params).responseJSON { response in
@@ -436,6 +436,27 @@ class Networking: NSObject {
      */
     class func squarePostListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
         Alamofire.request("\(kBaseURL)/squarePostList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [PostModel] = PostModel.mj_objectArray(withKeyValuesArray: data) as! [PostModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
+    // MARK: - 帖子模糊搜索
+    /**
+     * 参数内容 currentPage、pageSize、loginId、searchKey
+     */
+    class func postSearchListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/postSearchList", method: .post, parameters: params).responseJSON { response in
             self.handleResponseData(response, finish: { (data, error) in
                 if error == nil {
                     let array: [PostModel] = PostModel.mj_objectArray(withKeyValuesArray: data) as! [PostModel]

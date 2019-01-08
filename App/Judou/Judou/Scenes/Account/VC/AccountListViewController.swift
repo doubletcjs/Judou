@@ -8,6 +8,8 @@
 
 import UIKit
 
+typealias AccountAttentionFinishBlock = () -> Void
+
 class AccountListViewController: BaseShowBarViewController, UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     private var tableView: UITableView!
     private var dataSources: [UserModel] = []
@@ -17,6 +19,7 @@ class AccountListViewController: BaseShowBarViewController, UITableViewDelegate,
     
     var isFan: Bool! = false
     var userId: String! = ""
+    var attentionFinishHandle: AccountAttentionFinishBlock?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -183,7 +186,59 @@ class AccountListViewController: BaseShowBarViewController, UITableViewDelegate,
         }
         
         cell?.selectionStyle = .none
-        cell?.createAccountCell(dataSources[indexPath.row])
+        let accountModel = dataSources[indexPath.row]
+        
+        cell?.createAccountCell(accountModel)
+        
+        cell?.attentionHandle = { [weak self] () -> Void in
+            if AccountManager.accountLogin() == true {
+                let hud = indicatorTextHUD("")
+                Networking.accountAttentionRequest(params: ["loginId": UserModel.fetchUser().userId, "userId": accountModel.userId]) { [weak self] (data, error) in
+                    if error != nil {
+                        hud.hide(false)
+                        showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    } else {
+                        let dict: [String: Any] = data as! [String : Any]
+                        let isSuccessful: Bool = dict["isSuccessful"]! as! Bool
+                        var status: Int = 0 //0 查询失败 不改变状态 1 已关注 2 未关注
+                        if dict["status"] != nil {
+                            status = dict["status"]! as! Int
+                        }
+                        
+                        if isSuccessful == true {
+                            hud.hide(true)
+                            
+                            if status > 0 {
+                                var isAttention: Bool = accountModel.isAttention
+                                if status == 1 {
+                                    isAttention = true
+                                    accountModel.attentionCount += 1
+                                } else if status == 2 {
+                                    isAttention = false
+                                    accountModel.attentionCount -= 1
+                                    if accountModel.attentionCount < 0 {
+                                        accountModel.attentionCount = 0
+                                    }
+                                }
+                                
+                                accountModel.isAttention = isAttention
+                                self?.dataSources[indexPath.row] = accountModel
+                                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                                
+                                if self?.attentionFinishHandle != nil {
+                                    self?.attentionFinishHandle!()
+                                }
+                            }
+                        } else {
+                            hud.hide(false)
+                            showTextHUD("操作失败", inView: nil, hideAfterDelay: 1.5)
+                        }
+                    }
+                }
+            } else {
+                self?.publicLoginAction()
+            }
+        }
         
         return cell!
     }
@@ -197,6 +252,15 @@ class AccountListViewController: BaseShowBarViewController, UITableViewDelegate,
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let accountModel = dataSources[indexPath.row]
+        
+        let myPageVC = MyPageViewController()
+        myPageVC.hidesBottomBarWhenPushed = true
+        if accountModel.userId != UserModel.fetchUser().userId {
+            myPageVC.account = accountModel
+        }
+        
+        self.navigationController?.pushViewController(myPageVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }

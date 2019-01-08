@@ -46,7 +46,8 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         collectionView.mj_header.isHidden = false
         collectionView.mj_footer.isHidden = false
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.needUpdate), name: kCollectSelectionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kCollectSelectionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kChangeLoginAccountNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,7 +56,7 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         collectionView.reloadData()
     }
     // MARK: - 刷新标记
-    @objc private func needUpdate() -> Void {
+    @objc private func handleRefreshStatus() -> Void {
         if userID.count > 0 {
             if collectionView.mj_header.isRefreshing == false {
                 collectionView.mj_header.beginRefreshing()
@@ -213,20 +214,20 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
             privateBtn.frame = CGRect.init(x: 12, y: cell.bounds.size.height-12-8, width: 8, height: 8)~
         }
         
-        //数量
-        if model.postCount > 0 {
-            let countLabel = UILabel.init()
-            countLabel.font = kBaseFont(10)
-            countLabel.textColor = .white
-            countLabel.text = "\(model.postCount)"+"句"
-            countLabel.numberOfLines = 0
-            countLabel.textAlignment = .center
-            countLabel.tag = cellTag
-            cellTag += 1
-            cell.addSubview(countLabel)
-            countLabel.sizeToFit()
-            countLabel.frame = CGRect.init(x: cell.bounds.size.width-12-countLabel.frame.size.width, y: cell.bounds.size.height-8-countLabel.frame.size.height, width: countLabel.frame.size.width, height: countLabel.frame.size.height)~
-        }
+//        //数量
+//        if model.postCount > 0 {
+//            let countLabel = UILabel.init()
+//            countLabel.font = kBaseFont(10)
+//            countLabel.textColor = .white
+//            countLabel.text = "\(model.postCount)"+"句"
+//            countLabel.numberOfLines = 0
+//            countLabel.textAlignment = .center
+//            countLabel.tag = cellTag
+//            cellTag += 1
+//            cell.addSubview(countLabel)
+//            countLabel.sizeToFit()
+//            countLabel.frame = CGRect.init(x: cell.bounds.size.width-12-countLabel.frame.size.width, y: cell.bounds.size.height-8-countLabel.frame.size.height, width: countLabel.frame.size.width, height: countLabel.frame.size.height)~
+//        }
         
         return cell
     }
@@ -254,11 +255,13 @@ class TapCollectionViewController: BaseHideBarViewController, UICollectionViewDe
         
         let detailVC = CollectionDetailViewController()
         detailVC.collectionModel = model
+        detailVC.userID = userID
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
     // MARK: - delloc
     deinit {
         NotificationCenter.default.removeObserver(self, name: kCollectSelectionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
     }
     /*
     // MARK: - Navigation

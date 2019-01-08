@@ -356,6 +356,10 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    // MARK: - delloc
+    deinit { 
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
+    }
     /*
     // MARK: - Navigation
 

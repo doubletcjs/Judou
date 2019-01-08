@@ -8,6 +8,111 @@
 import Foundation
 
 class QueryOperator: BaseOperator {
+    // MARK: - 帖子模糊搜索列表
+    func postSearchListQuery(params: [String: Any]) -> String {
+        let currentPage: Int = Int(params["currentPage"] as! String)!
+        let pageSize: Int = Int(params["pageSize"] as! String)!
+        let loginId: String = params["loginId"] as! String
+        let searchKey: String = params["searchKey"] as! String
+        
+        let keys: [String] = [
+            "\(posttable).objectId",
+            "\(posttable).isPrivate",
+            "\(posttable).postDate",
+            "\(posttable).image",
+            "\(posttable).content",
+            "\(posttable).postType",
+            "COUNT(DISTINCT praisepostcount.objectId) praiseCount",
+            "COUNT(DISTINCT \(commenttable).objectId) commentCount",
+            "COUNT(DISTINCT \(collectposttable).objectId) collectCount",
+            "COUNT(DISTINCT praisepost.objectId) isPraiseCount",
+            "COUNT(DISTINCT collectpost.objectId) isCollectCount",
+            "\(accounttable).userId",
+            "\(accounttable).nickname",
+            "\(accounttable).portrait"] //基础字段
+        
+        let statements: [String] = [ 
+            "LEFT JOIN \(praiseposttable) praisepostcount ON (praisepostcount.postId = \(posttable).objectId)",
+            "LEFT JOIN \(commenttable) ON (\(commenttable).postId = \(posttable).objectId)",
+            "LEFT JOIN \(collectposttable) ON (\(collectposttable).postId = \(posttable).objectId)",
+            "LEFT JOIN \(praiseposttable) praisepost ON (praisepost.postId = \(posttable).objectId AND praisepost.authorId = '\(loginId)')",
+            "LEFT JOIN \(collectposttable) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = '\(loginId)')",
+            "LEFT JOIN \(accounttable) ON (\(accounttable).userId = \(posttable).authorId)"]
+        
+        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(posttable) \(statements.joined(separator: " ")) WHERE \(posttable).content LIKE '%\(searchKey)%' GROUP BY \(posttable).objectId ORDER BY \(posttable).objectId DESC LIMIT \(currentPage*pageSize), \(pageSize)"
+        
+        let valueOfKeys: [String] = [
+            "objectId",
+            "isPrivate",
+            "postDate",
+            "image",
+            "content",
+            "postType",
+            "praiseCount",
+            "commentCount",
+            "collectCount",
+            "isPraiseCount",
+            "isCollectCount"] //基础字段
+        
+        let accountValueOfKeys: [String] = [
+            "userId",
+            "nickname",
+            "portrait"];
+        
+        if mysql.query(statement: statement) == false {
+            Utils.logError("帖子模糊搜索", mysql.errorMessage())
+            responseJson = Utils.failureResponseJson("搜索失败")
+        } else {
+            var postList = [[String: Any]]()
+            let results = mysql.storeResults()
+            if results != nil && results!.numRows() > 0 {
+                results!.forEachRow { (row) in
+                    var dict: [String: Any] = [:]
+                    var author: [String: Any] = [:]
+                    for idx in 0...row.count-1 {
+                        if idx < valueOfKeys.count {
+                            let key = valueOfKeys[idx]
+                            let value = row[idx]
+                            dict[key] = value
+                            
+                            if dict["isPraiseCount"] != nil {
+                                dict["isPraise"] = false
+                                if Int(dict["isPraiseCount"] as! String) != 0 {
+                                    dict["isPraise"] = true
+                                }
+                                
+                                dict["isPraiseCount"] = nil
+                            }
+                            
+                            if dict["isCollectCount"] != nil {
+                                dict["isCollect"] = false
+                                if Int(dict["isCollectCount"] as! String) != 0 {
+                                    dict["isCollect"] = true
+                                }
+                                
+                                dict["isCollectCount"] = nil
+                            }
+                        } else {
+                            let accountIdx: Int = idx-valueOfKeys.count
+                            let key = accountValueOfKeys[accountIdx]
+                            let value = row[idx]
+                            author[key.replacingOccurrences(of: "\(accounttable).", with: "")] = value
+                        }
+                    }
+                    
+                    if author.count > 0 {
+                        dict["author"] = author
+                    }
+                    
+                    postList.append(dict)
+                }
+            }
+            
+            responseJson = Utils.successResponseJson(postList)
+        }
+        
+        return responseJson
+    }
     // MARK: - 喜欢的帖子列表
     func postPraiseListQuery(params: [String: Any]) -> String {
         let currentPage: Int = Int(params["currentPage"] as! String)!
@@ -21,7 +126,7 @@ class QueryOperator: BaseOperator {
             "\(posttable).image",
             "\(posttable).content",
             "\(posttable).postType",
-            "COUNT(DISTINCT \(praiseposttable).objectId) praiseCount",
+            "COUNT(DISTINCT praisepostcount.objectId) praiseCount",
             "COUNT(DISTINCT \(commenttable).objectId) commentCount",
             "COUNT(DISTINCT \(collectposttable).objectId) collectCount",
             "COUNT(DISTINCT praisepost.objectId) isPraiseCount",
@@ -32,13 +137,14 @@ class QueryOperator: BaseOperator {
         
         let statements: [String] = [
             "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(praiseposttable).postId)",
+            "LEFT JOIN \(praiseposttable) praisepostcount ON (praisepostcount.postId = \(posttable).objectId)",
             "LEFT JOIN \(commenttable) ON (\(commenttable).postId = \(posttable).objectId)",
             "LEFT JOIN \(collectposttable) ON (\(collectposttable).postId = \(posttable).objectId)",
             "LEFT JOIN \(praiseposttable) praisepost ON (praisepost.postId = \(posttable).objectId AND praisepost.authorId = '\(userId)')",
             "LEFT JOIN \(collectposttable) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = '\(userId)')",
             "LEFT JOIN \(accounttable) ON (\(accounttable).userId = \(posttable).authorId)"]
         
-        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(praiseposttable) \(statements.joined(separator: " ")) WHERE \(praiseposttable).authorId = '\(userId)' GROUP BY \(posttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
+        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(praiseposttable) \(statements.joined(separator: " ")) WHERE \(praiseposttable).authorId = '\(userId)' GROUP BY \(posttable).objectId ORDER BY \(posttable).objectId DESC LIMIT \(currentPage*pageSize), \(pageSize)"
         
         let valueOfKeys: [String] = [
             "objectId",

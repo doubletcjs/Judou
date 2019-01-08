@@ -26,6 +26,8 @@ class CollectionDetailViewController: BaseHideBarViewController, MXParallaxHeade
     private var centerNameLabel: UILabel!
     private var countLabel: UILabel!
     
+    var userID: String! = ""
+    
     // 返回空，为删除
     var editCompletionHandle: CreationCompletionBlock?
 
@@ -258,6 +260,7 @@ class CollectionDetailViewController: BaseHideBarViewController, MXParallaxHeade
         activityIndicatorView.startAnimating()
         
         let postVC: TabPostViewController = controllers[0]
+        postVC.userID = userID
         postVC.pageRefreshData()
     }
     // MARK: - SGPageContentScrollViewDelegate

@@ -104,6 +104,9 @@ class BasicRoutes {
             // 广场
             baseRoutes.add(method: .post, uri: "/squarePostList", handler: squarePostListHandle)
             
+            // 搜索帖子
+            baseRoutes.add(method: .post, uri: "/postSearchList", handler: postSearchListHandle)
+            
             print("接口版本: v0.0.1")
             
             return baseRoutes
@@ -420,7 +423,7 @@ class BasicRoutes {
             dict[param.0] = param.1
         }
         
-        guard dict.keys.count == 4 else {
+        guard dict.keys.count == 5 else {
             response.setBody(string: Utils.failureResponseJson("请求参数错误"))
             response.completed()
             
@@ -470,6 +473,27 @@ class BasicRoutes {
         }
         
         let requestJson = QueryOperator().myPostListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 搜索帖子
+    private func postSearchListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().postSearchListQuery(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }

@@ -67,6 +67,13 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         pageHeaderView.currentVC = self
         headerImageView.addSubview(pageHeaderView)
         pageHeaderView.isUserInteractionEnabled = false
+        pageHeaderView.attentionFinishHandle = { [weak self] () -> Void in
+            if self?.account.userId == UserModel.fetchUser().userId {
+                UserModel.updateUserInfo()
+            } else {
+                self?.requestAccountInfo(false)
+            }
+        }
         
         //返回
         let bottomHeight = self.navigationController!.navigationBar.frame.size.height
@@ -129,18 +136,7 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
             account = UserModel.fetchUser()
         }
         
-        let hud = indicatorTextHUD("") 
-        Networking.myHomePageRequest(params: ["userId": account.userId, "loginId": UserModel.fetchUser().userId]) { (userModel, error) in
-            if error == nil {
-                self.account = userModel as? UserModel
-                self.refreshHomePage()
-                
-                hud.hide(true)
-            } else {
-                hud.hide(false)
-                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
-            }
-        }
+        self.requestAccountInfo(true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -170,6 +166,25 @@ class MyPageViewController: BaseHideBarViewController, MXParallaxHeaderDelegate,
         
         if pageHeaderView != nil {
             pageHeaderView.currentVC = nil
+        }
+    }
+    // MARK: - 加载首页数据
+    @objc private func requestAccountInfo(_ showHUD: Bool) -> Void {
+        var hud = MBProgressHUD()
+        if showHUD == true {
+            hud = indicatorTextHUD("")
+        }
+        
+        Networking.myHomePageRequest(params: ["userId": account.userId, "loginId": UserModel.fetchUser().userId]) { (userModel, error) in
+            if error == nil {
+                self.account = userModel as? UserModel
+                self.refreshHomePage()
+                
+                hud.hide(true)
+            } else {
+                hud.hide(false)
+                showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+            }
         }
     }
     // MARK: - 加载首页数据

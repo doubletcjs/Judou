@@ -42,6 +42,7 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         tableView.mj_footer.isHidden = false
         
         self.refreshPostData()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kChangeLoginAccountNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,6 +51,12 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         tableView.reloadData()
     }
     // MARK: - 加载数据
+    @objc private func handleRefreshStatus() -> Void {
+        if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+            tableView.mj_header.beginRefreshing()
+        }
+    }
+    
     @objc private func refreshPostData() -> Void {
         currentPage = 0
         self.requestPostData()
@@ -209,6 +216,10 @@ class MyPostViewController: BaseShowBarViewController, UITableViewDelegate, UITa
         self.navigationController?.pushViewController(postDetailVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    // MARK: -
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
     }
     /*
     // MARK: - Navigation

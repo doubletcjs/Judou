@@ -382,7 +382,7 @@ class CreationOperator: BaseOperator {
             }
         } else if checkIsAttention() == 2 {
             // 添加关注
-            let statement = "INSERT INTO \(tableName) (authorId, userId) VALUES ('\(loginId)', '\(userId)'))"
+            let statement = "INSERT INTO \(tableName) (authorId, userId) VALUES ('\(loginId)', '\(userId)')"
             if mysql.query(statement: statement) == false {
                 Utils.logError("添加关注", mysql.errorMessage())
                 responseJson = Utils.successResponseJson(["isSuccessful": false, "status": 0])

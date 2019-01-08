@@ -14,6 +14,9 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
     
     private var pageTitleView: SGPageTitleView!
     private var pageContentScrollView: SGPageContentScrollView!
+    private var currentIndex: Int!
+    
+    private var controllers: [SearchListViewController]! = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +31,7 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
         searchTextField.setValue(kRGBColor(red: 209, green: 210, blue: 211, alpha: 1), forKey: "_placeholderLabel.textColor")
         searchTextField.font = kBaseFont(15)
         searchTextField.leftViewMode = .always
+        searchTextField.returnKeyType = .search
         searchTextField.delegate = self
         let imageView = UIImageView.init()
         imageView.contentMode = .scaleAspectFit
@@ -68,18 +72,11 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
         
         let controllerRect = CGRect.init(x: 0, y: pageTitleView.frame.maxY, width: kScreenWidth(), height: self.view.bounds.size.height-pageTitleView.frame.maxY)~
         
-        var controllers: [UIViewController] = []
         types.forEach { (type) in
-            if type == "句子" {
-                let postVC = TabPostViewController()
-                postVC.superFrame = controllerRect 
-                controllers.append(postVC)
-            } else {
-                let searchListVC = SearchListViewController()
-                searchListVC.searchType = type
-                searchListVC.superFrame = controllerRect
-                controllers.append(searchListVC)
-            }
+            let searchListVC = SearchListViewController()
+            searchListVC.searchType = type
+            searchListVC.superFrame = controllerRect
+            controllers.append(searchListVC)
         }
         
         pageContentScrollView = SGPageContentScrollView.init(frame: controllerRect, parentVC: self, childVCs: controllers)
@@ -90,13 +87,16 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
     func pageTitleView(_ pageTitleView: SGPageTitleView!, selectedIndex: Int) {
         pageContentScrollView.setPageContentScrollViewCurrentIndex(selectedIndex)
         
+        currentIndex = selectedIndex
+        controllers[selectedIndex].pageRefreshData(searchTextField.text ?? "")
     }
     
     func pageContentScrollView(_ pageContentScrollView: SGPageContentScrollView!, progress: CGFloat, originalIndex: Int, targetIndex: Int) {
         pageTitleView.setPageTitleViewWithProgress(progress, originalIndex: originalIndex, targetIndex: targetIndex)
         
         if progress == 1 {
-            
+            controllers[targetIndex].pageRefreshData(searchTextField.text ?? "")
+            currentIndex = targetIndex
         }
     }
     // MARK: - 取消输入
@@ -119,6 +119,9 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        controllers[currentIndex].pageRefreshData(searchTextField.text ?? "")
+        
+        textField.resignFirstResponder()
         
         return true
     }

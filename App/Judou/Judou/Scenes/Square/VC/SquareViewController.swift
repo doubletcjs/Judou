@@ -258,10 +258,14 @@ class SquareViewController: BaseHideBarViewController, SGPageTitleViewDelegate, 
     }
     // MARK: - 搜索
     @objc private func goSearchPost() -> Void {
-        let searchCenterVC = SearchCenterViewController()
-        searchCenterVC.hidesBottomBarWhenPushed = true
-        
-        self.navigationController?.pushViewController(searchCenterVC, animated: true)
+        if AccountManager.accountLogin() == true {
+            let searchCenterVC = SearchCenterViewController()
+            searchCenterVC.hidesBottomBarWhenPushed = true
+            
+            self.navigationController?.pushViewController(searchCenterVC, animated: true)
+        } else {
+            self.publicLoginAction()
+        }
     }
     // MARK: - 发布
     @objc private func goCreatePost() -> Void {

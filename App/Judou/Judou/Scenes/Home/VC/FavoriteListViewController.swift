@@ -49,10 +49,20 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
         
         tableView.setupRefresh(self, #selector(self.refreshFavoriteData), #selector(self.loadMoreFavoriteData))
         tableView.mj_header.isHidden = false
+        tableView.mj_footer.isHidden = false
         
         self.refreshFavoriteData()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRefreshStatus), name: kChangeLoginAccountNotification, object: nil)
     }
     // MARK: - 加载数据
+    // MARK: - 加载数据
+    @objc private func handleRefreshStatus() -> Void {
+        if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
+            tableView.mj_header.beginRefreshing()
+        }
+    }
+    
     func pageRefreshData() -> Void {
         if dataSources.count == 0 {
             if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
@@ -74,8 +84,10 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
     @objc private func requestFavoriteData() -> Void {
         if favoriteType == "视频" {
             tableView.mj_header.endRefreshing()
+            tableView.mj_footer.endRefreshingWithNoMoreData()
         } else if favoriteType == "随笔" {
             tableView.mj_header.endRefreshing()
+            tableView.mj_footer.endRefreshingWithNoMoreData()
         } else {
             Networking.postPraiseListRequest(params: ["userId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
                 if error != nil {
@@ -213,7 +225,11 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
             
             cell?.postAuthorHandle = { [weak self] () -> Void in
                 let myPageVC = MyPageViewController()
-                myPageVC.hidesBottomBarWhenPushed = true 
+                myPageVC.hidesBottomBarWhenPushed = true
+                if model.author.userId != UserModel.fetchUser().userId {
+                    myPageVC.account = model.author
+                }
+                
                 self?.navigationController?.pushViewController(myPageVC, animated: true)
             }
             
@@ -310,6 +326,10 @@ class FavoriteListViewController: BaseShowBarViewController, UITableViewDelegate
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    // MARK: - delloc
+    deinit { 
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
     }
     /*
     // MARK: - Navigation

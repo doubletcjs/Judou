@@ -8,7 +8,10 @@
 
 import UIKit
 
+typealias AccountListAttentionBlock = () -> Void
+
 class AccountListCell: UITableViewCell {
+    var attentionHandle: AccountListAttentionBlock?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -45,6 +48,18 @@ class AccountListCell: UITableViewCell {
         if account.isAttention == true {
             button.setTitleColor(.white, for: .normal)
             button.backgroundColor = kRGBColor(red: 206, green: 210, blue: 219, alpha: 1)
+            button.setTitle("已关注", for: .normal)
+        }
+        
+        button.isHidden = false
+        if account.userId == UserModel.fetchUser().userId {
+            button.isHidden = true
+        }
+        
+        button.handleControlEvent(controlEvent: .touchUpInside) { [weak self] (sender) in
+            if self?.attentionHandle != nil {
+                self?.attentionHandle!()
+            }
         }
         
         //头像

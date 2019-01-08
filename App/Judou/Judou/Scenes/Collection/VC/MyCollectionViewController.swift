@@ -233,6 +233,7 @@ class MyCollectionViewController: BaseShowBarViewController, UICollectionViewDel
         
         let detailVC = CollectionDetailViewController()
         detailVC.collectionModel = model
+        detailVC.userID = UserModel.fetchUser().userId
         detailVC.editCompletionHandle = { [weak self] (newModel) -> Void in
             if newModel == nil {
                 self?.dataSources.remove(at: indexPath.row)

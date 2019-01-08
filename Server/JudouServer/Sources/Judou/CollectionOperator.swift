@@ -11,6 +11,7 @@ class CollectionOperator: BaseOperator {
     // MARK: - 收藏夹帖子列表
     func collectionPostListQuery(params: [String: Any]) -> String {
         let loginId: String = params["loginId"] as! String
+        let userId: String = params["userId"] as! String
         let collectionId: String = params["collectionId"] as! String
         let currentPage: Int = Int(params["currentPage"] as! String)!
         let pageSize: Int = Int(params["pageSize"] as! String)!
@@ -31,8 +32,13 @@ class CollectionOperator: BaseOperator {
             "\(accounttable).nickname",
             "\(accounttable).portrait"] //基础字段
         
+        var baseJoin: String = "RIGHT JOIN \(posttable) ON (\(posttable).objectId = \(collectposttable).postId AND \(posttable).isPrivate = false)"
+        if loginId.count > 0 && loginId == userId {
+            baseJoin = "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(collectposttable).postId)"
+        }
+        
         let statements: [String] = [
-            "LEFT JOIN \(posttable) ON (\(posttable).objectId = \(collectposttable).postId)",
+            baseJoin,
             "LEFT JOIN \(praiseposttable) ON (\(praiseposttable).postId = \(posttable).objectId)",
             "LEFT JOIN \(commenttable) ON (\(commenttable).postId = \(posttable).objectId)",
             "LEFT JOIN \(collectposttable) allcollectpost ON (allcollectpost.postId = \(posttable).objectId)",
@@ -40,7 +46,7 @@ class CollectionOperator: BaseOperator {
             "LEFT JOIN \(collectposttable) collectpost ON (collectpost.postId = \(posttable).objectId AND collectpost.authorId = '\(loginId)')",
             "LEFT JOIN \(accounttable) ON (\(accounttable).userId = \(posttable).authorId)"]
         
-        let collectSQL: String = "WHERE \(collectposttable).collectId = \(collectionId)"
+        let collectSQL: String = "WHERE \(collectposttable).collectId = '\(collectionId)'"
         
         let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(collectposttable) \(statements.joined(separator: " ")) \(collectSQL) GROUP BY \(posttable).objectId LIMIT \(currentPage*pageSize), \(pageSize)"
         
