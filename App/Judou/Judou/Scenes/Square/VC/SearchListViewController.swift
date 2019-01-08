@@ -286,6 +286,7 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
                                     }
                                     
                                     UserModel.updateUserInfo()
+                                    NotificationCenter.default.post(name: kSquarePostUpdateNotification, object: model)
                                     self?.dataSources[indexPath.section] = model
                                     self?.tableView.reloadRows(at: [indexPath], with: .none)
                                 } else {
@@ -299,6 +300,7 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
                                     model.praiseCount += 1
                                     
                                     UserModel.updateUserInfo()
+                                    NotificationCenter.default.post(name: kSquarePostUpdateNotification, object: model)
                                     self?.dataSources[indexPath.section] = model
                                     self?.tableView.reloadRows(at: [indexPath], with: .none)
                                 } else {
@@ -326,6 +328,7 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
                         model.isCollect = isCollect
                         self?.dataSources[indexPath.section] = model
                         self?.tableView.reloadRows(at: [indexPath], with: .none)
+                        NotificationCenter.default.post(name: kSquarePostUpdateNotification, object: model)
                     }
                     let nav = UINavigationController.init(rootViewController: collectSelectionVC)
                     self?.present(nav, animated: true, completion: nil)
@@ -386,6 +389,10 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    // MARK: - delloc
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
     }
     /*
     // MARK: - Navigation

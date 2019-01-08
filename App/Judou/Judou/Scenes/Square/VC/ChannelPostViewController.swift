@@ -34,6 +34,7 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
             tableView.register(EssayCell.self, forCellReuseIdentifier: "EssayCellIdentifier")
         } else {
             tableView.register(PostBaseCell.self, forCellReuseIdentifier: "PostCellIdentifier")
+            NotificationCenter.default.addObserver(self, selector: #selector(self.quarePostUpdate(_:)), name: kSquarePostUpdateNotification, object: nil)
         }
         
         tableView.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
@@ -57,6 +58,20 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
         //随笔 cell3 未知
     }
     // MARK: - 加载数据
+    @objc private func quarePostUpdate(_ noti: Notification) -> Void {
+        if noti.object != nil && dataSources.count > 0 {
+            let model: PostModel = noti.object as! PostModel
+            for idx in 0...dataSources.count-1 {
+                let post = dataSources[idx] as! PostModel
+                if post.objectId == model.objectId {
+                    dataSources[idx] = model
+                    tableView.reloadRows(at: [IndexPath.init(row: 0, section: idx)], with: .none)
+                    return
+                }
+            }
+        }
+    }
+    
     @objc private func handleRefreshStatus() -> Void {
         if tableView.mj_header != nil && tableView.mj_header.isRefreshing == false {
             tableView.mj_header.beginRefreshing()
@@ -357,8 +372,9 @@ class ChannelPostViewController: BaseHideBarViewController, UITableViewDelegate,
         tableView.deselectRow(at: indexPath, animated: true)
     }
     // MARK: - delloc
-    deinit { 
+    deinit {
         NotificationCenter.default.removeObserver(self, name: kChangeLoginAccountNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: kSquarePostUpdateNotification, object: nil)
     }
     /*
     // MARK: - Navigation
