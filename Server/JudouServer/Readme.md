@@ -1,4 +1,9 @@
-- brew install mysql@5.7 && brew link mysql@5.7 --force
+mac os
+brew install mysql@5.7 && brew link mysql@5.7 --force
+
+ubuntu
+sudo apt-get install libcurl4-gnutls-dev openssl1.0 libssl1.1-dev openssl uuid-dev mysql-workbench mysql-server mysql-client libmysqlclient-dev clang libicu-dev
+
 - Package.swift
 ```
 import PackageDescription
