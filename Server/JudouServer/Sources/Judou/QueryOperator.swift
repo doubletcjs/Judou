@@ -8,6 +8,70 @@
 import Foundation
 
 class QueryOperator: BaseOperator {
+    // MARK: - 用户模糊搜索列表
+    func accountSearchListQuery(params: [String: Any]) -> String {
+        let loginId: String = params["loginId"] as! String
+        let searchKey: String = params["searchKey"] as! String
+        let currentPage: Int = Int(params["currentPage"] as! String)!
+        let pageSize: Int = Int(params["pageSize"] as! String)!
+        
+        var keys: [String] = [
+            "\(accounttable).userId",
+            "\(accounttable).nickname",
+            "\(accounttable).portrait",
+            "\(accounttable).gender",
+            "\(accounttable).status"]
+        
+        var originalKeys: [String] = [
+            "userId",
+            "nickname",
+            "portrait",
+            "gender",
+            "status"]
+        
+        var statements: [String] = []
+        
+        if loginId.count > 0 {
+            keys.append("COUNT(DISTINCT fanAttentionTable.objectId) fanAttentionCount")
+            originalKeys.append("fanAttentionCount")
+            statements.append("LEFT JOIN \(attentionfantable) fanAttentionTable ON (fanAttentionTable.authorId = '\(loginId)' AND fanAttentionTable.userId = \(accounttable).userId)")
+        }
+        
+        let statement = "SELECT \(keys.joined(separator: ", ")) FROM \(accounttable) \(statements.joined(separator: " ")) WHERE \(accounttable).nickname LIKE '%\(searchKey)%' GROUP BY \(accounttable).userId LIMIT \(currentPage*pageSize), \(pageSize)"
+        
+        if mysql.query(statement: statement) == false {
+            Utils.logError("用户模糊搜索", mysql.errorMessage())
+            responseJson = Utils.failureResponseJson("搜索失败")
+        } else {
+            var postList = [[String: Any]]()
+            let results = mysql.storeResults()
+            if results != nil && results!.numRows() > 0 {
+                results!.forEachRow { (row) in
+                    var dict: [String: Any] = [:]
+                    for idx in 0...row.count-1 {
+                        let key = originalKeys[idx]
+                        let value = row[idx]
+                        dict[key] = value
+                        
+                        if dict["fanAttentionCount"] != nil {
+                            dict["isAttention"] = false
+                            if Int(dict["fanAttentionCount"] as! String) != 0 {
+                                dict["isAttention"] = true
+                            }
+                            
+                            dict["fanAttentionCount"] = nil
+                        }
+                    }
+                    
+                    postList.append(dict)
+                }
+            }
+            
+            responseJson = Utils.successResponseJson(postList)
+        }
+        
+        return responseJson
+    }
     // MARK: - 帖子模糊搜索列表
     func postSearchListQuery(params: [String: Any]) -> String {
         let currentPage: Int = Int(params["currentPage"] as! String)!

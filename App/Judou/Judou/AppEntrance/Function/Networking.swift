@@ -472,6 +472,27 @@ class Networking: NSObject {
             })
         }
     }
+    // MARK: - 用户模糊搜索
+    /**
+     * 参数内容 currentPage、pageSize、loginId、searchKey
+     */
+    class func accountSearchListRequest(params: [String: Any], completionHandler: ResponseResultBlock?) -> Void {
+        Alamofire.request("\(kBaseURL)/accountSearchList", method: .post, parameters: params).responseJSON { response in
+            self.handleResponseData(response, finish: { (data, error) in
+                if error == nil {
+                    let array: [UserModel] = UserModel.mj_objectArray(withKeyValuesArray: data) as! [UserModel]
+                    
+                    if completionHandler != nil {
+                        completionHandler!(array, nil)
+                    }
+                } else {
+                    if completionHandler != nil {
+                        completionHandler!(nil, error)
+                    }
+                }
+            })
+        }
+    }
     // MARK: - 我喜欢的帖子列表
     /**
      * 参数内容 userId（不能为空）、currentPage、pageSize

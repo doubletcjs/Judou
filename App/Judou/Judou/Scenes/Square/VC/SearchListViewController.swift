@@ -135,8 +135,33 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
                 self?.tableView.mj_header.endRefreshing()
             }
         } else {
-            tableView.mj_header.endRefreshing()
-            tableView.mj_footer.endRefreshingWithNoMoreData()
+            Networking.accountSearchListRequest(params: ["searchKey": searchKey!, "loginId": UserModel.fetchUser().userId, "currentPage": "\(currentPage!)", "pageSize": "\(pageSize!)"]) { [weak self] (list, error) in
+                if error != nil {
+                    showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                    
+                    if self!.currentPage > 0 {
+                        self?.currentPage -= 1
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                } else {
+                    let array: [UserModel] = list as! [UserModel]
+                    if self!.currentPage == 0 {
+                        self?.dataSources = array
+                    } else {
+                        self?.dataSources = self!.dataSources+array
+                    }
+                    
+                    self?.tableView.reloadData()
+                    
+                    if array.count < self!.pageSize {
+                        self?.tableView.mj_footer.endRefreshingWithNoMoreData()
+                    } else {
+                        self?.tableView.mj_footer.endRefreshing()
+                    }
+                }
+                
+                self?.tableView.mj_header.endRefreshing()
+            }
         }
     }
     // MARK: - DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
@@ -355,7 +380,55 @@ class SearchListViewController: BaseHideBarViewController, UITableViewDelegate, 
             }
             
             cell?.selectionStyle = .none
-            cell?.createAccountCell(dataSources[indexPath.row] as! UserModel)
+            let accountModel = dataSources[indexPath.row] as! UserModel
+            
+            cell?.createAccountCell(accountModel)
+            
+            cell?.attentionHandle = { [weak self] () -> Void in
+                if AccountManager.accountLogin() == true {
+                    let hud = indicatorTextHUD("")
+                    Networking.accountAttentionRequest(params: ["loginId": UserModel.fetchUser().userId, "userId": accountModel.userId]) { [weak self] (data, error) in
+                        if error != nil {
+                            hud.hide(false)
+                            showTextHUD(error?.localizedDescription, inView: nil, hideAfterDelay: 1.5)
+                        } else {
+                            let dict: [String: Any] = data as! [String : Any]
+                            let isSuccessful: Bool = dict["isSuccessful"]! as! Bool
+                            var status: Int = 0 //0 查询失败 不改变状态 1 已关注 2 未关注
+                            if dict["status"] != nil {
+                                status = dict["status"]! as! Int
+                            }
+                            
+                            if isSuccessful == true {
+                                hud.hide(true)
+                                
+                                if status > 0 {
+                                    var isAttention: Bool = accountModel.isAttention
+                                    if status == 1 {
+                                        isAttention = true
+                                        accountModel.attentionCount += 1
+                                    } else if status == 2 {
+                                        isAttention = false
+                                        accountModel.attentionCount -= 1
+                                        if accountModel.attentionCount < 0 {
+                                            accountModel.attentionCount = 0
+                                        }
+                                    }
+                                    
+                                    accountModel.isAttention = isAttention
+                                    self?.dataSources[indexPath.row] = accountModel
+                                    self?.tableView.reloadRows(at: [indexPath], with: .none) 
+                                }
+                            } else {
+                                hud.hide(false)
+                                showTextHUD("操作失败", inView: nil, hideAfterDelay: 1.5)
+                            }
+                        }
+                    }
+                } else {
+                    self?.publicLoginAction()
+                }
+            }
             
             return cell!
         }

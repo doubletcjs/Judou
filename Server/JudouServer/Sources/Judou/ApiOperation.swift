@@ -107,6 +107,9 @@ class BasicRoutes {
             // 搜索帖子
             baseRoutes.add(method: .post, uri: "/postSearchList", handler: postSearchListHandle)
             
+            // 搜索用户
+            baseRoutes.add(method: .post, uri: "/accountSearchList", handler: accountSearchListHandle)
+            
             print("接口版本: v0.0.1")
             
             return baseRoutes
@@ -494,6 +497,27 @@ class BasicRoutes {
         }
         
         let requestJson = QueryOperator().postSearchListQuery(params: dict)
+        response.appendBody(string: requestJson)
+        response.completed()
+    }
+    // MARK: - 搜索用户
+    private func accountSearchListHandle(request: HTTPRequest, response: HTTPResponse) {
+        let params = request.params()
+        var dict: [String: Any] = [:]
+        
+        for idx in 0...params.count-1 {
+            let param: (String, String) = params[idx]
+            dict[param.0] = param.1
+        }
+        
+        guard dict.keys.count == 4 else {
+            response.setBody(string: Utils.failureResponseJson("请求参数错误"))
+            response.completed()
+            
+            return
+        }
+        
+        let requestJson = QueryOperator().accountSearchListQuery(params: dict)
         response.appendBody(string: requestJson)
         response.completed()
     }

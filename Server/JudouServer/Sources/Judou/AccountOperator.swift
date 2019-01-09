@@ -208,20 +208,33 @@ class AccountOperator: BaseOperator {
         
         let accountStatus = checkAccount(mobile: "", nickname: "", userId: userId)
         if accountStatus == 1 {
-            var contentValue: [String] = []
-            params.keys.forEach { (key) in
-                if key != "userId" {
-                    let value = params[key]
-                    contentValue.append("\(key) = '\(value!)'")
+            func updateInfo() -> Void {
+                var contentValue: [String] = []
+                params.keys.forEach { (key) in
+                    if key != "userId" {
+                        let value = params[key]
+                        contentValue.append("\(key) = '\(value!)'")
+                    }
+                }
+                
+                let statement = "UPDATE \(accounttable) SET \(contentValue.joined(separator: ", ")) WHERE userId = '\(userId)'"
+                if mysql.query(statement: statement) == false {
+                    Utils.logError("更新用户信息", mysql.errorMessage())
+                    responseJson = Utils.failureResponseJson("更新用户信息失败")
+                } else {
+                    responseJson = self.getMyAccount(mobile: "", userId: userId)
                 }
             }
             
-            let statement = "UPDATE \(accounttable) SET \(contentValue.joined(separator: ", ")) WHERE userId = '\(userId)'"
-            if mysql.query(statement: statement) == false {
-                Utils.logError("更新用户信息", mysql.errorMessage())
-                responseJson = Utils.failureResponseJson("更新用户信息失败")
+            if params["nickname"] != nil {
+                let nickname: String = params["nickname"] as! String
+                if checkAccount(mobile: "", nickname: nickname, userId: "") == 1 {
+                    responseJson = Utils.failureResponseJson("昵称已被占用")
+                } else {
+                    updateInfo()
+                }
             } else {
-                responseJson = self.getMyAccount(mobile: "", userId: userId)
+                updateInfo()
             }
         } else if accountStatus == 0 {
             responseJson = Utils.failureResponseJson("用户不存在")
