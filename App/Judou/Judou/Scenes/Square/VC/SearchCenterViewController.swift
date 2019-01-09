@@ -27,8 +27,15 @@ class SearchCenterViewController: BaseHideBarViewController, UITextFieldDelegate
         searchTextField.layer.cornerRadius = searchTextField.frame.size.height/2
         searchTextField.layer.masksToBounds = true
         searchTextField.backgroundColor = kRGBColor(red: 243, green: 244, blue: 245, alpha: 1)
-        searchTextField.placeholder = "搜索喜欢的内容"
-        searchTextField.setValue(kRGBColor(red: 209, green: 210, blue: 211, alpha: 1), forKey: "_placeholderLabel.textColor")
+        searchTextField.font = kBaseFont(16)
+        //searchTextField.setValue(kRGBColor(red: 209, green: 210, blue: 211, alpha: 1), forKey: "_placeholderLabel.textColor")
+        //searchTextField.placeholder = "搜索喜欢的内容"
+        
+        let attrString = NSAttributedString.init(string: "搜索喜欢的内容", attributes: [
+            NSAttributedString.Key.foregroundColor : kRGBColor(red: 209,green: 210, blue: 211, alpha: 1),
+            NSAttributedString.Key.font: searchTextField.font ?? ""])
+        searchTextField.attributedPlaceholder = attrString
+        
         searchTextField.font = kBaseFont(15)
         searchTextField.leftViewMode = .always
         searchTextField.returnKeyType = .search
