@@ -51,9 +51,9 @@
 		<true/>
 	</dict>
 	<key>MOBAppKey</key>
-	<string>293db141d76e4</string>
+	<string></string>
 	<key>MOBAppSecret</key>
-	<string>8dd46b700c3700118464a98ec9bdcde6</string>
+	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>需要访问本地图片库才能读取本地图片或保存截图到本地。是否允许访问本地图片库？拒绝将无法读取或保存！</string>
 	<key>NSPhotoLibraryUsageDescription</key>
